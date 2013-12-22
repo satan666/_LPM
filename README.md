@@ -10,6 +10,50 @@ read general_info.txt
 
 --==Version 2.0 
 
+--==Version 1.0
+
+Hi
+I would like to introduce _LazyPig Multibox - addon that I wrote for easy multiboxing similar to Jamba but for 1.12 client.
+It has powerful features thanks to 1.12 API which isn't limited like in TBC and higher.
+
+Updated GUI View http://www.mediafire.com/view/mjw7agords2ibcr/LPMultibox.jpg
+
+Short Video with working GUI
+http://www.youtube.com/watch?v=v9YX9BKg374
+
+and some others with older version of _LazyPigMultibox  http://www.youtube.com/channel/UCmSTEIQm_2Ly-zjqrV-wgCA
+
+_LazyPig Multibox Advantages
+
+- dynamic GUI designed for easy multiboxing and fast group manage
+- predefined class scripts for dps, heal and rez
+- implemented _LazyPig, QuickHeal and Zorlen functions to improve level of code
+- loot roll and quest share actions controlled from master client
+- fast configuration for all clients thanks to "Upload Settings" button
+- bug free macro create mechanism
+
+Using _LazyPig Multibox
+
+- open _LazyPig Multibox typing by "/lpm" command or bind selected button
+- create multibox macro "/lpm script" using "create macro button"
+- use this macro to perform assist, follow, dps, rez, heal and group action - slave
+
+Some Info
+
+I made this addon for Feenix community and I hope you enjoy it, if you find this addon useful for you feel free to share your opinion or idea how to 
+
+improve.
+I'm not active atm but my plans are to come back soon and crush Kel'Thuzad :D
+Some persons really apreciated my previous addons and asked me if they can support me by any way - You can do it by sending some gold to Ogrisch@Warsong 
+
+12x  ..thx
+
+DL Link http://www.mediafire.com/download/azbizzmn4yy9v6n/_LazyPigMultibox.zip
+
+Cheers.
+
+--==Version 2.0 
+
 _LazyPig Multibox is now optimized to use with Warlock, Shaman, Paladin and Priest classes - best script support
 
 1) General Improvements
@@ -19,7 +63,9 @@ _LazyPig Multibox is now optimized to use with Warlock, Shaman, Paladin and Prie
 - Better Event Handler
 
 2) Introduced Sniper Mode (to enable you have to check IMPROVED TARGETING and ACTIVE ENEMY ONLY or ACTIVE NPC ENEMY ONLY) 
-- thanks to Sniper Mode we have better pet control in the group, every pet can attack diffrent target using "LazyPigMultibox_SPA" - Expert Mode function or "LPM PET ATTACK" - Novice Mode macro described below
+- thanks to Sniper Mode we have better pet control in the group, every pet can attack diffrent target using "LazyPigMultibox_SPA" - Expert Mode function 
+
+or "LPM PET ATTACK" - Novice Mode macro described below
 
 more about Expert and Novice Mode - using_macros_part1.txt
 
@@ -35,15 +81,21 @@ more about Expert and Novice Mode - using_macros_part1.txt
 - check using_macros1.txt file for more info
 - examples available in _MyCustomFuntions.lua file
 
-4) optimized or added new spells Paladin, Shaman and Warlock
+4) optimized or added new spells for Paladin, Shaman and Warlock
 
-- Warlock(Drain Soul, Drain Life, Curse of Agony, Curse of Shadows(unique spell), Corruption, Siphon Life, Sacrifice, Suffering, Life Tap, Fel Domination)
-- Paladin(Judgement, Seal of wisdom(unique spell), Judgement of wisdom(unique spell), Flash of light, Divine Favor, Blessing of Protection, Divine Shield, Lay on Hands, Hammer of wrath)
+- Warlock(Drain Soul, Drain Life, Curse of Agony, Curse of Shadows(unique spell), Corruption, Siphon Life, Sacrifice, Suffering, Life Tap, Fel 
+
+Domination)
+- Paladin(Judgement, Seal of wisdom(unique spell), Judgement of wisdom(unique spell), Flash of light, Divine Favor, Blessing of Protection, Divine 
+
+Shield, Lay on Hands, Hammer of wrath)
 - Shaman(Mana Tide Totem, Nature's Swiftness, Lightning Bolt, Chain Lightning, Earth Shock)
 
 5) added new macros for Paladin and Warlock(remember to use macro create button in LPM GUI)
 
-6) Introduced Unique spell mechanism for certain classes(only one uinque options can be selected for each class in the group - multiple addon instances sync)
+6) Introduced Unique Spell mechanism for certain classes(only one uinque option can be selected for each class in the group - multiple addon instances 
+
+sync)
 - Paladin: casting judgement of wisdom - on enemies with health 4x > ours - bosses, hard elites etc..
 - Paladin: reverse resurrection - avoid resurrecting same player by other multiboxed healers in the group 
 - Shaman: reverse resurrection
@@ -60,6 +112,7 @@ more about Expert and Novice Mode - using_macros_part1.txt
 - using_smart_buff.txt
 - using_quick_heal.txt
 - optimzed_class_builds.txt
+
 
 
 
