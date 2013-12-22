@@ -1737,9 +1737,6 @@ function LazyPigMultibox_CreateMacro()
 end
 
 function LazyPigMultibox_Rez(mode)
-	
-
-	
 	if not UnitIsDeadOrGhost("player") and not UnitAffectingCombat("player") and not Zorlen_isEnemy() then
 		local dead_unit = LazyPigMultibox_ReturnDeadUnit()
 		local LPM_CLASS = {}

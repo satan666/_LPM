@@ -76,6 +76,7 @@ more about Expert and Novice Mode - using_macros_part1.txt
 - Paladin: reverse resurrection - avoid resurrecting same player by other multiboxed healers in the group 
 - Shaman: reverse resurrection
 - Warlock: Curse of Shadow
+- Hunter: Hunter's Mark
 
 7) Greatly Improved LPM TARGET macro
 - each use toggles between lowest and highest hp target

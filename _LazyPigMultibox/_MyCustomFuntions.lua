@@ -8,7 +8,7 @@ function LPM_EXPERT_3() -- my bind is R key
 	end
 	
 	--Ally Team - warlocks hellfire
-	LazyPigMultibox_SCS("Nightx", "Hellfire", 1, 645, true); --cast hellfire on selected warlock when modifier is pressed
+	LazyPigMultibox_SCS("Nightx", "Hellfire", 1, 645, true); --cast hellfire on selected warlock if modifier is pressed
 	LazyPigMultibox_SCS("Nighta", "Hellfire", 1, 645, true);
 	LazyPigMultibox_SCS("Nightb", "Hellfire", 1, 645, true); 
 	
@@ -16,7 +16,7 @@ function LPM_EXPERT_3() -- my bind is R key
 	
 	
 	--Horde Team - warlocks hellfire;
-	LazyPigMultibox_SCS("Nogcsh", "Hellfire", 1, 645, true); --cast hellfire on selected warlock
+	LazyPigMultibox_SCS("Nogcsh", "Hellfire", 1, 645, true); --cast hellfire on selected warlock if modifier is pressed
 	LazyPigMultibox_SCS("Nogfsh", "Hellfire", 1, 645, true);
 	LazyPigMultibox_SCS("Nogash", "Hellfire", 1, 645, true); 
 	
@@ -35,14 +35,14 @@ function LPM_EXPERT_2() -- my bind is E key
 	
 	--Ally Team
 	LazyPigMultibox_SPA( "Nightb", 2); --pet attack
-	LazyPigMultibox_SFL( "Nightb", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer
+	LazyPigMultibox_SFL( "Nightb", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer if modifier pressed
 	LazyPigMultibox_SFL( "Nightc", "LazyPigMultibox_HammerOnAggro()", 0.5);  --stuns if enemy targeting player - good for pulling with warlock pet
 	
 	
 	
 	--Horde Team
 	LazyPigMultibox_SPA( "Nogfsh", 2); --pet attack
-	LazyPigMultibox_SFL( "Nogfsh", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer
+	LazyPigMultibox_SFL( "Nogfsh", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer if modifier pressed
 	LazyPigMultibox_SFL( "Nogfsh", "LazyPigMultibox_CoilOnAggro()", 0.5); --cast death coil if enemy targeting player - good for pulling with warlock pet
 	
 	
@@ -57,14 +57,14 @@ function LPM_EXPERT_1() -- my bind is Q key
 	
 	--Ally Team
 	LazyPigMultibox_SPA( "Nighta", 3); --pet attack 
-	LazyPigMultibox_SFL( "Nighta", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer
+	LazyPigMultibox_SFL( "Nighta", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer if modifier pressed
 	LazyPigMultibox_SFL( "Nightd", "LazyPigMultibox_HammerOnAggro()", 0.5);  --stuns if enemy targeting player - good for pulling with warlock pet
 
 	
 	
 	--Horde Team
 	LazyPigMultibox_SPA( "Nogcsh", 3); --pet attack
-	LazyPigMultibox_SFL( "Nogcsh", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer
+	LazyPigMultibox_SFL( "Nogcsh", "LazyPigMultibox_SmartSS()", 0.5, true);  --cast ss on rezer if modifier pressed
 	LazyPigMultibox_SFL( "Nogcsh", "LazyPigMultibox_CoilOnAggro()", 0.5); --cast death coil if enemy targeting player - good for pulling with warlock pet
 
 
