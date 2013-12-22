@@ -6,51 +6,8 @@ If you have any idea how to improve code or manual section feel free to contribu
 More detailed info can be found in _LazyPigMultibox/Manual directory.
 
 --==Version 1.0
+
 read general_info.txt
-
---==Version 2.0 
-
---==Version 1.0
-
-Hi
-I would like to introduce _LazyPig Multibox - addon that I wrote for easy multiboxing similar to Jamba but for 1.12 client.
-It has powerful features thanks to 1.12 API which isn't limited like in TBC and higher.
-
-Updated GUI View http://www.mediafire.com/view/mjw7agords2ibcr/LPMultibox.jpg
-
-Short Video with working GUI
-http://www.youtube.com/watch?v=v9YX9BKg374
-
-and some others with older version of _LazyPigMultibox  http://www.youtube.com/channel/UCmSTEIQm_2Ly-zjqrV-wgCA
-
-_LazyPig Multibox Advantages
-
-- dynamic GUI designed for easy multiboxing and fast group manage
-- predefined class scripts for dps, heal and rez
-- implemented _LazyPig, QuickHeal and Zorlen functions to improve level of code
-- loot roll and quest share actions controlled from master client
-- fast configuration for all clients thanks to "Upload Settings" button
-- bug free macro create mechanism
-
-Using _LazyPig Multibox
-
-- open _LazyPig Multibox typing by "/lpm" command or bind selected button
-- create multibox macro "/lpm script" using "create macro button"
-- use this macro to perform assist, follow, dps, rez, heal and group action - slave
-
-Some Info
-
-I made this addon for Feenix community and I hope you enjoy it, if you find this addon useful for you feel free to share your opinion or idea how to 
-
-improve.
-I'm not active atm but my plans are to come back soon and crush Kel'Thuzad :D
-Some persons really apreciated my previous addons and asked me if they can support me by any way - You can do it by sending some gold to Ogrisch@Warsong 
-
-12x  ..thx
-
-DL Link http://www.mediafire.com/download/azbizzmn4yy9v6n/_LazyPigMultibox.zip
-
-Cheers.
 
 --==Version 2.0 
 
@@ -112,8 +69,6 @@ sync)
 - using_smart_buff.txt
 - using_quick_heal.txt
 - optimzed_class_builds.txt
-
-
 
 
 cheers Ogrisch
