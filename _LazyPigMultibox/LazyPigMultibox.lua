@@ -724,6 +724,8 @@ function LazyPigMultibox_SetOption(num)
 		
 		if(LPMULTIBOX.AM_ACTIVEENEMY or LPMULTIBOX.AM_ACTIVENPCENEMY) and LPMULTIBOX.AM_KEEPTARGET then
 			LazyPigMultibox_Message("Sniper Mode Enabled")
+		else
+			LazyPigMultibox_Message("Sniper Mode Disabled")
 		end
 
 	elseif num == 12 then 
