@@ -20,9 +20,7 @@ _LazyPig Multibox is now optimized to use with Warlock, Shaman, Paladin and Prie
 - Better Event Handler
 
 2) Introduced Sniper Mode (to enable you have to check IMPROVED TARGETING and ACTIVE ENEMY ONLY or ACTIVE NPC ENEMY ONLY) 
-- thanks to Sniper Mode we have better pet control in the group, every pet can attack diffrent target using "LazyPigMultibox_SPA" - Expert Mode function 
-
-or "LPM PET ATTACK" - Novice Mode macro described below
+- thanks to Sniper Mode we have better pet control in the group, every pet can attack diffrent target using "LazyPigMultibox_SPA" - Expert Mode function or "LPM PET ATTACK" - Novice Mode macro described below
 
 more about Expert and Novice Mode - using_macros_part1.txt
 
@@ -40,12 +38,10 @@ more about Expert and Novice Mode - using_macros_part1.txt
 
 4) optimized or added new spells for Paladin, Shaman and Warlock
 
-- Warlock(Drain Soul, Drain Life, Curse of Agony, Curse of Shadows(unique spell), Corruption, Siphon Life, Sacrifice, Suffering, Life Tap, Fel 
+- Warlock(Drain Soul, Drain Life, Curse of Agony, Curse of Shadows(unique spell), Corruption, Siphon Life, Sacrifice, Suffering, Life Tap, Fel Domination)
 
-Domination)
-- Paladin(Judgement, Seal of wisdom(unique spell), Judgement of wisdom(unique spell), Flash of light, Divine Favor, Blessing of Protection, Divine 
+- Paladin(Judgement, Seal of wisdom(unique spell), Judgement of wisdom(unique spell), Flash of light, Divine Favor, Blessing of Protection, Divine Shield, Lay on Hands, Hammer of wrath)
 
-Shield, Lay on Hands, Hammer of wrath)
 - Shaman(Mana Tide Totem, Nature's Swiftness, Lightning Bolt, Chain Lightning, Earth Shock)
 
 5) added new macros for Paladin and Warlock(remember to use macro create button in LPM GUI)
