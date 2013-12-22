@@ -1,4 +1,4 @@
-_LazyPigMultibox 
+_LPM _LazyPigMultibox 
 
 1.12.1 Wow Multiboxing Addon Project
 
