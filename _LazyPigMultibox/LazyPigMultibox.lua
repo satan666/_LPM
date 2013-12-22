@@ -1990,11 +1990,6 @@ function LazyPigMultibox_TargetNearestEnemy(active_enemy, player_aggro_first, cy
 					end
 				else
 					if(lowest_health_aggro and health <= lowest_health_aggro or not lowest_health_aggro and health <= lowest_health) then
-						if lowest_health_aggro then
-							LazyPigMultibox_Message("Target Lowest Aggro")
-						else
-							LazyPigMultibox_Message("Target Lowest")
-						end
 						return
 					end
 				end
@@ -2014,11 +2009,6 @@ function LazyPigMultibox_TargetNearestEnemy(active_enemy, player_aggro_first, cy
 					end
 				else
 					if(highest_health_aggro and health >= highest_health_aggro or not highest_health_aggro and health >= highest_health) then
-						if highest_health_aggro then
-							LazyPigMultibox_Message("Target Highest Aggro")
-						else
-							LazyPigMultibox_Message("Target Highest")
-						end
 						return
 					end
 				end

@@ -63,7 +63,7 @@ more about Expert and Novice Mode - using_macros_part1.txt
 - check using_macros1.txt file for more info
 - examples available in _MyCustomFuntions.lua file
 
-4) optimized or added new spells Paladin, Shaman and Warlock
+4) optimized or added new spells for Paladin, Shaman and Warlock
 
 - Warlock(Drain Soul, Drain Life, Curse of Agony, Curse of Shadows(unique spell), Corruption, Siphon Life, Sacrifice, Suffering, Life Tap, Fel Domination)
 - Paladin(Judgement, Seal of wisdom(unique spell), Judgement of wisdom(unique spell), Flash of light, Divine Favor, Blessing of Protection, Divine Shield, Lay on Hands, Hammer of wrath)
@@ -71,7 +71,7 @@ more about Expert and Novice Mode - using_macros_part1.txt
 
 5) added new macros for Paladin and Warlock(remember to use macro create button in LPM GUI)
 
-6) Introduced Unique spell mechanism for certain classes(only one uinque options can be selected for each class in the group - multiple addon instances sync)
+6) Introduced Unique Spell mechanism for certain classes(only one uinque option can be selected for each class in the group - multiple addon instances sync)
 - Paladin: casting judgement of wisdom - on enemies with health 4x > ours - bosses, hard elites etc..
 - Paladin: reverse resurrection - avoid resurrecting same player by other multiboxed healers in the group 
 - Shaman: reverse resurrection
