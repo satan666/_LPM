@@ -1,0 +1,48 @@
+In the _MyCustomFuntions.lua file I made few examples that working for 100%. In this file you can create new or modify existing functions and use them in your macros.
+
+I have created 3 main functions: LPM_EXPERT_1(), LPM_EXPERT_2(), LPM_EXPERT_3() that are easy to use in wow macros: 
+/run LPM EXPERT_1()
+/run LPM EXPERT_2(), 
+/run LPM EXPERT_1() 
+
+you can create them using macro create button
+
+I have binded them to Q, E, R key on my WOW master client(best control keys for multiboxing in my opinion)
+
+List of other functions with their parameters used in _MyCustomFuntions.lua
+
+LazyPigMultibox_SPA(slave_master_name, icon_index, modifier) --selective pet attack
+slave_master_name - name of the slave or master 
+icon_index - index of icon which will mark the target -- optional
+modifier - if true then use only if modifier is presed(alt or ctrl or shift) -- optional
+
+
+LazyPigMultibox_SFL(slave_master_name, task, duration, modifier) -- selective function launch
+slave_master_name - name of the slave or master 
+task - name of the function for example "PetFollow()" 
+duration - hard to exlpain but should be between 0.5 - 1
+modifier - if true then use only if modifier is presed(alt or ctrl or shift) -- optional
+
+
+LazyPigMultibox_SCS(slave_master_name, spell_name, duration, mana, modifier) -- selective cast spell
+slave_master_name - name of the slave or master 
+spell_name - name of the spell to be casted
+duration - hard to exlpain but should be between 0.5 - 1
+mana - mana cost of the highest spell_name in your spell book
+modifier - if true then use only if modifier is presed(alt or ctrl or shift) -- optional
+
+
+LazyPigMultibox_SUB(slave_master_name, modifier) --selective unit buff, we dont need this function sice we can enable autobuffing from LPM menu. If you preffer buff manually this function is for you :)
+
+
+
+
+	--ICON INDEX--
+--1 = Yellow 4-point Star 
+--2 = Orange Circle 
+--3 = Purple Diamond 
+--4 = Green Triangle 
+--5 = White Crescent Moon 
+--6 = Blue Square 
+--7 = Red "X" Cross 
+--8 = White Skull 

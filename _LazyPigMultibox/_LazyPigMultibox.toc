@@ -1,0 +1,19 @@
+## Interface: 11200
+## SavedVariablesPerCharacter: LPMULTIBOX
+## Title: _LazyPigMultibox v2.0
+## Notes: Multiboxing Tool
+## Dependencies: _LazyPig, Zorlen, QuickHeal, SmartBuff
+LazyPigMultibox.xml
+LazyPigMultiboxMenu.xml
+LazyPigMultiboxRoll.xml
+LazyPigMultibox_Warlock.lua
+LazyPigMultibox_Hunter.lua
+LazyPigMultibox_Mage.lua
+LazyPigMultibox_Paladin.lua
+LazyPigMultibox_Priest.lua
+LazyPigMultibox_Druid.lua
+LazyPigMultibox_Shaman.lua
+LazyPigMultibox_Warlock.lua
+LazyPigMultibox_Rogue.lua
+LazyPigMultibox_Warrior.lua
+_MyCustomFuntions.lua

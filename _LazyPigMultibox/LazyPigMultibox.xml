@@ -1,0 +1,40 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+	<Script file="LazyPigMultibox.lua"/>
+	<Frame name="LazyPigMultibox">	
+		<Scripts>
+			<OnLoad>
+				LazyPigMultibox_OnLoad();
+			</OnLoad>
+			<OnEvent>
+				 LazyPigMultibox_OnEvent(event);
+			</OnEvent>
+			<OnUpdate>
+				LazyPigMultibox_OnUpdate();
+			</OnUpdate>
+		</Scripts>
+		<Anchors>
+			<Anchor point="TOP" relativeTo="PVPArenaTextString" relativePoint="BOTTOM" />
+		</Anchors>
+		<Size>
+			<AbsDimension x="256" y="256"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">			
+				<FontString name="LazyPigMultiboxAnnouceText" font="Fonts\FRIZQT__.TTF" outline="THICK" hidden="true">
+					<Size>
+						<AbsDimension x="512" y="0"/>
+					</Size>
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset><AbsDimension x="0" y="290"/></Offset>
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="20"/>
+					</FontHeight>
+				</FontString>
+			</Layer>
+		</Layers>	
+	</Frame>
+</Ui>

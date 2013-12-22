@@ -1,0 +1,3 @@
+- we have acces to QuickHeal menu from LPM GUI
+- in LPM menu we can choose two heal options Fast Heal(spells with short cast time like Flash of Light) and Normal Heal(normal and fast heals addon decide which to use)
+- I had to modify QuickHeal code so remember to overwrite all files if you already using it

@@ -1,0 +1,9 @@
+## Interface: 11200
+## Title: QuickHeal
+## Author: Thomas Thorsen, Scott Geeding and Kostas Karachalios
+## Notes: _LazyPig Multibox Edition by Ogrisch
+## OptionalDeps: BonusScanner,Titan Panel,myAddOns,CT_RaidAssist
+## SavedVariables: 
+## SavedVariablesPerCharacter: QuickHealVariables
+QuickHeal.xml
+HealingBar.xml

@@ -1,0 +1,4 @@
+- we have acces to SmartBuff menu from LPM GUI
+- set appropriate buffs in SmartBuff menu available from _LPM menu
+- place buffs on actionbar(SmartBuff requirements)
+- by default buffing in the cities is disabled(SmartBuff options)

@@ -1,0 +1,48 @@
+Using Create Multibox Macro Button we can generate macros:
+
+1) General Use Macros: 
+- Zorlen Drink 
+- Zorlen Eat
+- LPM SUMMON(Warlock - find and summon player beyond 10 yard range)
+- LPM SS(Warlock - create and cast ss on best target)
+- LPM DI(Paladin - cast DI on another rezzer in the group)
+- LPM TARGET(smart master targeting macro - no asspulls)
+- LMP MULTIBOX(most important macro usable on master and slave - dps, rez, buff and if slave - assist, follow)
+
+2) Novice Macros(usable on slave and master client, only 2 functions so far)
+- LPM PET ATTACK
+- LPM HELLFIRE
+
+
+3) Expert Macros(macros created can be used only from master client)
+- LPM EXPERT 1
+- LPM EXPERT 2
+- LPM EXPERT 3
+
+
+
+
+--==Using LPM MACROS NOVICE MODE
+
+Hmm just create macros and use them on every client master and slave
+
+
+
+--==Using LPM MACROS EXPERT MODE (basic LUA programming knowledge needed) 
+
+Macros defined in the file _MyCustomFuntions.lua are designed to use on master client !!!
+
+The mechanism is quite simple when we use LPM EXPERT_1(), LPM EXPERT_2() or LPM EXPERT_3() on master side an information is send to slave client about spell or function that needs to be launched.
+
+When the information arrives to slave client we have to hit multibox macro to get effect arround half second later, cause of connection delay - remember to change player's name (1st parameter) in every function.
+
+We need to deliver some parameters to each function, for example LazyPigMultibox_SPA( "Nightb", 2); --1st parameter is name of slave, second one is the time-window (2 seconds) means for how long it will be active on slave client
+
+I strongly recommend to use key rempapping feature in multiboxing program like PwnBoxer or Keyclone and redirect all keystrokes from master to one key on slave side where we binded our multibox macro(we have only one macro on slave side - thats the idea of this solution, check images in manual folder)
+
+More info about function parameters are described in using_macros.txt
+
+check using_macros_part2.txt for more info
+
+
+

@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="MULTIBOXMENU"  header="LPM_HEADER">LazyPigMultibox_Command();</Binding>
+	<Binding name="MULTIBOXTARGET"  header="LPM_HEADER">LazyPigMultibox_SmartEnemyTarget();</Binding>
+	<Binding name="MULTIBOXSCRIPT"  header="LPM_HEADER">LazyPigMultibox_UseClassScript();</Binding>
+</Bindings>

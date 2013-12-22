@@ -1,0 +1,147 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	
+	
+	<Frame name="LazyPigMultiboxRoll" toplevel="true" movable="true" parent="UIParent" enableMouse="true" hidden="true">
+		<TitleRegion setAllPoints="true"/>
+		<Size>
+			<AbsDimension x="220" y="270" />
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border"
+			tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />	
+				<Size>
+					<AbsDimension x="128" y="17" />
+				</Size>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		
+		
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="LazyPigMultiboxRollTitle" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="346" y="63" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				
+				<FontString name="LazyPigMultiboxRollTitleText" inherits="GameFontNormal" text="Group Roll Manager - Mini">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="LazyPigMultiboxRoll">
+							<Offset>
+								<AbsDimension x="0" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+
+				</Layer>
+			</Layers>	
+				
+				
+				
+				
+				
+
+	<Frames>
+		<Button name="LazyPigMultiboxPass" inherits="GameMenuButtonTemplate" text="Only Master Need">
+			<Anchors>
+				<Anchor point="CENTER" relativePoint="CENTER" relativeTo="LazyPigMultiboxRoll">
+					<Offset>
+						<AbsDimension x="0" y="85" />
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					LazyPigMultibox_Roll(5)
+				</OnClick>
+			</Scripts>
+		</Button>
+	
+		<Button name="LazyPigMultiboxPass" inherits="GameMenuButtonTemplate" text="Group Pass">
+			<Anchors>
+				<Anchor point="CENTER" relativePoint="CENTER" relativeTo="LazyPigMultiboxRoll">
+					<Offset>
+						<AbsDimension x="0" y="-33" />
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					LazyPigMultibox_Roll(0)
+				</OnClick>
+			</Scripts>
+		</Button>
+		
+		<Button name="LazyPigMultiboxGreed" inherits="GameMenuButtonTemplate" text="Group Greed">
+			<Anchors>
+				<Anchor point="CENTER" relativePoint="CENTER" relativeTo="LazyPigMultiboxRoll">
+					<Offset>
+						<AbsDimension x="0" y="7" />
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					LazyPigMultibox_Roll(2)
+				</OnClick>
+			</Scripts>
+		</Button>
+		
+		<Button name="LazyPigMultiboxNeed" inherits="GameMenuButtonTemplate" text="Group Need">
+			<Anchors>
+				<Anchor point="CENTER" relativePoint="CENTER" relativeTo="LazyPigMultiboxRoll">
+					<Offset>
+						<AbsDimension x="0" y="45" />
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					LazyPigMultibox_Roll(1)
+				</OnClick>
+			</Scripts>
+		</Button>	
+			
+			
+			
+		<Button name="LazyMultiboxPigClose" inherits="GameMenuButtonTemplate" text="Cancel">
+			<Anchors>
+				<Anchor point="CENTER" relativePoint="CENTER" relativeTo="LazyPigMultiboxRoll">
+					<Offset>
+						<AbsDimension x="0" y="-75" />
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					this:GetParent():Hide();
+				</OnClick>
+			</Scripts>
+		</Button>
+		
+		
+		
+	</Frames>
+		
+	</Frame>
+	
+</Ui>
