@@ -2118,6 +2118,14 @@ function LazyPigMultibox_SMARTBUFF_AddMsgErr(msg, force)
 	Original_SMARTBUFF_AddMsgErr(msg, force)
 end
 
+function LazyPigMultibox_TargetUnit(u)
+	if UnitExists(u) and CheckInteractDistance(u, 4) then
+		TargetUnit(u)
+		return true
+	end
+	return nil
+end
+
 function LazyPigMultibox_SFL(slave_master_name, task, duration, modifier) -- selective function launch
 	local mod = IsAltKeyDown() or IsControlKeyDown() or IsShiftKeyDown()
 	if not (modifier and mod or not modifier and not mod) then

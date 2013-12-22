@@ -70,12 +70,12 @@ function LazyPigMultibox_SmartSkillPaladin()
 	if Zorlen_HealthPercent("player") < 25 and UnitAffectingCombat("player") and (Zorlen_castSpellByName("Divine Shield") or Zorlen_castSpellByName("Divine Protection")) then
 		return true
 	
-	elseif unit_help and Zorlen_IsSpellKnown("Blessing of Protection") and UnitAffectingCombat(unit_help) and Zorlen_HealthPercent(unit_help) < 20 and CheckInteractDistance(unit_help, 1) and not Zorlen_checkDebuffByName("Forbearance", unit_help) and LazyPigMultibox_PaladinTargetUnit(unit_help) and Zorlen_castSpellByName("Blessing of Protection") then
+	elseif unit_help and Zorlen_IsSpellKnown("Blessing of Protection") and UnitAffectingCombat(unit_help) and Zorlen_HealthPercent(unit_help) < 20 and CheckInteractDistance(unit_help, 1) and not Zorlen_checkDebuffByName("Forbearance", unit_help) and LazyPigMultibox_TargetUnit(unit_help) and Zorlen_castSpellByName("Blessing of Protection") then
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Blessing of Protection - "..GetUnitName(unit_help))
 		LazyPigMultibox_Message("Blessing of Protection - "..GetUnitName(unit_help))	
 		return true
 	
-	elseif unit_help and Zorlen_IsSpellKnown("Lay on Hands") and UnitAffectingCombat(unit_help) and CheckInteractDistance(unit_help, 1) and Zorlen_ManaPercent("player") < 10 and Zorlen_HealthPercent(unit_help) < 10 and LazyPigMultibox_PaladinTargetUnit(unit_help) and Zorlen_castSpellByName("Lay on Hands") then
+	elseif unit_help and Zorlen_IsSpellKnown("Lay on Hands") and UnitAffectingCombat(unit_help) and CheckInteractDistance(unit_help, 1) and Zorlen_ManaPercent("player") < 10 and Zorlen_HealthPercent(unit_help) < 10 and LazyPigMultibox_TargetUnit(unit_help) and Zorlen_castSpellByName("Lay on Hands") then
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Lay on Hands - "..GetUnitName(unit_help))
 		LazyPigMultibox_Message("Lay on Hands - "..GetUnitName(unit_help))
 		return true
@@ -87,12 +87,76 @@ function LazyPigMultibox_SmartSkillPaladin()
 	return nil
 end
 
-function LazyPigMultibox_PaladinTargetUnit(u)
-	if UnitExists(u) and CheckInteractDistance(u, 4) then
-		TargetUnit(u)
-		return true
+function LazyPigMultibox_ReturnUnitWithoutBless(mana_bless, nomana_bless, pet_bless)
+	local InRaid = UnitInRaid("player")
+	local PLAYER = "player"
+	local PET = ""
+	local group = nil
+	local NumMembers = nil
+	local ModeArray = {mana_bless, nomana_bless, pet_bless}
+	
+	mana_bless = mana_bless or ""
+	nomana_bless = nomana_bless or ""
+	pet_bless = pet_bless or ""
+	
+	function CheckUnit(unit_mode, unit)
+		if CheckInteractDistance(unit, 4) then	
+			if unit_mode == 1 and usesMana(unit) and not UnitIsPet(unit) then
+				return true
+			elseif unit_mode == 2 and not usesMana(unit) and not UnitIsPet(unit) then
+				return true
+			elseif unit_mode == 3 and UnitIsPet(unit) then
+				return true
+			end	
+		end	
 	end
-	return nil
+
+	function CheckBless(bless, unit)
+		if bless and unit then
+			
+			return true
+		end
+		return nil
+	end
+
+	for mana_mode = 1, 3 do
+		local u = nil
+		local upet = nil
+		
+		local counter = nil
+		local buff_check = ModeArray[mana_mode] and Zorlen_IsSpellKnown(ModeArray[mana_mode])
+		
+		if InRaid then
+			NumMembers = GetNumRaidMembers()
+			counter = 1
+			group = "raid"
+		else
+			NumMembers = GetNumPartyMembers()
+			counter = 0
+			group = "party"
+		end
+
+		--DEFAULT_CHAT_FRAME:AddMessage(mana_mode)
+		
+		while counter <= NumMembers do
+			if counter == 0 then
+				u = PLAYER
+			else
+				u = group..""..counter
+				upet = group.."pet"..counter
+			end
+
+			if buff_check then	
+				if UnitExists(u) and CheckUnit(mana_mode, u) and not Zorlen_checkBuffByName(ModeArray[mana_mode], u) then
+					return u
+				elseif UnitExists(upet) and CheckUnit(mana_mode, upet) and not Zorlen_checkBuffByName(ModeArray[mana_mode], upet) then
+					return upet
+				end
+			end
+			counter = counter + 1
+		end
+	end
+	return false
 end
 
 function LazyPigMultibox_SmartWrath()
