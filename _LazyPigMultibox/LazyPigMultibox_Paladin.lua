@@ -70,12 +70,12 @@ function LazyPigMultibox_SmartSkillPaladin()
 	if Zorlen_HealthPercent("player") < 25 and UnitAffectingCombat("player") and (Zorlen_castSpellByName("Divine Shield") or Zorlen_castSpellByName("Divine Protection")) then
 		return true
 	
-	elseif unit_help and Zorlen_IsSpellKnown("Blessing of Protection") and UnitAffectingCombat(unit_help) and Zorlen_HealthPercent(unit_help) < 20 and CheckInteractDistance(unit_help, 1) and not Zorlen_checkDebuffByName("Forbearance", unit_help) and LazyPigMultibox_TargetUnit(unit_help) and Zorlen_castSpellByName("Blessing of Protection") then
+	elseif unit_help and Zorlen_IsSpellKnown("Blessing of Protection") and UnitAffectingCombat(unit_help) and Zorlen_HealthPercent(unit_help) < 20 and CheckInteractDistance(unit_help, 1) and not Zorlen_checkDebuffByName("Forbearance", unit_help) and LazyPigMultibox_PaladinTargetUnit(unit_help) and Zorlen_castSpellByName("Blessing of Protection") then
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Blessing of Protection - "..GetUnitName(unit_help))
 		LazyPigMultibox_Message("Blessing of Protection - "..GetUnitName(unit_help))	
 		return true
 	
-	elseif unit_help and Zorlen_IsSpellKnown("Lay on Hands") and UnitAffectingCombat(unit_help) and CheckInteractDistance(unit_help, 1) and Zorlen_ManaPercent("player") < 10 and Zorlen_HealthPercent(unit_help) < 10 and LazyPigMultibox_TargetUnit(unit_help) and Zorlen_castSpellByName("Lay on Hands") then
+	elseif unit_help and Zorlen_IsSpellKnown("Lay on Hands") and UnitAffectingCombat(unit_help) and CheckInteractDistance(unit_help, 1) and Zorlen_ManaPercent("player") < 10 and Zorlen_HealthPercent(unit_help) < 10 and LazyPigMultibox_PaladinTargetUnit(unit_help) and Zorlen_castSpellByName("Lay on Hands") then
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Lay on Hands - "..GetUnitName(unit_help))
 		LazyPigMultibox_Message("Lay on Hands - "..GetUnitName(unit_help))
 		return true
@@ -87,7 +87,7 @@ function LazyPigMultibox_SmartSkillPaladin()
 	return nil
 end
 
-function LazyPigMultibox_TargetUnit(u)
+function LazyPigMultibox_PaladinTargetUnit(u)
 	if UnitExists(u) and CheckInteractDistance(u, 4) then
 		TargetUnit(u)
 		return true
