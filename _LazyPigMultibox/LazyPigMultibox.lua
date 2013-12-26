@@ -1963,10 +1963,8 @@ function LazyPigMultibox_TargetNearestEnemy(active_enemy, player_aggro_first, cy
 	while (counter <= number) do
 		
 		TargetNearestEnemy();	
-		
-		active_enemy = not active_enemy or active_enemy and Zorlen_isActiveEnemy("target")
-		
-		if active_enemy and Zorlen_isEnemy() then
+				
+		if not active_enemy or active_enemy and Zorlen_isActiveEnemy("target") then
 
 			health = UnitHealth("target") / UnitHealthMax("target")
 			player_aggro_first = player_aggro_first and Zorlen_isEnemy("target") and UnitExists("targettarget") and UnitIsPlayer("targettarget") and not Zorlen_isEnemy("targettarget")
