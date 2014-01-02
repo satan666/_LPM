@@ -31,7 +31,7 @@ function LazyPigMultibox_Paladin(dps, dps_pet, heal, rez, buff)
 	else
 		stopAttack()
 	end
-		
+	
 	if LazyPigMultibox_SmartSeal(LPMULTIBOX.UNIQUE_SPELL, dps) then
 		return
 	end
@@ -39,7 +39,7 @@ function LazyPigMultibox_Paladin(dps, dps_pet, heal, rez, buff)
 	if buff then
 		LazyPigMultibox_UnitBuff();
 	end
-	
+
 end
 
 function LazyPigMultibox_SmartSeal(mode, dmg)
