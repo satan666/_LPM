@@ -235,6 +235,10 @@ function LazyPigMultibox_Summon()
 end
 
 function LazyPigMultibox_SmartSS()
+		if UnitAffectingCombat("player") or Zorlen_isActiveEnemy("target") then
+			return
+		end	
+		
 		local ss_spell = nil
 		local ss_item = nil
 		

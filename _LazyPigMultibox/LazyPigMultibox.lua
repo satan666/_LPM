@@ -5,7 +5,7 @@ LPM_TARGET = {ACTIVE = nil, TOGGLE = nil}
 LPM_SCHEDULE = {}
 LPM_SCHEDULE_SPELL = {}
 LPM_TAXI = {TIME = 0, NODE = ""}
-LPM_TIMER = {TICK1 = 0, TICK2 = 0, TICK3 = 0, MASTER = 0, MODESET = 0, COMBATEND = nil, LOOTCONFIRM = nil, SPELLFAIL = 0, ASSIST = 0, SCRIPT_USE = 0, SHIFT_PRESS = 0, UTILIZE_TARGET = 0, ASSIST_MASTER = 0, MASTERATTACK = 0}
+LPM_TIMER = {TICK1 = 0, TICK2 = 0, TICK3 = 0, MASTER = 0, MODESET = 0, COMBATEND = nil, LOOTCONFIRM = nil, SPELLFAIL = 0, ASSIST = 0, SCRIPT_USE = 0, SHIFT_PRESS = 0, UTILIZE_TARGET = 0, ASSIST_MASTER = 0, MASTERATTACK = 0, SETFFA = 0}
 LPM_INFO = {MODE = nil, CONNECT =  {}, QSHARE = nil}
 LPM_QUESTSHARE = {TITLE = nil, TIME}
 LPM_QUEST = {}
@@ -105,7 +105,7 @@ function LazyPigMultibox_OnUpdate()
 		end
 		
 		LazyPigMultibox_QuestShareUpdate();
-		
+		LazyPigMultibox_SetFFA();
 		LazyPigMultibox_ShowMode();
 	end
 	
@@ -155,7 +155,7 @@ function LazyPigMultibox_OnEvent(event)
 		
 		LazyPigMultibox_MenuSet();
 		LazyPigMultibox_ShowMode(true);
-		LazyPigMultibox_SetFFA();
+		LazyPigMultibox_SetFFA(true);
 		LPM_QUEST = LazyPigMultibox_QuestLogScan();
 		
 		Zorlen_MakeFirstMacros = nil
@@ -176,7 +176,7 @@ function LazyPigMultibox_OnEvent(event)
 		DEFAULT_CHAT_FRAME:AddMessage("_LazyPig Multibox by Ogrisch loaded type |cff00eeee".." /lpm".."|cffffffff for options")
 	
 	elseif (event == "PARTY_LEADER_CHANGED" or event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED") then
-		LazyPigMultibox_SetFFA();
+		LazyPigMultibox_SetFFA(true);
 		LazyPigMultibox_MenuSet();
 		LazyPigMultibox_ShowMode(true);
 		
@@ -467,7 +467,6 @@ end
 function LazyPigMultibox_Schedule(task, duration)
 	local val = nil
 	if task then
-		--DEFAULT_CHAT_FRAME:AddMessage("Mode set");
 		duration = duration or 3
 		local time = GetTime() + duration
 		if string.lower(task) == "stuck" then
@@ -475,6 +474,9 @@ function LazyPigMultibox_Schedule(task, duration)
 		elseif string.lower(task) == "reload" then
 			LPM_SCHEDULE["ReloadUI()"] = time
 		elseif string.lower(task) == "petattack" then
+			if not LazyPigMultibox_CheckDelayMode() then
+				return
+			end	
 			LPM_SCHEDULE["PetAttack()"] = time
 			LazyPigMultibox_Annouce("lpm_slaveannouce","Pet Attack")
 		elseif string.lower(task) == "unitbuff" then
@@ -850,7 +852,7 @@ function LazyPigMultibox_SetOption(num)
 	elseif num == 52 then 
 		LPMULTIBOX.POP_FFA = true
 		if not checked then LPMULTIBOX.POP_FFA = nil end
-		LazyPigMultibox_SetFFA();
+		LazyPigMultibox_SetFFA(true);
 	else
 		--DEFAULT_CHAT_FRAME:AddMessage("DEBUG: No num assigned - "..num)
 	end
@@ -1028,7 +1030,7 @@ function LazyPigMultibox_UseClassScript()
 			
 			dps = dps and UnitExists("target") and Zorlen_isEnemy("target")
 			rez = rez and not UnitAffectingCombat("player")
-			buff = buff and not UnitAffectingCombat("player")
+			buff = buff and not UnitAffectingCombat("player") and not Zorlen_isEnemy("target")
 			
 			if dps and check2 then
 				LazyPigMultibox_Annouce("lpm_masterattack", "")
@@ -1465,7 +1467,7 @@ function LazyPigMultibox_ShowMode(set)
 						LPM_INFO.MODE = "master"
 						LPM_INFO.CONNECT = {}
 						LPM_STATUS("Master Mode Enabled");
-						--LazyPigMultibox_SetFFA();
+						LazyPigMultibox_SetFFA(true);
 					end	
 					LazyPigMultibox_Annouce("lpm_who", "");
 				end
@@ -1719,6 +1721,7 @@ function LazyPigMultibox_CreateMacro()
 	Zorlen_MakeMacro("LPM EXPERT 1", "/script LPM_EXPERT_1()--Remember to Edit _MyCustomFuntions.lua file and Change Player Names to Yours", 1, "Ability_Creature_Cursed_04", nil, 1, 1)
 	Zorlen_MakeMacro("LPM EXPERT 2", "/script LPM_EXPERT_2()--Remember to Edit _MyCustomFuntions.lua file and Change Player Names to Yours", 1, "Ability_Creature_Cursed_04", nil, 1, 1)
 	Zorlen_MakeMacro("LPM EXPERT 3", "/script LPM_EXPERT_3()--Remember to Edit _MyCustomFuntions.lua file and Change Player Names to Yours", 1, "Ability_Creature_Cursed_04", nil, 1, 1)
+	Zorlen_MakeMacro("LPM EXPERT_AOE", "/script LPM_EXPERT_AOE()--Remember to Edit _MyCustomFuntions.lua file and Change Player Names to Yours", 1, "Ability_Creature_Cursed_04", nil, 1, 1)
 	
 	local class = UnitClass("player")
 	if class == "Warlock" then
@@ -1945,6 +1948,12 @@ end
 
 
 function LazyPigMultibox_TargetNearestEnemy(active_enemy, player_aggro_first, cycles)
+	
+	local target_exists = Zorlen_isActiveEnemy("target")
+	
+	
+	
+	
 	local number = cycles or 6
 	local counter = 0
 	
@@ -2012,16 +2021,30 @@ function LazyPigMultibox_TargetNearestEnemy(active_enemy, player_aggro_first, cy
 		end
 		counter = counter + 1
 	end
-	ClearTarget();
+	
+	if target_exists and UnitAffectingCombat("player") and not Zorlen_isActiveEnemy("target") then
+		TargetLastTarget();
+		if not Zorlen_isActiveEnemy("target") then
+			ClearTarget();
+		end
+	else
+		ClearTarget();
+	end	
 end
 
 
-function LazyPigMultibox_SetFFA()
-	local mode = "freeforall"
-	local present_mode = GetLootMethod()
-	if LPMULTIBOX.STATUS and LPMULTIBOX.POP_FFA and present_mode ~= mode and UnitIsPartyLeader("player") then
-		SetLootMethod(mode)
-	end
+function LazyPigMultibox_SetFFA(mode)
+	local time = GetTime()
+	if mode then
+		LPM_TIMER.SETFFA = time + 1
+	elseif LPM_TIMER.SETFFA and LPM_TIMER.SETFFA < time then
+		local mode = "freeforall"
+		local present_mode = GetLootMethod()
+		LPM_TIMER.SETFFA = nil
+		if LPMULTIBOX.STATUS and LPMULTIBOX.POP_FFA and present_mode ~= mode and UnitIsPartyLeader("player") then
+			SetLootMethod(mode);
+		end
+	end	
 end
 
 function LazyPigMultibox_DataStringEncode(...)
@@ -2142,9 +2165,7 @@ function LazyPigMultibox_SPA(slave_master_name, icon_index, modifier)--selective
 		return
 	end
 	
-	if not LazyPigMultibox_CheckDelayMode() then
-		return
-	elseif not slave_master_name  then 
+	if not slave_master_name then 
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Wrong or Missing Parameter")
 		return
 	end
@@ -2167,17 +2188,14 @@ function LazyPigMultibox_SCS(slave_master_name, spell_name, duration, mana, modi
 	if not (modifier and mod or not modifier and not mod) then
 		return
 	end
-
-	if not LazyPigMultibox_CheckDelayMode() then
-		return
-	elseif not slave_master_name or not spell_name or not duration then 
+		
+	--if not LazyPigMultibox_CheckDelayMode() then
+		--return
+	if not slave_master_name or not spell_name or not duration then 
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Wrong or Missing Parameter")
 		return
-	elseif not Zorlen_IsSpellKnown(spell_name) then	
-		LazyPigMultibox_Annouce("lpm_slaveannouce","Wrong Spell Name: "..spell_name)
-		return
 	end
-	
+
 	if string.lower(slave_master_name) == string.lower(GetUnitName("player")) then
 		if LazyPigMultibox_SlaveCheck() then	
 			LazyPigMultibox_AssistMaster(true)
@@ -2214,16 +2232,13 @@ function LazyPigMultibox_SUB(slave_master_name, modifier) -- selective unit buff
 end
 
 function abc()
-	--LazyPigMultibox_ScheduleSpell("Hellfire", 1, 600)
-	--LazyPigMultibox_ScheduleSpell()
-	--DEFAULT_CHAT_FRAME:AddMessage(QuickHeal_GetRatioHealthy())		
-
 	--DEFAULT_CHAT_FRAME:AddMessage(x1..x2..x3)	
-	
-	
-  if Zorlen_isActiveEnemy("target") then
-	DEFAULT_CHAT_FRAME:AddMessage("xxx")
-  
-  end
-end
 
+	
+	if Zorlen_isActiveEnemy("target") and Zorlen_HealthPercent("target") == 100 then
+		ClearTarget();
+		return
+	end
+	  LazyPigMultibox_UseClassScript();
+
+end

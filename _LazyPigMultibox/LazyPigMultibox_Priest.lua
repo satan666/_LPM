@@ -13,6 +13,10 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		end
 	end
 	
+	if buff then
+		LazyPigMultibox_UnitBuff();
+	end
+	
 	if heal then
 		QuickHeal();
 	end
@@ -65,8 +69,5 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 			castShoot();
 		end
 	end
-	
-	if buff then
-		LazyPigMultibox_UnitBuff();
-	end
+
 end
