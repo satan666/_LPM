@@ -111,12 +111,5 @@ function LazyPigMultibox_ShamanTotems(name1, name2, name3)
 	return not cast_complete
 end
 
-function zz()
---if Zorlen_ManaPercent("player") < 50 and Zorlen_IsSpellKnown("Mana Tide Totem") and not Zorlen_checkBuffByName("Mana Spring", "player") and not Zorlen_checkBuffByName("Mana Tide", "player") and Zorlen_checkCooldownByName("Mana Tide Totem") and not Zorlen_IsTimer("Tide") and Zorlen_GiveContainerItemCountByName("Water Totem") > 0 and Zorlen_castSpellByName("Mana Tide Totem") then
-	if Zorlen_checkCooldownByName("Mana Tide Totem") then	
-		DEFAULT_CHAT_FRAME:AddMessage("tide cast")
-	end	
-end
-
 
 

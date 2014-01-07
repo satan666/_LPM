@@ -22,7 +22,7 @@ http://www.wowprovider.com/?talent=11215875_9_845c2030102i5033015250105103p
 Suggested Class Combinations
 
 3xWarlock + 1xPaladin Healer1 + 1xPaladin Healer2 (3x Hellfire, 3x Voidwalkers - best AOE, best Enemy Control)
-3xWarlock + 2x Shaman Healer&DPS (3x Hellfire, 3x Voidwalkers - best AOE, best Enemy Control)
+3xWarlock + 2x Shaman Healer&DPS (3x Hellfire, 3x Voidwalkers - best AOE, best Enemy Control, best dps burst)
 
 
 1xPriest DPS1 + 2xWarlock + 1xPaladin Healer1 + 1xPaladin Healer2 (Additional Healing and Buff from SP Priest - best single DPS and Stamina)

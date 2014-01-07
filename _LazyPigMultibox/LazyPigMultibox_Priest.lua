@@ -13,14 +13,13 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		end
 	end
 	
-	if buff then
-		LazyPigMultibox_UnitBuff();
-	end
-	
 	if heal then
 		QuickHeal();
 	end
 	
+	if buff then
+		LazyPigMultibox_UnitBuff();
+	end
 	
 	if not shadow_form and Zorlen_castSpellByName("Shadowform") then
 		return

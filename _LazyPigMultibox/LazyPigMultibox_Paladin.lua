@@ -67,7 +67,7 @@ function LazyPigMultibox_SmartSkillPaladin()
 		unit_help = Zorlen_GiveGroupUnitWithLowestHealth()
 	end
 	
-	if Zorlen_HealthPercent("player") < 25 and UnitAffectingCombat("player") and (Zorlen_castSpellByName("Divine Shield") or Zorlen_castSpellByName("Divine Protection")) then
+	if Zorlen_HealthPercent("player") < 25 and UnitAffectingCombat("player") and not Zorlen_checkDebuffByName("Forbearance", "player") and (Zorlen_castSpellByName("Divine Shield") or Zorlen_castSpellByName("Divine Protection")) then
 		return true
 	
 	elseif unit_help and Zorlen_IsSpellKnown("Blessing of Protection") and UnitAffectingCombat(unit_help) and Zorlen_HealthPercent(unit_help) < 20 and CheckInteractDistance(unit_help, 1) and not Zorlen_checkDebuffByName("Forbearance", unit_help) and LazyPigMultibox_TargetUnit(unit_help) and Zorlen_castSpellByName("Blessing of Protection") then

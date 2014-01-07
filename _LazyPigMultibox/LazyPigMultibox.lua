@@ -314,14 +314,14 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 				local name, task, duration = LazyPigMultibox_DataStringDecode(message);
 
 				--DEFAULT_CHAT_FRAME:AddMessage(l_name.."."..string.lower(GetUnitName("player")))
-				if LazyPigMultibox_CheckDelayMode() and string.lower(name) == string.lower(GetUnitName("player")) then
+				if string.lower(name) == string.lower(GetUnitName("player")) then
 					LazyPigMultibox_Schedule(task, duration);
 				end
 			
 			elseif(mode == "lpm_schedule_spell") then
 				local name, spell, duration, mana = LazyPigMultibox_DataStringDecode(message);
 				
-				if LazyPigMultibox_CheckDelayMode() and string.lower(name) == string.lower(GetUnitName("player")) then
+				if string.lower(name) == string.lower(GetUnitName("player")) then
 					LazyPigMultibox_ScheduleSpell(spell, tonumber(duration), tonumber(mana));
 					--DEFAULT_CHAT_FRAME:AddMessage(spell..tonumber(duration)..tonumber(mana))
 				end
@@ -332,7 +332,7 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 				end
 				
 			elseif(mode == "lpm_petattack") then
-				if LazyPigMultibox_CheckDelayMode() and string.lower(message) == string.lower(GetUnitName("player")) then
+				if string.lower(message) == string.lower(GetUnitName("player")) then
 					--DEFAULT_CHAT_FRAME:AddMessage(message)
 					LazyPigMultibox_AssistMaster(true)
 					LazyPigMultibox_Schedule("petattack", 0.25)
@@ -474,9 +474,10 @@ function LazyPigMultibox_Schedule(task, duration)
 		elseif string.lower(task) == "reload" then
 			LPM_SCHEDULE["ReloadUI()"] = time
 		elseif string.lower(task) == "petattack" then
-			if not LazyPigMultibox_CheckDelayMode() then
+			local check = UnitExists("pet") and Zorlen_isEnemy("target") and LazyPigMultibox_CheckDelayMode()
+			if not check then
 				return
-			end	
+			end
 			LPM_SCHEDULE["PetAttack()"] = time
 			LazyPigMultibox_Annouce("lpm_slaveannouce","Pet Attack")
 		elseif string.lower(task) == "unitbuff" then
@@ -1032,7 +1033,7 @@ function LazyPigMultibox_UseClassScript()
 			rez = rez and not UnitAffectingCombat("player")
 			buff = buff and not UnitAffectingCombat("player") and not Zorlen_isEnemy("target")
 			
-			if dps and check2 then
+			if dps and check2 and LazyPigMultibox_CheckDelayMode(true) then
 				LazyPigMultibox_Annouce("lpm_masterattack", "")
 			elseif LPM_TIMER.MASTERATTACK ~= 0 and LPM_TIMER.MASTERATTACK < time and not LPMULTIBOX.AM_ENEMY then
 				dps = nil
@@ -1756,6 +1757,9 @@ function LazyPigMultibox_Rez(mode)
 				return true
 			end	
 		end
+		if dead_unit then
+			return true
+		end	
 	end
 	return nil
 end
@@ -2141,9 +2145,9 @@ function LazyPigMultibox_SFL(slave_master_name, task, duration, modifier) -- sel
 	if not (modifier and mod or not modifier and not mod) then
 		return
 	end
-	if not LazyPigMultibox_CheckDelayMode() then
-		return
-	elseif not slave_master_name or not task or not duration then 
+	--if not LazyPigMultibox_CheckDelayMode() then
+		--return
+	if not slave_master_name or not task or not duration then 
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Wrong or Missing Parameter")
 		return
 	end

@@ -70,11 +70,17 @@ function LazyPigMultibox_WarlockPet(pet)
 		end	
 	end
 	
+	if Zorlen_IsTimer("LockPetSummon") then
+		return
+	end
+	
 	if UnitHealth("pet") > 0 then
 		if not LazyPigMultibox_IsPetSpellOnActionBar("PET_ACTION_ATTACK") then
-			SummonMinion();
+			Zorlen_SetTimer(1, "LockPetSummon");
+			SummonMinion();	
 		end	
 	else
+		Zorlen_SetTimer(1, "LockPetSummon");
 		SummonMinion();
 	end
 end
@@ -235,7 +241,7 @@ function LazyPigMultibox_Summon()
 end
 
 function LazyPigMultibox_SmartSS()
-		if UnitAffectingCombat("player") or Zorlen_isActiveEnemy("target") then
+		if UnitAffectingCombat("player") or Zorlen_isEnemy("target") then
 			return
 		end	
 		
