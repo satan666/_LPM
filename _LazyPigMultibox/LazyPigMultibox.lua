@@ -154,7 +154,7 @@ function LazyPigMultibox_OnEvent(event)
 		local LPM_TITLE = GetAddOnMetadata("_LazyPigMultibox", "Title")
 		local LPM_VERSION = GetAddOnMetadata("_LazyPigMultibox", "Version")
 		local LPM_AUTHOR = GetAddOnMetadata("_LazyPigMultibox", "Author")
-		DEFAULT_CHAT_FRAME:AddMessage(LPM_TITLE .. " v" .. LPM_VERSION .. " by " .. LPM_AUTHOR .. " loaded - type |cff00eeee".." /lpm".."|cffffffff for options")
+		DEFAULT_CHAT_FRAME:AddMessage(LPM_TITLE .. " v" .. LPM_VERSION .. " by " .."|cffFF0066".. LPM_AUTHOR .."|cffffffff".. " loaded, type |cff00eeee".." /lpm".."|cffffffff for options")
 		--DEFAULT_CHAT_FRAME:AddMessage("_LazyPig Multibox v" .. LPM_VERSION .. " by Ogrisch loaded - type |cff00eeee".." /lpm".."|cffffffff for options")
 	elseif (event == "PLAYER_LOGIN") then
 		--this:UnregisterEvent("PLAYER_ENTERING_WORLD");
