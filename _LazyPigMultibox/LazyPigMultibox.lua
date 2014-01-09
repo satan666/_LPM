@@ -508,7 +508,7 @@ function LazyPigMultibox_Schedule(task, duration)
 		elseif string.lower(task) == "reload" then
 			LPM_SCHEDULE["ReloadUI()"] = time
 		elseif string.lower(task) == "petattack" then
-			if not LazyPigMultibox_CheckDelayMode() then
+			if not LazyPigMultibox_CheckDelayMode() or not Zorlen_isEnemy("target") then
 				return
 			end	
 			LPM_SCHEDULE["PetAttack()"] = time
@@ -2198,9 +2198,9 @@ function LazyPigMultibox_SFL(slave_master_name, task, duration, modifier) -- sel
 	if not (modifier and mod or not modifier and not mod) then
 		return
 	end
-	if not LazyPigMultibox_CheckDelayMode() then
-		return
-	elseif not slave_master_name or not task or not duration then 
+	--if not LazyPigMultibox_CheckDelayMode() then
+		--return
+	if not slave_master_name or not task or not duration then 
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Wrong or Missing Parameter")
 		return
 	end

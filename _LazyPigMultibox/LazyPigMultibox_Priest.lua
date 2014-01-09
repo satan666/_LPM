@@ -23,8 +23,17 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 	
 	if not shadow_form and Zorlen_castSpellByName("Shadowform") then
 		return
+		
 	elseif castInnerFire() then
 		return
+		
+	elseif UnitAffectingCombat("player") and (LazyPig_Raid() or LazyPig_Dungeon()) and Zorlen_isEnemyTargetingYou("target") and (Zorlen_checkCooldownByName("Fade") or Zorlen_checkCooldownByName("Power Word: Shield") or Zorlen_checkCooldownByName("Stoneform")) then 
+		SpellStopCasting()
+		stopShoot()
+		if (Zorlen_castSpellByName("Fade") or castPowerWordShield() or CheckInteractDistance("target", 3) and Zorlen_castSpellByName("Stoneform")) then
+			return
+		end	
+		
 	elseif UnitAffectingCombat("player") and (Zorlen_HealthPercent("player") < 50 or Zorlen_HealthPercent("player") < 75 and Zorlen_isEnemyTargetingYou("target")) and castPowerWordShield() then
 		return
 	end	

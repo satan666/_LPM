@@ -64,9 +64,9 @@ local ButtonTables = {
 
 	["Group Action Manager"] = {
 		[0]	= "LazyPigMultiboxButtonGroupActions",
-		[1] = { "LazyPigMultiboxStuck", "Unstuck", Stuck },
+		[3] = { "LazyPigMultiboxStuck", "Unstuck", Stuck },
 		[2] = { "LazyPigMultiboxReload", "Reload", ReloadUI },
-		[3] = { "LazyPigMultiboxLogout", "Logout", Logout },
+		[1] = { "LazyPigMultiboxLogout", "Logout", Logout },
 	},
 
 	["Group Management"] = {
