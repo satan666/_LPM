@@ -45,9 +45,9 @@ end
 function LazyPigMultibox_SmartSeal(mode, dmg)
 	if mode and Zorlen_isEnemy("target") then 
 		local active_seal = isSealActive()
-		local judgement_rage = LazyPigMultibox_IsSpellInRangeAndActionBar("Judgement")
+		local judgement_range = LazyPigMultibox_IsSpellInRangeAndActionBar("Judgement")
 			
-		if judgement_rage and Zorlen_HealthPercent("target") > 35 and ((UnitClassification("target") == "elite" or UnitClassification("target") == "rareelite") and UnitHealthMax("target") > 4*UnitHealthMax("player") or UnitClassification("target") == "worldboss") then	
+		if judgement_range and ((UnitClassification("target") == "elite" or UnitClassification("target") == "rareelite") and UnitHealth("target") > 4*UnitHealthMax("player") or UnitClassification("target") == "worldboss") then	
 			if(not Zorlen_checkDebuffByName(unique_judgement, "target") or active_seal) and Zorlen_checkCooldownByName("Judgement") then
 				castJudgement()
 				if not active_seal then 

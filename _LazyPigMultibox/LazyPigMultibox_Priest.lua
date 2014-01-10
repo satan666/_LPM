@@ -42,18 +42,22 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 	if dps then
 		local plague_stack = Zorlen_GetDebuffStack("Spell_Shadow_BlackPlague", "target")
 		local fly_range = LazyPigMultibox_IsSpellInRangeAndActionBar("Mind Flay")
-
-		if isShootActive() and (not Zorlen_IsTimer("ShadowRotation") or Zorlen_ManaPercent("player") > 25 or plague_stack < 5) then
+		local hi_mana = Zorlen_ManaPercent("player") > 20
+		
+		if isShootActive() and (not Zorlen_IsTimer("ShadowRotation") or hi_mana or plague_stack < 5) then
 			stopShoot();
 			return
 		end	
 			
-		if not Zorlen_IsTimer("ShadowWordPain") and Zorlen_ManaPercent("player") > 20 and castShadowWordPain() then
+		if not Zorlen_IsTimer("ShadowWordPain") and hi_mana and castShadowWordPain() then
 			Zorlen_SetTimer(1, "ShadowWordPain");
 			Zorlen_SetTimer(9, "ShadowRotation");
 			return
-			
-		elseif Zorlen_ManaPercent("player") > 40 and isShadowWordPain() and castMindBlast() then
+		
+		elseif ((UnitClassification("target") == "elite" or UnitClassification("target") == "rareelite") and UnitHealth("target") > 4*UnitHealthMax("player") or UnitClassification("target") == "worldboss") and castVampiricEmbrace() then
+			return	
+		
+		elseif isShadowWordPain() and Zorlen_ManaPercent("player") > 40 and castMindBlast() then
 			Zorlen_SetTimer(9, "ShadowRotation");
 			return
 		
@@ -73,7 +77,7 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		elseif not shadow_form and castSmite() then
 			return
 			
-		elseif Zorlen_IsTimer("ShadowRotation") and plague_stack == 5 then
+		elseif plague_stack == 5 and not hi_mana and Zorlen_IsTimer("ShadowRotation") then
 			castShoot();
 		end
 	end

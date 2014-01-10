@@ -1797,7 +1797,7 @@ function LazyPigMultibox_CreateMacro()
 end
 
 function LazyPigMultibox_Rez(mode)
-	if not UnitIsDeadOrGhost("player") and not UnitAffectingCombat("player") and not Zorlen_isEnemy() then
+	if not UnitIsDeadOrGhost("player") and not UnitAffectingCombat("player") and not Zorlen_isEnemy("target") then
 		local dead_unit = LazyPigMultibox_ReturnDeadUnit()
 		local LPM_CLASS = {}
 		LPM_CLASS["Priest"] = "Resurrection"
@@ -1810,8 +1810,8 @@ function LazyPigMultibox_Rez(mode)
 			TargetUnit(dead_unit)
 			if Zorlen_castSpellByName(spell) then
 				LazyPigMultibox_Annouce("lpm_slaveannouce", "Resurrection - "..GetUnitName(dead_unit))
-				return true
-			end	
+			end
+			return true
 		end
 	end
 	return nil

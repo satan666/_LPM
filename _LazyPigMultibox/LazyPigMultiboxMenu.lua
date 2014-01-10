@@ -71,9 +71,9 @@ local ButtonTables = {
 
 	["Group Management"] = {
 		[0]	= "LazyPigMultiboxButtonGroupManagement",
-		[4] = { "LazyMultiboxMakeLeader", "Make Me Leader", LazyPigMultibox_MakeMeLeader },
-		[5] = { "LazyMultiboxConvert", "Convert to Raid", ConvertToRaid },
-		[6] = { "LazyPigMultiboxDisband", "Disband Group", function() LazyPigMultibox_Annouce("lpm_hide_menu", "slave_only") LazyPigMultibox_DisbangGroup() end },
+		[6] = { "LazyMultiboxMakeLeader", "Make Me Leader", LazyPigMultibox_MakeMeLeader },
+		[4] = { "LazyMultiboxConvert", "Convert to Raid", ConvertToRaid },
+		[5] = { "LazyPigMultiboxDisband", "Disband Group", function() LazyPigMultibox_Annouce("lpm_hide_menu", "slave_only") LazyPigMultibox_DisbangGroup() end },
 		[1] = { "LazyPigMultiboxAOE", "AoE Invite", function() LazyPigMultibox_AOEInvite(true) end },
 		[2] = { "LazyPigMultiboxFriends", "Invite Friends", LazyPigMultibox_InviteFriends },
 		[3] = { "LazyPigMultiboxGuildMates", "Invite Guildmates", LazyPigMultibox_InviteGuildMates },
