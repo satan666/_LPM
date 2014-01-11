@@ -7,7 +7,7 @@ LPM_TARGET = {ACTIVE = nil, TOGGLE = nil}
 LPM_SCHEDULE = {}
 LPM_SCHEDULE_SPELL = {}
 LPM_TAXI = {TIME = 0, NODE = ""}
-LPM_TIMER = {TICK1 = 0, TICK2 = 0, TICK3 = 0, MASTER = 0, MODESET = 0, COMBATEND = nil, LOOTCONFIRM = nil, SPELLFAIL = 0, ASSIST = 0, SCRIPT_USE = 0, SHIFT_PRESS = 0, UTILIZE_TARGET = 0, ASSIST_MASTER = 0, MASTERATTACK = 0}
+LPM_TIMER = {TICK1 = 0, TICK2 = 0, TICK3 = 0, MASTER = 0, MODESET = 0, COMBATEND = nil, LOOTCONFIRM = nil, SPELLFAIL = 0, ASSIST = 0, SCRIPT_USE = 0, SHIFT_PRESS = 0, UTILIZE_TARGET = 0, ASSIST_MASTER = 0, MASTERATTACK = 0, SMARTBUFF = 0}
 LPM_INFO = {MODE = nil, CONNECT =  {}, QSHARE = nil}
 LPM_QUESTSHARE = {TITLE = nil, TIME}
 LPM_QUEST = {}
@@ -128,11 +128,22 @@ function LazyPigMultibox_OnUpdate()
 	
 	if LPM_TIMER.TICK2 < time then
 		LPM_TIMER.TICK2 = time + 4
+
 	end
 		
 	if LPM_TIMER.TICK3 < time then
 		LPM_TIMER.TICK3 = time + 8
-		if not LazyPigMultibox_SlaveCheck() then LazyPigMultibox_Annouce("lpm_tick", ""); end
+		
+		if not LazyPigMultibox_SlaveCheck() then 
+			LazyPigMultibox_Annouce("lpm_tick", ""); 
+		end
+		
+		if SMARTBUFF_Options and LPM_TIMER.SMARTBUFF and LPM_TIMER.SMARTBUFF < time then
+			LPM_TIMER.SMARTBUFF = nil
+			SMARTBUFF_Options.TargetSwitch = nil
+			SMARTBUFF_Options.ToggleMsgNormal = true
+			SMARTBUFF_Options.ToggleMsgWarning = true
+		end
 	end	
 
 	if LPM_TIMER.COMBATEND and LPM_TIMER.COMBATEND < time then
@@ -198,8 +209,7 @@ function LazyPigMultibox_OnEvent(event)
 		setglobal('QUEST_DESCRIPTION_GRADIENT_CPS',600000);
 		
 		if SMARTBUFF_Options then
-			SMARTBUFF_Options.ToggleMsgNormal = true
-			SMARTBUFF_Options.ToggleMsgWarning = true
+			LPM_TIMER.SMARTBUFF = GetTime() + 8
 		end
 		
 		if LPMULTIBOX.FIRSTUSE then
@@ -278,6 +288,10 @@ end
 function LazyPigMultibox_CheckError(msg)
 	msg = string.gsub(msg,"([^}]-):(%s)","")
 	
+	if string.find(msg, "Can't do that while moving") or string.find(msg, "Can't do that while stunned") then
+		return
+	end
+	
 	if(string.find(msg, SPELL_FAILED_NOT_BEHIND) or
 		string.find(msg, SPELL_FAILED_LINE_OF_SIGHT) or
 		string.find(msg, SPELL_FAILED_OUT_OF_RANGE) or
@@ -294,6 +308,14 @@ function LazyPigMultibox_CheckError(msg)
 		string.find(msg, "You do not have enough free slots") or 
 		string.find(msg, SPELL_FAILED_NEED_AMMO)) then
 		LazyPigMultibox_SpellFail(msg);
+	
+	elseif(UnitAffectingCombat("player") and string.find(msg, "Can't do that while")) then
+		LazyPigMultibox_SpellFail(msg);
+
+		--"Can't do that while polymorphed"
+		--"Can't do that while asleep"
+		--SPELL_FAILED_FLEEING
+	
 	end	
 	--DEFAULT_CHAT_FRAME:AddMessage(msg)
 end
@@ -638,7 +660,7 @@ local LazyPigMultiboxMenuStrings = {
 		[14]= "Active NPC Enemy Only",
 		[20]= "Release Spirit/Resurrection",
 		[21]= "Taxi Pickup",
-		[22]= "Dismount",
+		[22]= "Dismount Control",
 		[23]= "Quest Accept",
 		[24]= "Trade Accept",
 		[25]= "Logout/Cancel Logout",
@@ -1059,6 +1081,7 @@ function LazyPigMultibox_UseClassScript()
 		local leader = LazyPigMultibox_ReturnLeaderUnit()
 		local check1 = LazyPigMultibox_SlaveCheck()
 		local check2 = leader and UnitIsUnit("player", leader)
+		local check3 = GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0
 		
 		if not LPMULTIBOX.STATUS then
 			return
@@ -1084,8 +1107,8 @@ function LazyPigMultibox_UseClassScript()
 		if dps or dps_pet or heal or rez or buff then
 			
 			local class = UnitClass("player")
-			
-			dps = dps and UnitExists("target") and Zorlen_isEnemy("target")
+
+			dps = dps and Zorlen_isEnemy("target") and (check2 or check3 or LPMULTIBOX.AM_ENEMY or Zorlen_isActiveEnemy("target") and (LPMULTIBOX.AM_ACTIVEENEMY or not UnitIsPlayer("target") and LPMULTIBOX.AM_ACTIVENPCENEMY))
 			rez = rez and not UnitAffectingCombat("player")
 			buff = buff and not UnitAffectingCombat("player") and not Zorlen_isEnemy("target")
 			
@@ -1157,7 +1180,7 @@ function LazyPigMultibox_ReturnUnit(unit_name)
 	return false
 end
 
-function LazyPigMultibox_ReturnCCUnit(unit_name)
+function LazyPigMultibox_ReturnCCUnit(unit_name, dispelable)
 	local InRaid = UnitInRaid("player")
 	local PLAYER = "player"
 	local PET = ""
@@ -1183,7 +1206,7 @@ function LazyPigMultibox_ReturnCCUnit(unit_name)
 			u = group..""..counter
 		end
 		if UnitAffectingCombat(u) then
-			local ccontrol = Zorlen_isCrowedControlled(u, 1) or Zorlen_checkDebuffByName("Seduce", u, 1) or Zorlen_checkDebuffByName("Polymorph", u, 1) or Zorlen_checkDebuffByName("Sleep", u, 1) or Zorlen_checkDebuffByName("Reckless Charge", u, 1) or Zorlen_checkDebuffByName("Blind", u, 1)
+			local ccontrol = Zorlen_isCrowedControlled(u, dispelable) or Zorlen_checkDebuffByName("Seduce", u, dispelable) or Zorlen_checkDebuffByName("Polymorph", u, dispelable) or Zorlen_checkDebuffByName("Sleep", u, dispelable) or Zorlen_checkDebuffByName("Reckless Charge", u, dispelable) or Zorlen_checkDebuffByName("Blind", u, dispelable)
 			if ccontrol then
 				return u
 			end
@@ -1496,6 +1519,10 @@ function LazyPigMultibox_SpellFail(msg)
 	end	
 end
 
+function LazyPigMultibox_CCAnnouce(msg)
+
+end
+
 function LazyPigMultibox_ShowMode(set)
 	if LPMULTIBOX.STATUS then	
 		local time = GetTime()
@@ -1507,7 +1534,7 @@ function LazyPigMultibox_ShowMode(set)
 			--LPM_INFO.MODE = nil
 		else
 			local leader_id = LazyPigMultibox_ReturnLeaderUnit()
-			local player_name = GetUnitName("player")
+			--local player_name = GetUnitName("player")
 			local leader_check = leader_id  and UnitIsUnit(leader_id , "player") or GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0
 			
 			if LPMULTIBOX.STATUS and LPM_TIMER.MODESET and LPM_TIMER.MODESET < time then
@@ -1793,10 +1820,13 @@ function LazyPigMultibox_CreateMacro()
 	elseif class == "Hunter" then
 		Zorlen_MakeMacro("LPM PET ATTACK", "/script LazyPigMultibox_SPA(GetUnitName(\"player\"))", 1, "Spell_Nature_SpiritWolf", nil, 1, 1)
 		
+	elseif class == "Priest" then
+		Zorlen_MakeMacro("LPM SILENCE", "/script SpellStopCasting() Zorlen_castSpellByName(\"Silence\")--CastSpellByName(\"Silence\")", 1, "Spell_Shadow_ImpPhaseShift", nil, 1, 1)
+	
 	end
 end
 
-function LazyPigMultibox_Rez(mode)
+function LazyPigMultibox_Rez()
 	if not UnitIsDeadOrGhost("player") and not UnitAffectingCombat("player") and not Zorlen_isEnemy("target") then
 		local dead_unit = LazyPigMultibox_ReturnDeadUnit()
 		local LPM_CLASS = {}
@@ -2289,13 +2319,5 @@ function LazyPigMultibox_SUB(slave_master_name, modifier) -- selective unit buff
 end
 
 function abc()
-	--DEFAULT_CHAT_FRAME:AddMessage(x1..x2..x3)	
-
-	
-	if Zorlen_isActiveEnemy("target") and Zorlen_HealthPercent("target") == 100 then
-		ClearTarget();
-		return
-	end
-	  LazyPigMultibox_UseClassScript();
 
 end

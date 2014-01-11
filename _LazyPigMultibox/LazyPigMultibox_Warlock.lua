@@ -23,7 +23,7 @@ function LazyPigMultibox_Warlock(dps, dps_pet, heal, rez, buff)
 		Warlock_PetSuffering();	
 	end
 	
-	if UnitAffectingCombat("player") and Zorlen_HealthPercent("player") < 20 and LazyPigMultibox_IsPetSpellKnown("Sacrifice") and not Zorlen_checkBuffByName("Sacrifice", "player") then
+	if UnitAffectingCombat("player") and Zorlen_HealthPercent("player") < 15 and LazyPigMultibox_IsPetSpellKnown("Sacrifice") and not Zorlen_checkBuffByName("Sacrifice", "player") then
 		zSacrifice();
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Sacrifice");
 	end	
@@ -145,7 +145,7 @@ function LazyPigMultibox_WarlockDPS(curse)
 					if(dot_unit or moving and UnitAffectingCombat("target")) then
 						if curse and castCurseOfShadow() then
 							return true
-						elseif not curse and UnitHealthMax("target") > 2*UnitHealthMax("player") and castAmplifyCurse() then
+						elseif not curse and (UnitHealthMax("target") > 2*UnitHealthMax("player") or Zorlen_isEnemyPlayer("target")) and castAmplifyCurse() then
 							return true
 						elseif not curse and castCurseOfAgony() then
 							return true

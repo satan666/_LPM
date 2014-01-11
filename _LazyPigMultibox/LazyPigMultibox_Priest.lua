@@ -28,11 +28,15 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		return
 		
 	elseif UnitAffectingCombat("player") and (LazyPig_Raid() or LazyPig_Dungeon()) and Zorlen_isEnemyTargetingYou("target") and (Zorlen_checkCooldownByName("Fade") or Zorlen_checkCooldownByName("Power Word: Shield") or Zorlen_checkCooldownByName("Stoneform")) then 
-		SpellStopCasting()
-		stopShoot()
-		if (Zorlen_castSpellByName("Fade") or castPowerWordShield() or CheckInteractDistance("target", 3) and Zorlen_castSpellByName("Stoneform")) then
+		if Zorlen_isCasting() then 
+			SpellStopCasting();
+			return 
+		elseif isShootActive() then
+			stopShoot();
 			return
-		end	
+		elseif (Zorlen_castSpellByName("Fade") or castPowerWordShield() or CheckInteractDistance("target", 3) and Zorlen_castSpellByName("Stoneform")) then
+			return
+		end
 		
 	elseif UnitAffectingCombat("player") and (Zorlen_HealthPercent("player") < 50 or Zorlen_HealthPercent("player") < 75 and Zorlen_isEnemyTargetingYou("target")) and castPowerWordShield() then
 		return
@@ -43,21 +47,25 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		local plague_stack = Zorlen_GetDebuffStack("Spell_Shadow_BlackPlague", "target")
 		local fly_range = LazyPigMultibox_IsSpellInRangeAndActionBar("Mind Flay")
 		local hi_mana = Zorlen_ManaPercent("player") > 20
+		local inner_active = Zorlen_checkBuffByName("Inner Focus", "player")
 		
 		if isShootActive() and (not Zorlen_IsTimer("ShadowRotation") or hi_mana or plague_stack < 5) then
 			stopShoot();
 			return
-		end	
-			
-		if not Zorlen_IsTimer("ShadowWordPain") and hi_mana and castShadowWordPain() then
+		end
+		
+		if Zorlen_HealthPercent("target") < 50 and Zorlen_checkCooldownByName("Mind Blast") and Zorlen_castSpellByName("Inner Focus") then
+			return
+
+		elseif not inner_active and not Zorlen_IsTimer("ShadowWordPain") and hi_mana and castShadowWordPain() then
 			Zorlen_SetTimer(1, "ShadowWordPain");
 			Zorlen_SetTimer(9, "ShadowRotation");
 			return
 		
-		elseif ((UnitClassification("target") == "elite" or UnitClassification("target") == "rareelite") and UnitHealth("target") > 4*UnitHealthMax("player") or UnitClassification("target") == "worldboss") and castVampiricEmbrace() then
-			return	
+		elseif not inner_active and ((UnitClassification("target") == "elite" or UnitClassification("target") == "rareelite") and UnitHealth("target") > 4*UnitHealthMax("player") or UnitClassification("target") == "worldboss") and castVampiricEmbrace() then
+			return
 		
-		elseif isShadowWordPain() and Zorlen_ManaPercent("player") > 40 and castMindBlast() then
+		elseif (inner_active or isShadowWordPain() and Zorlen_ManaPercent("player") > 40) and castMindBlast() then
 			Zorlen_SetTimer(9, "ShadowRotation");
 			return
 		
