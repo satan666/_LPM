@@ -97,7 +97,7 @@ function LazyPigMultibox_SmartWrath()
 end
 
 function LazyPigMultibox_HammerOnAggro()
-	if Zorlen_isEnemy("target") and UnitExists("targettarget") and UnitIsFriend("targettarget", "player") and UnitIsPlayer("targettarget") and CheckInteractDistance("target", 2) and Zorlen_castSpellByName("Hammer of Justice") then
+	if Zorlen_isEnemy("target") and UnitExists("targettarget") and UnitIsFriend("targettarget", "player") and UnitIsPlayer("targettarget") and CheckInteractDistance("target", 2) and Zorlen_checkCooldownByName("Hammer of Justice") and (SpellStopCasting() or 1) and Zorlen_castSpellByName("Hammer of Justice") then
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Hammer of Justice")
 		return true
 	end

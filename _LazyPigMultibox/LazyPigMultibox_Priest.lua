@@ -62,7 +62,7 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 			Zorlen_SetTimer(9, "ShadowRotation");
 			return
 		
-		elseif not inner_active and ((UnitClassification("target") == "elite" or UnitClassification("target") == "rareelite") and UnitHealth("target") > 4*UnitHealthMax("player") or UnitClassification("target") == "worldboss") and castVampiricEmbrace() then
+		elseif not inner_active and ((UnitClassification("target") == "elite" or UnitClassification("target") == "rareelite") and UnitHealth("target") > 3*UnitHealthMax("player") or UnitClassification("target") == "worldboss") and castVampiricEmbrace() then
 			return
 		
 		elseif (inner_active or isShadowWordPain() and Zorlen_ManaPercent("player") > 40) and castMindBlast() then

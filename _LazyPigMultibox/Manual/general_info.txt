@@ -4,8 +4,6 @@ Hi
 I would like to introduce _LazyPig Multibox - addon that I wrote for easy multiboxing similar to Jamba but for 1.12 client.
 It has powerful features thanks to 1.12 API which isn't limited like in TBC and higher.
 
-Updated GUI View http://www.mediafire.com/view/mjw7agords2ibcr/LPMultibox.jpg
-
 Short Video with working GUI
 http://www.youtube.com/watch?v=v9YX9BKg374
 

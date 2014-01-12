@@ -1,8 +1,6 @@
 
 LPMULTIBOX = {FIRSTUSE = true, STATUS = true, FM_ALWAYS = true, FM_NOENEMYINDOORS = false, FM_NOENEMYOUTDOORS = false, FM_COMABTENDS = false, FM_SPELLFAIL = false, AM_FRIEND = false, AM_KEEPTARGET = false, AM_ENEMY = true, AM_ACTIVEENEMY = false, AM_ACTIVENPCENEMY = false, SM_SLAVELOST = true, SM_SPELLFAIL = true, SM_REDIRECT = true, FA_RELEASE = true, FA_TAXIPICKUP = true, FA_DISMOUNT = true, FA_TRADE = true, FA_QUESTSHARE = true, FA_LOGOUT = true, SCRIPT_HEAL = false, SCRIPT_REZ = false, SCRIPT_DPS = true, SCRIPT_DPSPET = false, UNIQUE_SPELL = nil, SCRIPT_BUFF = true, SCRIPT_SHIFT = false, SCRIPT_FASTHEAL = true, POP_GROUPMINI = true, POP_QUESTSHARE = true, POP_FFA = true}
 
-LPM_VERSION = "2.00" --UPDATE THIS MANUALLY! This is NOT used, but hey, it's at top
-
 LPM_TARGET = {ACTIVE = nil, TOGGLE = nil}
 LPM_SCHEDULE = {}
 LPM_SCHEDULE_SPELL = {}
@@ -29,7 +27,7 @@ local Original_RepopMe = RepopMe;
 local Original_AcceptTrade = AcceptTrade;
 local Original_GroupLootFrame_OnShow = GroupLootFrame_OnShow;
 local Original_StaticPopup_OnShow = StaticPopup_OnShow;
-local Original_SMARTBUFF_AddMsgErr = SMARTBUFF_AddMsgErr
+local Original_SMARTBUFF_AddMsgErr = SMARTBUFF_AddMsgErr;
 
 StaticPopupDialogs["LPM_QUESTSHARE"] = {
 text = "Share Quest ?",
@@ -560,38 +558,45 @@ function LazyPigMultibox_ScheduleSpell(task, duration, mana)
 	local val = nil
 	
 	if task then
-		--DEFAULT_CHAT_FRAME:AddMessage("x1  "..task..duration..mana)
 		mana = tonumber(mana) or 0
 		duration = tonumber(duration) or 3
 		
 		if Zorlen_IsSpellKnown(task) then
-			--DEFAULT_CHAT_FRAME:AddMessage(task)
-			local str = LazyPigMultibox_DataStringEncode(task, mana)
-			--DEFAULT_CHAT_FRAME:AddMessage(duration)
-			LPM_SCHEDULE_SPELL[str] = time + duration
+			local spell_cd = LazyPigMultibox_GetCooldownByName(task)
+			if spell_cd > duration then
+				LazyPigMultibox_Annouce("lpm_slaveannouce", task.." CD "..spell_cd)
+				LazyPigMultibox_Message(task.." CD "..spell_cd.."s")
+			else
+				local str = LazyPigMultibox_DataStringEncode(task, mana)
+				LPM_SCHEDULE_SPELL[str] = time + duration
+			end	
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("LazyPigMultibox_ScheduleSpell - Invalid Spell: "..task)
+			LazyPigMultibox_Annouce("lpm_slaveannouce","Invalid or Unknown Spell: "..task)
+			LazyPigMultibox_Message("Invalid or Unknown Spell: "..task)
 		end
-		
 	else
-		
 		for blockindex,blockmatch in pairs(LPM_SCHEDULE_SPELL) do
-			
 			if blockmatch > time then
 				local task, mana = LazyPigMultibox_DataStringDecode(blockindex)
 				mana = tonumber(mana)
 				
 				if Zorlen_isChanneling(task) or Zorlen_isCasting(task) or Zorlen_IsTimer("LazyPigMultibox"..task) then
+					
 					return true
 				end
 				if Zorlen_isCasting() or Zorlen_isChanneling() then
+					if Zorlen_CastingSpellName or Zorlen_ChannelingSpellName then
+						LazyPigMultibox_Annouce("lpm_slaveannouce","Preparing for Cast: "..task)
+						LazyPigMultibox_Message("Preparing for Cast: "..task)
+					end
 					SpellStopCasting()
 					val = true
 				elseif UnitClass("player") == "Warlock" and Zorlen_HealthPercent("player") > 25 and UnitMana("player") < mana and castLifeTap() then
 					val = true
 				elseif UnitMana("player") >= mana and Zorlen_castSpellByName(task) then
+					LazyPigMultibox_Annouce("lpm_slaveannouce","Casting: "..task)
+					LazyPigMultibox_Message("Casting: "..task)
 					Zorlen_SetTimer(1, "LazyPigMultibox"..task)
-					--SendChatMessage(blockindex.." !!!", "SAY")
 					val = true
 				end	
 			end	
@@ -599,6 +604,23 @@ function LazyPigMultibox_ScheduleSpell(task, duration, mana)
 		
 	end
 	return val
+end
+
+function LazyPigMultibox_GetCooldownByName(SpellName)
+	local B = Book or BOOKTYPE_SPELL
+	local SpellID = Zorlen_GetSpellID(SpellName, 0, Book)
+	
+	if SpellID then
+		local start, duration, enabled = GetSpellCooldown(SpellID, B)
+		if enabled == 0 then
+			return 0
+		elseif ( start > 0 and duration > 0) then
+			return math.floor(start + duration - GetTime())
+		end	
+	else
+		return nil
+	end
+	return 0
 end
 
 function LazyPigMultibox_ReloadUI()
@@ -2284,7 +2306,7 @@ function LazyPigMultibox_SCS(slave_master_name, spell_name, duration, mana, modi
 	end
 
 	if string.lower(slave_master_name) == string.lower(GetUnitName("player")) then
-		if LazyPigMultibox_SlaveCheck() then	
+		if LazyPigMultibox_SlaveCheck() then
 			LazyPigMultibox_AssistMaster(true)
 		end	
 		LazyPigMultibox_ScheduleSpell(spell_name, duration, mana);
@@ -2319,5 +2341,11 @@ function LazyPigMultibox_SUB(slave_master_name, modifier) -- selective unit buff
 end
 
 function abc()
-
+				if Zorlen_isChanneling() or Zorlen_isCasting() then
+					local xx = "Casting "
+					local lx = Zorlen_CastingSpellName or Zorlen_ChannelingSpellName
+					DEFAULT_CHAT_FRAME:AddMessage(xx..lx)
+					
+					return
+				end
 end

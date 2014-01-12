@@ -76,11 +76,11 @@ function LazyPigMultibox_WarlockPet(pet)
 	
 	if UnitHealth("pet") > 0 then
 		if not LazyPigMultibox_IsPetSpellOnActionBar("PET_ACTION_ATTACK") then
-			Zorlen_SetTimer(1, "LockPetSummon");
+			Zorlen_SetTimer(2, "LockPetSummon");
 			SummonMinion();	
 		end	
 	else
-		Zorlen_SetTimer(1, "LockPetSummon");
+		Zorlen_SetTimer(2, "LockPetSummon");
 		SummonMinion();
 	end
 end
@@ -193,7 +193,7 @@ function LazyPigMultibox_SetShardBagSize()
 end
 
 function LazyPigMultibox_CoilOnAggro()
-	if Zorlen_isEnemy("target") and UnitExists("targettarget") and UnitIsFriend("targettarget", "player") and UnitIsPlayer("targettarget") and Zorlen_castSpellByName("Death Coil") then
+	if Zorlen_isEnemy("target") and UnitExists("targettarget") and UnitIsFriend("targettarget", "player") and UnitIsPlayer("targettarget") and CheckInteractDistance("target", 1) and Zorlen_checkCooldownByName("Death Coil") and (SpellStopCasting() or 1) and Zorlen_castSpellByName("Death Coil") then
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Death Coil")
 		return true
 	end	
@@ -221,6 +221,7 @@ function LazyPigMultibox_Summon()
 	if IsAltKeyDown() and UnitHealth("target") > 0 and UnitIsConnected("target") then
 		Zorlen_castSpellByName("Ritual of Summoning")
 		LazyPigMultibox_Annouce("lpm_slaveannouce", "Summoning - Target: "..GetUnitName("target").." - Shards: "..Zorlen_GiveContainerItemCountByName("Soul Shard"))
+		return
 	else	
 		while counter <= NumMembers do
 			if counter == 0 then
@@ -238,6 +239,7 @@ function LazyPigMultibox_Summon()
 			counter = counter + 1
 		end
 	end	
+	LazyPigMultibox_Annouce("lpm_slaveannouce", "Noone to Summon - Shards: "..Zorlen_GiveContainerItemCountByName("Soul Shard"))
 end
 
 function LazyPigMultibox_SmartSS()
