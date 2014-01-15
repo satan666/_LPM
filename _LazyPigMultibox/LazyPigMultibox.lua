@@ -440,11 +440,6 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 				
 			elseif(mode == "lpm_follow") then		
 				LazyPigMultibox_FollowMaster(message);
-
-			elseif(mode == "lpm_tradeaccept") then
-				if LPMULTIBOX.FA_TRADE then
-					Original_AcceptTrade();
-				end	
 			
 			elseif(mode == "lpm_sync") then
 				LazyPigMultibox_DataReceive(mode, message, sender)
@@ -492,6 +487,11 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 		
 		elseif(mode == "lpm_hide_menu" and (message == "" or message == "slave_only" and LazyPigMultibox_SlaveCheck())) then
 			LazyPigMultiboxOptionsFrame:Hide();	
+		
+		elseif(mode == "lpm_tradeaccept") then
+			if LPMULTIBOX.FA_TRADE then
+				Original_AcceptTrade();
+			end	
 		
 		elseif(mode == "lpm_unique_spell" and message == UnitClass("player") and LPMULTIBOX.UNIQUE_SPELL) then
 			LPMULTIBOX.UNIQUE_SPELL = nil
@@ -1843,8 +1843,8 @@ function LazyPigMultibox_CreateMacro()
 		Zorlen_MakeMacro("LPM PET ATTACK", "/script LazyPigMultibox_SPA(GetUnitName(\"player\"))", 1, "Spell_Nature_SpiritWolf", nil, 1, 1)
 		
 	elseif class == "Priest" then
-		Zorlen_MakeMacro("LPM SILENCE", "/script SpellStopCasting() Zorlen_castSpellByName(\"Silence\")--CastSpellByName(\"Silence\")", 1, "Spell_Shadow_ImpPhaseShift", nil, 1, 1)
-	
+		Zorlen_MakeMacro("LPM SILENCE", "/script SpellStopCasting() stopShoot() Zorlen_castSpellByName(\"Silence\")--CastSpellByName(\"Silence\")", 1, "Spell_Shadow_ImpPhaseShift", nil, 1, 1)
+		Zorlen_MakeMacro("LPM SCREAM", "/script SpellStopCasting() stopShoot() Zorlen_castSpellByName(\"Psychic Scream\")--CastSpellByName(\"Psychic Scream\")", 1, "Spell_Shadow_PsychicScream", nil, 1, 1)
 	end
 end
 

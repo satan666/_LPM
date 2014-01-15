@@ -23,10 +23,10 @@ function LazyPigMultibox_Warlock(dps, dps_pet, heal, rez, buff)
 		Warlock_PetSuffering();	
 	end
 	
-	if UnitAffectingCombat("player") and Zorlen_HealthPercent("player") < 15 and LazyPigMultibox_IsPetSpellKnown("Sacrifice") and not Zorlen_checkBuffByName("Sacrifice", "player") then
+	if UnitAffectingCombat("player") and Zorlen_HealthPercent("player") < 15 and LazyPigMultibox_IsPetSpellKnown("Sacrifice") and not Zorlen_checkBuffByName("Sacrifice", "player") and not Zorlen_checkBuffByName("Blessing of Protection", "player") then
 		zSacrifice();
 		LazyPigMultibox_Annouce("lpm_slaveannouce","Sacrifice");
-	end	
+	end
 	
 	if locked then
 		return true
@@ -65,8 +65,11 @@ function LazyPigMultibox_WarlockPet(pet)
 	function SummonMinion()
 		local check = Zorlen_IsSpellKnown("Summon "..pet) and (pet == "Imp" or Zorlen_GiveSoulShardCount() > 0) 
 		if check then
-			if Zorlen_castSpellByName("Fel Domination") then return end
-			CastSpellByName("Summon "..pet);
+			if Zorlen_castSpellByName("Fel Domination") then 
+				return 
+			elseif Zorlen_castSpellByName("Summon "..pet) then
+				return
+			end
 		end	
 	end
 	
@@ -77,11 +80,15 @@ function LazyPigMultibox_WarlockPet(pet)
 	if UnitHealth("pet") > 0 then
 		if not LazyPigMultibox_IsPetSpellOnActionBar("PET_ACTION_ATTACK") then
 			Zorlen_SetTimer(2, "LockPetSummon");
-			SummonMinion();	
+			SummonMinion();
+			return
+		elseif Zorlen_IsSpellKnown("Soul Link") and not Zorlen_checkBuffByName("Soul Link", "player") and Zorlen_castSpellByName("Soul Link") then
+			return
 		end	
 	else
 		Zorlen_SetTimer(2, "LockPetSummon");
 		SummonMinion();
+		return
 	end
 end
 

@@ -7,13 +7,13 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		return
 	end
 	
-	if rez then
+	if rez and not shadow_form then
 		if LazyPigMultibox_Rez() then
 			return
 		end
 	end
 	
-	if heal then
+	if heal and not shadow_form then
 		QuickHeal();
 	end
 	
@@ -27,7 +27,7 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 	elseif castInnerFire() then
 		return
 		
-	elseif UnitAffectingCombat("player") and (LazyPig_Raid() or LazyPig_Dungeon()) and Zorlen_isEnemyTargetingYou("target") and (Zorlen_checkCooldownByName("Fade") or Zorlen_checkCooldownByName("Power Word: Shield") or Zorlen_checkCooldownByName("Stoneform")) then 
+	elseif UnitAffectingCombat("player") and (Zorlen_isEnemyTargetingYou("target") or Zorlen_HealthPercent("player") < 50) and (LazyPig_Raid() or LazyPig_Dungeon() or Zorlen_HealthPercent("player") < 75) and (Zorlen_checkCooldownByName("Fade") or Zorlen_checkCooldownByName("Power Word: Shield") or Zorlen_checkCooldownByName("Stoneform")) then 
 		if Zorlen_isCasting() then 
 			SpellStopCasting();
 			return 
@@ -37,11 +37,7 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		elseif (Zorlen_castSpellByName("Fade") or castPowerWordShield() or CheckInteractDistance("target", 3) and Zorlen_castSpellByName("Stoneform")) then
 			return
 		end
-		
-	elseif UnitAffectingCombat("player") and (Zorlen_HealthPercent("player") < 50 or Zorlen_HealthPercent("player") < 75 and Zorlen_isEnemyTargetingYou("target")) and castPowerWordShield() then
-		return
 	end	
-
 	
 	if dps then
 		local plague_stack = Zorlen_GetDebuffStack("Spell_Shadow_BlackPlague", "target")
