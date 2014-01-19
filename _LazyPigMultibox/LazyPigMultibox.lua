@@ -1,5 +1,5 @@
 
-LPMULTIBOX = {FIRSTUSE = true, STATUS = true, FM_ALWAYS = true, FM_NOENEMYINDOORS = false, FM_NOENEMYOUTDOORS = false, FM_COMABTENDS = false, FM_SPELLFAIL = false, AM_FRIEND = false, AM_KEEPTARGET = false, AM_ENEMY = true, AM_ACTIVEENEMY = false, AM_ACTIVENPCENEMY = false, SM_SLAVELOST = true, SM_SPELLFAIL = true, SM_REDIRECT = true, FA_RELEASE = true, FA_TAXIPICKUP = true, FA_DISMOUNT = true, FA_TRADE = true, FA_QUESTSHARE = true, FA_LOGOUT = true, SCRIPT_HEAL = false, SCRIPT_REZ = false, SCRIPT_DPS = true, SCRIPT_DPSPET = false, UNIQUE_SPELL = nil, SCRIPT_BUFF = true, SCRIPT_SHIFT = false, SCRIPT_FASTHEAL = true, POP_GROUPMINI = true, POP_QUESTSHARE = true, POP_FFA = true}
+LPMULTIBOX = {FIRSTUSE = true, STATUS = true, FM_ALWAYS = true, FM_NOENEMYINDOORS = false, FM_NOENEMYOUTDOORS = false, FM_COMABTENDS = false, FM_SPELLFAIL = false, AM_FRIEND = false, AM_KEEPTARGET = false, AM_ENEMY = true, AM_ACTIVEENEMY = false, AM_ACTIVENPCENEMY = false, SM_SLAVELOST = true, SM_SPELLFAIL = true, SM_REDIRECT = true, FA_RELEASE = true, FA_TAXIPICKUP = true, FA_DISMOUNT = true, FA_TRADE = true, FA_QUESTSHARE = true, FA_LOGOUT = true, SCRIPT_HEAL = true, SCRIPT_REZ = false, SCRIPT_DPS = true, SCRIPT_DPSPET = false, UNIQUE_SPELL = nil, SCRIPT_BUFF = true, SCRIPT_SHIFT = false, SCRIPT_FASTHEAL = false, POP_GROUPMINI = true, POP_QUESTSHARE = true, POP_FFA = true}
 
 LPM_TARGET = {ACTIVE = nil, TOGGLE = nil}
 LPM_SCHEDULE = {}
@@ -757,6 +757,7 @@ function LazyPigMultibox_SetOption(num)
 		LPMULTIBOX.FM_NOENEMYOUTDOORS = nil
 		LPMULTIBOX.FM_COMABTENDS = nil
 		LPMULTIBOX.FM_SPELLFAIL = nil
+		LPMULTIBOX.SCRIPT_SHIFT = nil
 		if not checked then LPMULTIBOX.FM_ALWAYS = nil end
 		LazyPigMultiboxMenuObjects[01]:SetChecked(nil);
 		LazyPigMultiboxMenuObjects[02]:SetChecked(nil);
@@ -790,6 +791,7 @@ function LazyPigMultibox_SetOption(num)
 		
 	elseif num == 05 then
 		LPMULTIBOX.SCRIPT_SHIFT = true
+		LPMULTIBOX.FM_ALWAYS = nil
 		if not checked then LPMULTIBOX.SCRIPT_SHIFT = nil end
 		LazyPigMultiboxMenuObjects[00]:SetChecked(nil);	
 
@@ -1808,11 +1810,11 @@ function LazyPigMultibox_GroupLootFrame_OnShow()
 	if LPMULTIBOX.STATUS and LPMULTIBOX.POP_GROUPMINI and UnitIsPartyLeader("player") then
 		LazyPigMultiboxRoll:Show();
 	end	
-	Original_GroupLootFrame_OnShow()
+	Original_GroupLootFrame_OnShow();
 end
 
 function LazyPigMultibox_AcceptQuest()
-	local check = LazyPigMultibox_SlaveCheck()
+	local check = LazyPigMultibox_SlaveCheck() and not LazyPig_BG()
 	if LPMULTIBOX.STATUS and LPMULTIBOX.FA_QUESTSHARE and check then
 		AcceptQuest();
 	end	

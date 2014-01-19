@@ -9,11 +9,8 @@ Paladin Healer2(Conc or Retri Aura + BOW, BOL, BOS also talent improved judgemen
 http://www.wowprovider.com/?talent=11215875_2_80550302152135c5025103003t
 
 
-Priest DPS1(Master build)
-http://www.wowprovider.com/?talent=11215875_5_80552c133x532520100511250
-
-Priest DPS2(Slave build)
-http://www.wowprovider.com/?talent=11215875_5_80552c13y532520103511250
+Priest DPS1
+http://www.wowprovider.com/?talent=11215875_5_80552c13y532520102511251
 
 Warlock (Best Voidwalker support)
 http://www.wowprovider.com/?talent=11215875_9_845c2030102i5033015250105103p

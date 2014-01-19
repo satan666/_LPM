@@ -27,10 +27,7 @@ Using _LazyPig Multibox
 Some Info
 
 I made this addon for Feenix community and I hope you enjoy it, if you find this addon useful for you feel free to share your opinion or idea how to improve.
-I'm not active atm but my plans are to come back soon and crush Kel'Thuzad :D
 Some persons really apreciated my previous addons and asked me if they can support me by any way - You can do it by sending some gold to Ogrisch@Warsong 12x  ..thx
-
-DL Link http://www.mediafire.com/download/azbizzmn4yy9v6n/_LazyPigMultibox.zip
 
 Cheers.
 
@@ -61,17 +58,18 @@ more about Expert and Novice Mode - using_macros_part1.txt
 - check using_macros1.txt file for more info
 - examples available in _MyCustomFuntions.lua file
 
-4) optimized or added new spells for Paladin, Shaman and Warlock
-
-- Warlock(Drain Soul, Drain Life, Curse of Agony, Curse of Shadows(unique spell), Corruption, Siphon Life, Sacrifice, Suffering, Life Tap, Fel Domination)
+4) optimized or added new spells for Paladin, Priest, Shaman and Warlock
+- Warlock(Drain Soul, Drain Life, Curse of Agony, Curse of Shadows(unique spell), Corruption, Siphon Life, Sacrifice, Suffering, Life Tap, Fel Domination, Amplify Curse)
+- Priest(Mind Blast, Mind Fly, Shadow Word, Fade, Stoneform, Power Word: Shield)
 - Paladin(Judgement, Seal of wisdom(unique spell), Judgement of wisdom(unique spell), Flash of light, Divine Favor, Blessing of Protection, Divine Shield, Lay on Hands, Hammer of wrath)
 - Shaman(Mana Tide Totem, Nature's Swiftness, Lightning Bolt, Chain Lightning, Earth Shock)
 
-5) added new macros for Paladin and Warlock(remember to use macro create button in LPM GUI)
+5) added new macros for Paladin, Warlock, Priest(remember to use macro create button in LPM GUI)
 
 6) Introduced Unique Spell mechanism for certain classes(only one uinque option can be selected for each class in the group - multiple addon instances sync)
 - Paladin: casting judgement of wisdom - on enemies with health 4x > ours - bosses, hard elites etc..
 - Paladin: reverse resurrection - avoid resurrecting same player by other multiboxed healers in the group 
+- Priest: reverse resurrection
 - Shaman: reverse resurrection
 - Warlock: Curse of Shadow
 - Hunter: Hunter's Mark
