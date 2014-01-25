@@ -160,8 +160,10 @@ function LazyPigMultibox_WarlockDPS(curse)
 							return true
 						end	
 					end
-
-					castShadowBolt();
+					
+					if not Zorlen_isMoving() and (castImmolate() or castShadowBolt()) then
+						--
+					end
 
 				elseif not Zorlen_isMoving() and not Zorlen_IsTimer("DLOCK") and drainok and castDrainLife() then 
 					Zorlen_SetTimer(2, "DLOCK")
