@@ -6,7 +6,7 @@
 ## SavedVariablesPerCharacter: LPMULTIBOX
 ## Dependencies: _LazyPig, Zorlen, QuickHeal, SmartBuff
 
-LazyPigMultibox.xml
+LazyPigMultibox.lua
 LazyPigMultiboxMenu.lua
 LazyPigMultiboxRoll.xml
 LazyPigMultibox_Warlock.lua

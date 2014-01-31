@@ -1,5 +1,38 @@
 
-LPMULTIBOX = {FIRSTUSE = true, STATUS = true, FM_ALWAYS = true, FM_NOENEMYINDOORS = false, FM_NOENEMYOUTDOORS = false, FM_COMABTENDS = false, FM_SPELLFAIL = false, AM_FRIEND = false, AM_KEEPTARGET = false, AM_ENEMY = true, AM_ACTIVEENEMY = false, AM_ACTIVENPCENEMY = false, SM_SLAVELOST = true, SM_SPELLFAIL = true, SM_REDIRECT = true, FA_RELEASE = true, FA_TAXIPICKUP = true, FA_DISMOUNT = true, FA_TRADE = true, FA_QUESTSHARE = true, FA_LOGOUT = true, SCRIPT_HEAL = true, SCRIPT_REZ = false, SCRIPT_DPS = true, SCRIPT_DPSPET = false, UNIQUE_SPELL = nil, SCRIPT_BUFF = true, SCRIPT_SHIFT = false, SCRIPT_FASTHEAL = false, POP_GROUPMINI = true, POP_QUESTSHARE = true, POP_FFA = true}
+LPMULTIBOX = {
+	FIRSTUSE = true,
+	STATUS = true,
+	FM_ALWAYS = true,
+	FM_NOENEMYINDOORS = false,
+	FM_NOENEMYOUTDOORS = false,
+	FM_COMABTENDS = false,
+	FM_SPELLFAIL = false,
+	AM_FRIEND = false,
+	AM_KEEPTARGET = false,
+	AM_ENEMY = true,
+	AM_ACTIVEENEMY = false,
+	AM_ACTIVENPCENEMY = false,
+	SM_SLAVELOST = true,
+	SM_SPELLFAIL = true,
+	SM_REDIRECT = true,
+	FA_RELEASE = true,
+	FA_TAXIPICKUP = true,
+	FA_DISMOUNT = true,
+	FA_TRADE = true,
+	FA_QUESTSHARE = true,
+	FA_LOGOUT = true,
+	SCRIPT_HEAL = true,
+	SCRIPT_REZ = false,
+	SCRIPT_DPS = true,
+	SCRIPT_DPSPET = false,
+	UNIQUE_SPELL = nil,
+	SCRIPT_BUFF = true,
+	SCRIPT_SHIFT = false,
+	SCRIPT_FASTHEAL = false,
+	POP_GROUPMINI = true,
+	POP_QUESTSHARE = true,
+	POP_FFA = true
+}
 
 LPM_TARGET = {ACTIVE = nil, TOGGLE = nil}
 LPM_SCHEDULE = {}
@@ -10,13 +43,27 @@ LPM_INFO = {MODE = nil, CONNECT =  {}, QSHARE = nil}
 LPM_QUESTSHARE = {TITLE = nil, TIME}
 LPM_QUEST = {}
 
+-- Keybinds
 BINDING_HEADER_LPM_HEADER = "_LazyPigMultibox";
 BINDING_NAME_MULTIBOXMENU = "_LazyPig Multibox Menu";
 BINDING_NAME_MULTIBOXTARGET = "Smart Enemy Target";
 BINDING_NAME_MULTIBOXSCRIPT = "Multibox Macro";
 
-local debug_on = 0
+-- Printing and DebugPrinting functions
+local lpm_debug = false
 
+function LPM_DEBUG(text)
+	local header = "|cffCC2222[LPM] "
+	if lpm_debug then
+		DEFAULT_CHAT_FRAME:AddMessage(header .. "|cffffffff" .. text)
+	end
+end
+
+function LPM_STATUS(text)
+	DEFAULT_CHAT_FRAME:AddMessage("|cff00eeee_LazyPig Multibox: |cffffffff"..text)
+end
+
+-- Overloaded original functions
 local Original_TakeTaxiNode = TakeTaxiNode;
 local Original_RetrieveCorpse = RetrieveCorpse;
 local Original_ReloadUI = ReloadUI;
@@ -29,6 +76,19 @@ local Original_GroupLootFrame_OnShow = GroupLootFrame_OnShow;
 local Original_StaticPopup_OnShow = StaticPopup_OnShow;
 local Original_SMARTBUFF_AddMsgErr = SMARTBUFF_AddMsgErr;
 
+TakeTaxiNode = LazyPigMultibox_TakeTaxiNode;
+RetrieveCorpse = LazyPigMultibox_RetrieveCorpse;
+Logout = LazyPigMultibox_Logout;
+CancelLogout = LazyPigMultibox_CancelLogout;
+ReloadUI = LazyPigMultibox_ReloadUI;
+Stuck = LazyPigMultibox_Stuck;
+RepopMe = LazyPigMultibox_RepopMe;
+AcceptTrade = LazyPigMultibox_AcceptTrade;
+GroupLootFrame_OnShow = LazyPigMultibox_GroupLootFrame_OnShow;
+StaticPopup_OnShow = LazyPigMultibox_StaticPopup_OnShow;
+SMARTBUFF_AddMsgErr = LazyPigMultibox_SMARTBUFF_AddMsgErr
+
+-- Static Popups
 StaticPopupDialogs["LPM_QUESTSHARE"] = {
 text = "Share Quest ?",
 button1 = TEXT(ACCEPT),
@@ -40,17 +100,7 @@ timeout = 0,
 hideOnEscape = 1
 };
 
-local function lpm_print(...)
-	local str = ""
-	local lenght = table.getn(arg)
-	for i = 1, table.getn(arg), 1 do
-		if arg[i] then
-			str = str .. tostring(arg[i])
-		end
-	end
-	DEFAULT_CHAT_FRAME:AddMessage("|cff9922ff[LPM]|r ".. tostring(str))
-end
-
+-- Slash Commands
 function LazyPigMultibox_Command(cmd)
 	if cmd == "script" then
 		LazyPigMultibox_UseClassScript();
@@ -75,29 +125,24 @@ function LazyPigMultibox_Command(cmd)
 		end
 	end
 end
- 
-function LazyPigMultibox_OnLoad()
-	TakeTaxiNode = LazyPigMultibox_TakeTaxiNode;
-	RetrieveCorpse = LazyPigMultibox_RetrieveCorpse;
-	Logout = LazyPigMultibox_Logout;
-	CancelLogout = LazyPigMultibox_CancelLogout;
-	ReloadUI = LazyPigMultibox_ReloadUI;
-	Stuck = LazyPigMultibox_Stuck;
-	RepopMe = LazyPigMultibox_RepopMe;
-	AcceptTrade = LazyPigMultibox_AcceptTrade;
-	GroupLootFrame_OnShow = LazyPigMultibox_GroupLootFrame_OnShow;
-	StaticPopup_OnShow = LazyPigMultibox_StaticPopup_OnShow;
-	SMARTBUFF_AddMsgErr = LazyPigMultibox_SMARTBUFF_AddMsgErr
-	
-	SLASH_LAZYPIGMULTIBOX1 = "/lpm";
-	SlashCmdList["LAZYPIGMULTIBOX"] = LazyPigMultibox_Command;
-	
-	this:RegisterEvent("ADDON_LOADED");
-	--this:RegisterEvent("VARIABLES_LOADED");
-	this:RegisterEvent("PLAYER_LOGIN")
-	--this:RegisterEvent("PLAYER_ENTERING_WORLD")
-	--this:RegisterEvent("PLAYER_ALIVE")
-end
+
+SLASH_LAZYPIGMULTIBOX1 = "/lpm";
+SlashCmdList["LAZYPIGMULTIBOX"] = LazyPigMultibox_Command;
+
+-- Let's create the main-Frame. This is replacing LazyPigMultibox.xml
+LazyPigMultibox = CreateFrame("Frame", "LazyPigMultibox")
+LazyPigMultiboxAnnouceText = LazyPigMultibox:CreateFontString("LazyPigMultiboxAnnouceText", "ARTWORK")
+LazyPigMultiboxAnnouceText:SetFont("Fonts\\FRIZQT__.TTF", 20, "THICKOUTLINE")
+LazyPigMultiboxAnnouceText:SetWidth(512)
+LazyPigMultiboxAnnouceText:SetPoint("CENTER", 0, 290)
+
+LazyPigMultibox:RegisterEvent("ADDON_LOADED");
+LazyPigMultibox:RegisterEvent("PLAYER_LOGIN")
+--this:RegisterEvent("ADDON_LOADED");
+--this:RegisterEvent("VARIABLES_LOADED");
+--this:RegisterEvent("PLAYER_LOGIN")
+--this:RegisterEvent("PLAYER_ENTERING_WORLD")
+--this:RegisterEvent("PLAYER_ALIVE")
 
 function LazyPigMultibox_OnUpdate()
 	local time = GetTime()
@@ -158,7 +203,7 @@ function LazyPigMultibox_OnUpdate()
 	LazyPigMultibox_Message();
 end
 
-function LazyPigMultibox_OnEvent(event)
+function LazyPigMultibox_OnEvent()
 	if (event == "ADDON_LOADED") and (arg1 == "_LazyPigMultibox") then
 		local LPM_TITLE = GetAddOnMetadata("_LazyPigMultibox", "Title")
 		local LPM_VERSION = GetAddOnMetadata("_LazyPigMultibox", "Version")
@@ -167,17 +212,7 @@ function LazyPigMultibox_OnEvent(event)
 		--DEFAULT_CHAT_FRAME:AddMessage("_LazyPig Multibox v" .. LPM_VERSION .. " by Ogrisch loaded - type |cff00eeee".." /lpm".."|cffffffff for options")
 	elseif (event == "PLAYER_LOGIN") then
 		--this:UnregisterEvent("PLAYER_ENTERING_WORLD");
-		--[[
-		this:RegisterEvent("START_LOOT_ROLL");
-		this:RegisterEvent("CANCEL_LOOT_ROLL");
-		this:RegisterEvent("CHAT_MSG_LOOT");
-		this:RegisterEvent("CONFIRM_LOOT_ROLL");
-		this:RegisterEvent("LOOT_BIND_CONFIRM");
-		this:RegisterEvent("LOOT_ROLLS_COMPLETE");
-		this:RegisterEvent("INSTANCE_BOOT_START");
-		this:RegisterEvent("INSTANCE_BOOT_STOP");
-		]]
-
+		
 		this:RegisterEvent("PARTY_LEADER_CHANGED");
 		this:RegisterEvent("RAID_ROSTER_UPDATE");
 		this:RegisterEvent("PARTY_MEMBERS_CHANGED");
@@ -283,6 +318,9 @@ function LazyPigMultibox_OnEvent(event)
 	--LPM_DEBUG("LazyPigMultibox_OnEvent - "..event)
 end
 
+LazyPigMultibox:SetScript("OnEvent", LazyPigMultibox_OnEvent)
+LazyPigMultibox:SetScript("OnUpdate", LazyPigMultibox_OnUpdate)
+
 function LazyPigMultibox_CheckError(msg)
 	msg = string.gsub(msg,"([^}]-):(%s)","")
 	
@@ -332,16 +370,6 @@ function LazyPigMultibox_Message(show, sender, duration)
 			LazyPigMultiboxAnnouceText:Hide()
 		end
 	end
-end
-
-function LPM_DEBUG(text)
-	if debug_on == 1 then
-		DEFAULT_CHAT_FRAME:AddMessage("|cff00eeeeLPM Debug: |cffffffff"..text)
-	end
-end
-
-function LPM_STATUS(text)
-	DEFAULT_CHAT_FRAME:AddMessage("|cff00eeee_LazyPig Multibox: |cffffffff"..text)
 end
 
 function LazyPigMultibox_Annouce(mode, message, sender)
