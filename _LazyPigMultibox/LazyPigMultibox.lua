@@ -64,29 +64,102 @@ function LPM_STATUS(text)
 end
 
 -- Overloaded original functions
-local Original_TakeTaxiNode = TakeTaxiNode;
-local Original_RetrieveCorpse = RetrieveCorpse;
-local Original_ReloadUI = ReloadUI;
 local Original_Logout = Logout;
 local Original_CancelLogout = CancelLogout;
+local Original_ReloadUI = ReloadUI;
 local Original_Stuck = Stuck;
+local Original_TakeTaxiNode = TakeTaxiNode;
+local Original_RetrieveCorpse = RetrieveCorpse;
 local Original_RepopMe = RepopMe;
 local Original_AcceptTrade = AcceptTrade;
 local Original_GroupLootFrame_OnShow = GroupLootFrame_OnShow;
 local Original_StaticPopup_OnShow = StaticPopup_OnShow;
 local Original_SMARTBUFF_AddMsgErr = SMARTBUFF_AddMsgErr;
 
-TakeTaxiNode = LazyPigMultibox_TakeTaxiNode;
-RetrieveCorpse = LazyPigMultibox_RetrieveCorpse;
+function LazyPigMultibox_Logout()
+	LazyPigMultibox_Annouce("lpm_logout", "")
+	Original_Logout()
+end
 Logout = LazyPigMultibox_Logout;
+
+function LazyPigMultibox_CancelLogout()
+	if not IsShiftKeyDown() then LazyPigMultibox_Annouce("lpm_cancellogout", "") end
+	Original_CancelLogout()
+end
 CancelLogout = LazyPigMultibox_CancelLogout;
+
+function LazyPigMultibox_ReloadUI()
+	LazyPigMultibox_Annouce("lpm_reload", "")
+	Original_ReloadUI()
+end
 ReloadUI = LazyPigMultibox_ReloadUI;
+
+function LazyPigMultibox_Stuck()
+	LazyPigMultibox_Annouce("lpm_stuck", "")
+	Original_Stuck()
+end
 Stuck = LazyPigMultibox_Stuck;
+
+function LazyPigMultibox_TakeTaxiNode(index)
+	LazyPigMultibox_Annouce("lpm_taxiset", TaxiNodeName(index))
+	Original_TakeTaxiNode(index)
+end
+TakeTaxiNode = LazyPigMultibox_TakeTaxiNode;
+
+function LazyPigMultibox_RetrieveCorpse()
+	LazyPigMultibox_Annouce("lpm_resurect", "")
+	Original_RetrieveCorpse()
+end
+RetrieveCorpse = LazyPigMultibox_RetrieveCorpse;
+
+function LazyPigMultibox_RepopMe()
+	LazyPigMultibox_Annouce("lpm_repopme", "")
+	Original_RepopMe()
+end
 RepopMe = LazyPigMultibox_RepopMe;
+
+function LazyPigMultibox_AcceptTrade()
+	LazyPigMultibox_Annouce("lpm_tradeaccept", "")
+	Original_AcceptTrade()
+end
 AcceptTrade = LazyPigMultibox_AcceptTrade;
+
+function LazyPigMultibox_GroupLootFrame_OnShow()
+	if LPMULTIBOX.STATUS and LPMULTIBOX.POP_GROUPMINI and UnitIsPartyLeader("player") then
+		LazyPigMultiboxRoll:Show();
+	end	
+	Original_GroupLootFrame_OnShow();
+end
 GroupLootFrame_OnShow = LazyPigMultibox_GroupLootFrame_OnShow;
+
+function LazyPigMultibox_StaticPopup_OnShow()
+	--DEFAULT_CHAT_FRAME:AddMessage(this.which)
+	if LPMULTIBOX.STATUS and LPMULTIBOX.FA_QUESTSHARE and this.which == "QUEST_ACCEPT"  then
+		for i=1,STATICPOPUP_NUMDIALOGS do
+			local frame = getglobal("StaticPopup"..i)
+			if frame:IsShown() then
+				if frame.which == "QUEST_ACCEPT"  then
+					getglobal("StaticPopup"..i.."Button1"):Click();
+				end
+			end
+		end
+	else
+		Original_StaticPopup_OnShow()
+	end	
+end
 StaticPopup_OnShow = LazyPigMultibox_StaticPopup_OnShow;
+
+function LazyPigMultibox_SMARTBUFF_AddMsgErr(msg, force)
+	LazyPigMultibox_Annouce("lpm_slaveannouce", "SmartBuff - "..msg)
+	Original_SMARTBUFF_AddMsgErr(msg, force)
+end
 SMARTBUFF_AddMsgErr = LazyPigMultibox_SMARTBUFF_AddMsgErr
+
+--[[
+function LazyPigMultibox_UseAction(slot, checkCursor, onSelf)
+	Original_UseAction(slot, checkCursor, onSelf)
+end
+]]
 
 -- Static Popups
 StaticPopupDialogs["LPM_QUESTSHARE"] = {
@@ -135,7 +208,6 @@ LazyPigMultiboxAnnouceText = LazyPigMultibox:CreateFontString("LazyPigMultiboxAn
 LazyPigMultiboxAnnouceText:SetFont("Fonts\\FRIZQT__.TTF", 20, "THICKOUTLINE")
 LazyPigMultiboxAnnouceText:SetWidth(512)
 LazyPigMultiboxAnnouceText:SetPoint("CENTER", 0, 290)
-
 LazyPigMultibox:RegisterEvent("ADDON_LOADED");
 LazyPigMultibox:RegisterEvent("PLAYER_LOGIN")
 --this:RegisterEvent("ADDON_LOADED");
@@ -530,22 +602,6 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 	end
 end
 
- function LazyPigMultibox_StaticPopup_OnShow()
-	--DEFAULT_CHAT_FRAME:AddMessage(this.which)
-	if LPMULTIBOX.STATUS and LPMULTIBOX.FA_QUESTSHARE and this.which == "QUEST_ACCEPT"  then
-		for i=1,STATICPOPUP_NUMDIALOGS do
-			local frame = getglobal("StaticPopup"..i)
-			if frame:IsShown() then
-				if frame.which == "QUEST_ACCEPT"  then
-					getglobal("StaticPopup"..i.."Button1"):Click();
-				end
-			end
-		end
-	else
-		Original_StaticPopup_OnShow()
-	end	
- end
-
 function LazyPigMultibox_Schedule(task, duration)
 	local val = nil
 	if task then
@@ -649,50 +705,6 @@ function LazyPigMultibox_GetCooldownByName(SpellName)
 		return nil
 	end
 	return 0
-end
-
-function LazyPigMultibox_ReloadUI()
-	LazyPigMultibox_Annouce("lpm_reload", "")
-	Original_ReloadUI()
-end
-
-function LazyPigMultibox_Stuck()
-	LazyPigMultibox_Annouce("lpm_stuck", "")
-	Original_Stuck()
-end
-
-function LazyPigMultibox_RepopMe()
-	LazyPigMultibox_Annouce("lpm_repopme", "")
-	Original_RepopMe()
-end
-
-function LazyPigMultibox_Logout()
-	LazyPigMultibox_Annouce("lpm_logout", "")
-	Original_Logout()
-end
-
-function LazyPigMultibox_CancelLogout()
-	if not IsShiftKeyDown() then LazyPigMultibox_Annouce("lpm_cancellogout", "") end
-	Original_CancelLogout()
-end
-
-function LazyPigMultibox_TakeTaxiNode(index)
-	LazyPigMultibox_Annouce("lpm_taxiset", TaxiNodeName(index))
-	Original_TakeTaxiNode(index)
-end
-
-function LazyPigMultibox_RetrieveCorpse()
-	LazyPigMultibox_Annouce("lpm_resurect", "")
-	Original_RetrieveCorpse()
-end
-
-function LazyPigMultibox_UseAction(slot, checkCursor, onSelf)
-	Original_UseAction(slot, checkCursor, onSelf)
-end
-
-function LazyPigMultibox_AcceptTrade()
-	LazyPigMultibox_Annouce("lpm_tradeaccept", "")
-	Original_AcceptTrade()
 end
 
 local LazyPigMultiboxMenuObjects = {}
@@ -1797,13 +1809,6 @@ function LazyPigMultibox_ConfirmLoot()
 	end
 end
 
-function LazyPigMultibox_GroupLootFrame_OnShow()
-	if LPMULTIBOX.STATUS and LPMULTIBOX.POP_GROUPMINI and UnitIsPartyLeader("player") then
-		LazyPigMultiboxRoll:Show();
-	end	
-	Original_GroupLootFrame_OnShow();
-end
-
 function LazyPigMultibox_AcceptQuest()
 	local check = LazyPigMultibox_SlaveCheck() and not LazyPig_BG()
 	if LPMULTIBOX.STATUS and LPMULTIBOX.FA_QUESTSHARE and check then
@@ -2223,11 +2228,6 @@ function LazyPigMultibox_SetIcon(index, unit)
 		--7 = Red "X" Cross 
 		--8 = White Skull 
 	end	
-end
-
-function LazyPigMultibox_SMARTBUFF_AddMsgErr(msg, force)
-	LazyPigMultibox_Annouce("lpm_slaveannouce", "SmartBuff - "..msg)
-	Original_SMARTBUFF_AddMsgErr(msg, force)
 end
 
 function LazyPigMultibox_TargetUnit(u)
