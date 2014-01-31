@@ -696,44 +696,8 @@ function LazyPigMultibox_AcceptTrade()
 end
 
 local LazyPigMultiboxMenuObjects = {}
-local LazyPigMultiboxMenuStrings = {
-		[00]= "Always",
-		[01]= "No Enemy Target - Indoor",
-		[02]= "No Enemy Target - Outdoor",
-		[03]= "Combat End",
-		[04]= "Spell Fail",
-		[05]= "Master Shift Press",
-		[10]= "Friend",
-		[11]= "Improved Targeting",
-		[12]= "Enemy",
-		[13]= "Active Enemy Only",
-		[14]= "Active NPC Enemy Only",
-		[20]= "Release Spirit/Resurrection",
-		[21]= "Taxi Pickup",
-		[22]= "Dismount Control",
-		[23]= "Quest Accept",
-		[24]= "Trade Accept",
-		[25]= "Logout/Cancel Logout",
-		[30]= "Slave Lost",
-		[31]= "Slave Spell Fail",
-		[32]= "Whisper Redirect",
-		[40]= "DPS"	,
-		[41]= "DPS + Pet",
-		[42]= "Heal - Normal",
-		[43]= "Quick Rez",
-		[44]= "Unique Spell",
-		[45]= "Fast Heal",
-		[46]= "Smart Buff",
-		[50]= "Group Roll Manager",
-		[51]= "Group Quest Share",
-		[52]= "Set Free-for-All at Start"
-		
-}
 
 function LazyPigMultibox_GetOption(num)
-	local labelString = getglobal(this:GetName().."Text");
-	local label = LazyPigMultiboxMenuStrings[num] or "";
-	
 	LazyPigMultiboxMenuObjects[num] = this
 
 	if num == 00 and LPMULTIBOX.FM_ALWAYS
@@ -771,7 +735,6 @@ function LazyPigMultibox_GetOption(num)
 	else
 		this:SetChecked(nil);
 	end
-	labelString:SetText(label);
 end
 
 function LazyPigMultibox_SetOption(num)

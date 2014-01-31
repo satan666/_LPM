@@ -97,12 +97,17 @@ local function CheckBoxGroup(hParent, offsetX, offsetY, sTitle, tCheck)
 
 	for k,v in ipairs(tCheck) do
 		local cb = CreateFrame("CheckButton", v[1], frame, "UICheckButtonTemplate")
+		local cb_fs = getglobal(cb:GetName().."Text")
 		cb:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 8, -(4+(k-1)*14))
 		cb:SetWidth(16)
 		cb:SetHeight(16)
 		
-		if v[2] then cb.tooltipTitle = v[2]; end
-		if v[3] then cb.tooltipText = v[3]; end
+
+		if v[2] then 
+			cb.tooltipTitle = v[2]
+			cb_fs:SetText(cb.tooltipTitle)
+		end
+		if v[3] then cb.tooltipText = v[3] end
 
 		local num = tonumber(string.sub(v[1], string.find(v[1], "%d+")))
 
