@@ -186,13 +186,10 @@ function LazyPigMultibox_Command(cmd)
 			LazyPigMultiboxRoll:Show();
 		end
 	else
-		--if LazyPigMultiboxOptions:IsShown() then
 		if LPM_OptionsFrame:IsShown() then
-			--LazyPigMultiboxOptions:Hide();
 			LPM_xOptionsFrame:Hide();
 			LazyPigMultibox_Annouce("lpm_hide_menu", "");
 		else
-			--LazyPigMultiboxOptions:Show();
 			LPM_OptionsFrame:Show();
 			LazyPigMultibox_Annouce("lpm_show_menu", "");
 		end
@@ -1021,8 +1018,8 @@ function LazyPigMultibox_MenuSet()
 			"LPM_CheckButton51",
 			"LPM_CheckButton52",
 			--"LazyMultiboxMacro",
-			"LPM_OptionFrame_SyncButton",
-			"LPM_OptionFrame_SyncButtonExt", --commodity "frame" to gray out the external fontstring
+			"LPM_OptionsFrame_SyncButton",
+			"LPM_OptionsFrame_SyncButtonExt", --commodity "frame" to gray out the external fontstring
 			--"LazyMultiboxQHCFG",
 			--"LazyMultiboxLPCFG"
 		}
@@ -1042,18 +1039,18 @@ function LazyPigMultibox_MenuSet()
 		Buttons2(true);
 		Buttons3(true);
 		--getglobal("LazyPigMultiboxEnable"):SetText("Disable Multiboxing");
-		getglobal("LPM_OptionFrame_EnableCheckButton"):SetChecked(true)
-		getglobal("LPM_OptionFrame_EnableCheckButtonText"):SetText("Multibox Enabled")
+		getglobal("LPM_OptionsFrame_EnableCheckButton"):SetChecked(true)
+		getglobal("LPM_OptionsFrame_EnableCheckButtonText"):SetText("Multibox Enabled")
 		if leader then
 			Buttons1(true);
-			getglobal("LPM_OptionFrame_SyncButtonExtText"):SetText("Upload Settings");
+			getglobal("LPM_OptionsFrame_SyncButtonExtText"):SetText("Upload Settings");
 			--getglobal("LazyPigMultiboxFrameTitleText"):SetText("_LazyPig Multibox - Master");
 			getglobal("LPM_OptionsFrame_TitleText"):SetText("_LazyPig Multibox - Master");
 			getglobal("LPM_GroupMakeLeader"):Disable();
 
 		else
 			Buttons1(nil);
-			getglobal("LPM_OptionFrame_SyncButtonExtText"):SetText("Request Settings");
+			getglobal("LPM_OptionsFrame_SyncButtonExtText"):SetText("Request Settings");
 			--getglobal("LazyPigMultiboxFrameTitleText"):SetText("_LazyPig Multibox - Slave");
 			getglobal("LPM_OptionsFrame_TitleText"):SetText("_LazyPig Multibox - Slave");
 			getglobal("LPM_GroupMakeLeader"):Enable();
@@ -1064,8 +1061,8 @@ function LazyPigMultibox_MenuSet()
 		Buttons2(nil);
 		Buttons3(nil);	
 		--getglobal("LazyPigMultiboxEnable"):SetText("Enable Multiboxing");
-		getglobal("LPM_OptionFrame_EnableCheckButton"):SetChecked(false)
-		getglobal("LPM_OptionFrame_EnableCheckButtonText"):SetText("Multibox Disabled")
+		getglobal("LPM_OptionsFrame_EnableCheckButton"):SetChecked(false)
+		getglobal("LPM_OptionsFrame_EnableCheckButtonText"):SetText("Multibox Disabled")
 	end
 	
 	--getglobal("LazyPigMultiboxText4"):SetText("Use PreDefined Class Script");
@@ -1086,8 +1083,8 @@ function LazyPigMultibox_MenuSet()
 		getglobal("LPM_CheckButton42Text"):SetTextColor(.5, .5, .5)
 		getglobal("LPM_CheckButton43Text"):SetTextColor(.5, .5, .5)
 		getglobal("LPM_CheckButton45Text"):SetTextColor(.5, .5, .5)
-		getglobal("LPM_OptionFrame_QHCFGButton"):Disable();
-		getglobal("LPM_OptionFrame_QHCFGButtonExtText"):SetTextColor(.5, .5, .5)
+		getglobal("LPM_OptionsFrame_QHCFGButton"):Disable();
+		getglobal("LPM_OptionsFrame_QHCFGButtonExtText"):SetTextColor(.5, .5, .5)
 	end
 	if class == "Druid" then
 		LPMULTIBOX.SCRIPT_REZ = nil

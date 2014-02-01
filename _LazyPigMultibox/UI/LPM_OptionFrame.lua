@@ -202,8 +202,8 @@ local function ButtonGroup(hParent, offsetX, offsetY, sTitle, tCheck, bLongButto
 	return frame
 end
 
-local function CreateRollFrameOptionFrame(hParent)
-	-- RollFrame Option Frame
+local function CreateRollFrameOptionsFrame(hParent)
+	-- RollFrame Options Frame
 	local frame = CreateFrame("Frame", "LPM_RollFrame_OptionsFrame")
 	frame:SetScale(.81)
 
@@ -241,9 +241,9 @@ local function CreateRollFrameOptionFrame(hParent)
 	frame.fs_title = fs_title
 
 	-- Lock the RollFrame
-	local cb_lock = CreateFrame("CheckButton", "LPM_RollFrame_OptionFrame_LockCheckButton", frame)
+	local cb_lock = CreateFrame("CheckButton", "LPM_RollFrame_OptionsFrame_LockCheckButton", frame)
 	cb_lock:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, -25)
-	local cbfs_lock = cb_lock:CreateFontString("LPM_RollFrame_OptionFrame_LockCheckButtonText", "ARTWORK", "GameFontNormalSmall")
+	local cbfs_lock = cb_lock:CreateFontString("LPM_RollFrame_OptionsFrame_LockCheckButtonText", "ARTWORK", "GameFontNormalSmall")
 	cbfs_lock:SetPoint("LEFT", cb_lock, "RIGHT", 7, 0)
 	cbfs_lock:SetText("Lock RollFrame")
 	cb_lock:SetWidth(20)
@@ -337,8 +337,8 @@ local function CreateRollFrameOptionFrame(hParent)
 	return frame
 end
 
-local function CreateTeamFrameOptionFrame(hParent)
-	-- RollFrame Option Frame
+local function CreateTeamFrameOptionsFrame(hParent)
+	-- RollFrame Options Frame
 	local frame = CreateFrame("Frame", "LPM_TeamFrame_OptionsFrame")
 	frame:SetScale(.81)
 
@@ -376,9 +376,9 @@ local function CreateTeamFrameOptionFrame(hParent)
 	frame.fs_title = fs_title
 	
 	-- Lock the TeamFrame
-	local cb_lock = CreateFrame("CheckButton", "LPM_TeamFrame_OptionFrame_LockCheckButton", frame)
+	local cb_lock = CreateFrame("CheckButton", "LPM_TeamFrame_OptionsFrame_LockCheckButton", frame)
 	cb_lock:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, -25)
-	local cbfs_lock = cb_lock:CreateFontString("LPM_TeamFrame_OptionFrame_LockCheckButtonText", "ARTWORK", "GameFontNormalSmall")
+	local cbfs_lock = cb_lock:CreateFontString("LPM_TeamFrame_OptionsFrame_LockCheckButtonText", "ARTWORK", "GameFontNormalSmall")
 	cbfs_lock:SetPoint("LEFT", cb_lock, "RIGHT", 7, 0)
 	cbfs_lock:SetText("Lock TeamFrame")
 	cb_lock:SetWidth(20)
@@ -431,9 +431,9 @@ local function CreateTeamFrameOptionFrame(hParent)
 	end)
 
 	-- Show the TeamFrame
-	local cb_show = CreateFrame("CheckButton", "LPM_TeamFrame_OptionFrame_ShowCheckButton", frame)
+	local cb_show = CreateFrame("CheckButton", "LPM_TeamFrame_OptionsFrame_ShowCheckButton", frame)
 	cb_show:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, -45)
-	local cbfs_show = cb_show:CreateFontString("LPM_TeamFrame_OptionFrame_ShowCheckButtonText", "ARTWORK", "GameFontNormalSmall")
+	local cbfs_show = cb_show:CreateFontString("LPM_TeamFrame_OptionsFrame_ShowCheckButtonText", "ARTWORK", "GameFontNormalSmall")
 	cbfs_show:SetPoint("LEFT", cb_show, "RIGHT", 7, 0)
 	cbfs_show:SetText("Show TeamFrame")
 	cb_show:SetWidth(20)
@@ -608,7 +608,7 @@ function LPM_CreateOptionsFrame()
 	frame:SetClampedToScreen(false)
 	frame:RegisterForDrag("LeftButton")
 	
-	tinsert(UISpecialFrames,"LPM_OptionFrame")
+	tinsert(UISpecialFrames,"LPM_OptionsFrame")
 
 	frame:Hide()
 
@@ -649,9 +649,9 @@ function LPM_CreateOptionsFrame()
 	--
 
 	-- Enable Multiboxing CheckButton
-	local cb_toggle = CreateFrame("CheckButton", "LPM_OptionFrame_EnableCheckButton", frame)
+	local cb_toggle = CreateFrame("CheckButton", "LPM_OptionsFrame_EnableCheckButton", frame)
 	cb_toggle:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, -25)
-	local cbfs_toggle = cb_toggle:CreateFontString("LPM_OptionFrame_EnableCheckButtonText", "ARTWORK", "GameFontNormalSmall")
+	local cbfs_toggle = cb_toggle:CreateFontString("LPM_OptionsFrame_EnableCheckButtonText", "ARTWORK", "GameFontNormalSmall")
 	cbfs_toggle:SetPoint("LEFT", cb_toggle, "RIGHT", 7, 0)
 	cbfs_toggle:SetText("Multibox Enabled")
 	cb_toggle:SetWidth(20)
@@ -688,9 +688,9 @@ function LPM_CreateOptionsFrame()
 	end)
 
 	-- Macro Creation Button
-	local btn_macro = CreateFrame("Button", "LPM_OptionFrame_MacroButton", frame, "GameMenuButtonTemplate")
+	local btn_macro = CreateFrame("Button", "LPM_OptionsFrame_MacroButton", frame, "GameMenuButtonTemplate")
 	btn_macro:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -45)
-	local btnfs_macro = btn_macro:CreateFontString("LPM_OptionFrame_MacroButtonExtText", "ARTWORK", "GameFontNormalSmall")
+	local btnfs_macro = btn_macro:CreateFontString("LPM_OptionsFrame_MacroButtonExtText", "ARTWORK", "GameFontNormalSmall")
 	btnfs_macro:SetPoint("LEFT", btn_macro, "RIGHT", 5, 0)
 	btnfs_macro:SetText("Create Macros")
 	btn_macro:SetWidth(28)
@@ -705,9 +705,9 @@ function LPM_CreateOptionsFrame()
 	end)
 
 	-- Sync Settings Button
-	local btn_sync = CreateFrame("Button", "LPM_OptionFrame_SyncButton", frame, "GameMenuButtonTemplate")
+	local btn_sync = CreateFrame("Button", "LPM_OptionsFrame_SyncButton", frame, "GameMenuButtonTemplate")
 	btn_sync:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -65)
-	local btnfs_sync = btn_sync:CreateFontString("LPM_OptionFrame_SyncButtonExtText", "ARTWORK", "GameFontNormalSmall")
+	local btnfs_sync = btn_sync:CreateFontString("LPM_OptionsFrame_SyncButtonExtText", "ARTWORK", "GameFontNormalSmall")
 	btnfs_sync:SetPoint("LEFT", btn_sync, "RIGHT", 5, 0)
 	btnfs_sync:SetText("Sync Settings")	
 	btn_sync:SetWidth(28)
@@ -722,9 +722,9 @@ function LPM_CreateOptionsFrame()
 	end)
 
 	-- QuickHeal Settings Button
-	local btn_qhcfg = CreateFrame("Button", "LPM_OptionFrame_QHCFGButton", frame, "GameMenuButtonTemplate")
+	local btn_qhcfg = CreateFrame("Button", "LPM_OptionsFrame_QHCFGButton", frame, "GameMenuButtonTemplate")
 	btn_qhcfg:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -20, -45)
-	local btnfs_qhcfg = btn_qhcfg:CreateFontString("LPM_OptionFrame_QHCFGButtonExtText", "ARTWORK", "GameFontNormalSmall")
+	local btnfs_qhcfg = btn_qhcfg:CreateFontString("LPM_OptionsFrame_QHCFGButtonExtText", "ARTWORK", "GameFontNormalSmall")
 	btnfs_qhcfg:SetPoint("RIGHT", btn_qhcfg, "LEFT", -5, 0)
 	btnfs_qhcfg:SetText("QuickHeal Settings")
 	btn_qhcfg:SetWidth(28)
@@ -739,9 +739,9 @@ function LPM_CreateOptionsFrame()
 	end)
 
 	-- SmartBuff Settings Button
-	local btn_sbcfg = CreateFrame("Button", "LPM_OptionFrame_SBCFGButton", frame, "GameMenuButtonTemplate")
+	local btn_sbcfg = CreateFrame("Button", "LPM_OptionsFrame_SBCFGButton", frame, "GameMenuButtonTemplate")
 	btn_sbcfg:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -20, -65)
-	local btnfs_sbcfg = btn_sbcfg:CreateFontString("LPM_OptionFrame_SBCFGButtonExtText", "ARTWORK", "GameFontNormalSmall")
+	local btnfs_sbcfg = btn_sbcfg:CreateFontString("LPM_OptionsFrame_SBCFGButtonExtText", "ARTWORK", "GameFontNormalSmall")
 	btnfs_sbcfg:SetPoint("RIGHT", btn_sbcfg, "LEFT", -5, 0)
 	btnfs_sbcfg:SetText("SmartBuff Settings")
 	btn_sbcfg:SetWidth(28)
@@ -757,7 +757,7 @@ function LPM_CreateOptionsFrame()
 
 
 	-- Close Setting Window Button
-	local btn_close = CreateFrame("Button", "LPM_OptionFrame_Close", frame, "UIPanelCloseButton")
+	local btn_close = CreateFrame("Button", "LPM_OptionsFrame_Close", frame, "UIPanelCloseButton")
 	btn_close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, -12)
 	btn_close:SetWidth(32)
 	btn_close:SetHeight(32)
@@ -774,7 +774,7 @@ function LPM_CreateOptionsFrame()
 	end)
 
 
-	local btn_roll = CreateFrame("Button", "LPM_OptionFrame_RollFrame_Button", frame, "UIPanelButtonTemplate")
+	local btn_roll = CreateFrame("Button", "LPM_OptionsFrame_RollFrame_Button", frame, "UIPanelButtonTemplate")
 	btn_roll:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -115, -20)
 	btn_roll:SetWidth(72)
 	btn_roll:SetHeight(16)
@@ -793,7 +793,7 @@ function LPM_CreateOptionsFrame()
 	end)
 
 	
-	local btn_team = CreateFrame("Button", "LPM_OptionFrame_TeamFrame_Button", frame, "UIPanelButtonTemplate")
+	local btn_team = CreateFrame("Button", "LPM_OptionsFrame_TeamFrame_Button", frame, "UIPanelButtonTemplate")
 	btn_team:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -42, -20)
 	btn_team:SetWidth(72)
 	btn_team:SetHeight(16)
@@ -845,8 +845,8 @@ function LPM_CreateOptionsFrame()
 	--ButtonGroup(frame, 20, -240, str, ButtonTables[str], false)
 	frame.btngroup_management = ButtonGroup(frame, 450, -100, str, ButtonTables[str], true)
 
-	frame.rollframeoption = CreateRollFrameOptionFrame(frame)
-	frame.teamframeoption = CreateTeamFrameOptionFrame(frame)
+	frame.rollframeoption = CreateRollFrameOptionsFrame(frame)
+	frame.teamframeoption = CreateTeamFrameOptionsFrame(frame)
 
 	return frame
 
