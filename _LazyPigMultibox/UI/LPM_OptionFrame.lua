@@ -1,3 +1,15 @@
+
+LPMULTIBOX_UI = {
+	TF_LOCK = false,
+	TF_SHOW = true,
+	TF_SCALE = 1.00,
+	TF_PADDING = 3,
+	TF_BACKGROUNDALPHA = 0.37,
+	LF_LOCK = true,
+	LF_SCALE = 1.00,
+}
+
+
 local CheckButtonTables = {
 	["Follow Master"] = {
 		[0] = "LPM_CheckButtonGroupMasterFollow",
@@ -242,6 +254,12 @@ local function CreateRollFrameOptionFrame(hParent)
 	cb_lock:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	--cb_toggle:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
+	if LPMULTIBOX_UI.LF_LOCK then
+		cb_lock:SetChecked(true)
+	else
+		cb_lock:SetChecked(false)
+	end
+
 	cb_lock.tooltipTitle = "RollFrame"
 	cb_lock.tooltipText = "Check this to lock the RollFrame"
 	
@@ -249,7 +267,17 @@ local function CreateRollFrameOptionFrame(hParent)
 	frame.cbfs_lock = cbfs_lock
 
 	frame.cb_lock:SetScript("OnClick", function()
-		--
+		local status = this:GetChecked()
+		local frame = getglobal("LPM_RollFrame")
+		if status then
+			frame:SetMovable(false)
+			frame:RegisterForDrag()
+			LPMULTIBOX_UI.LF_LOCK = true
+		else
+			frame:SetMovable(true)
+			frame:RegisterForDrag("LeftButton")
+			LPMULTIBOX_UI.LF_LOCK = false
+		end
 	end)
 	frame.cb_lock:SetScript("OnEnter", function()
 		if this.tooltipText then
@@ -291,15 +319,17 @@ local function CreateRollFrameOptionFrame(hParent)
 	sl_scale:SetMinMaxValues(25, 100) 
 	sl_scale:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_scale:SetValue(100)
+	sl_scale:SetValue(LPMULTIBOX_UI.LF_SCALE * 100)
 	getglobal(sl_scale:GetName() .. "Text"):SetText(string.format("%4.2f", tostring(sl_scale:GetValue()/100)))
 	getglobal(sl_scale:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_scale:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
 
 	sl_scale:SetScript("OnValueChanged", function(self, value)
-		--local rollframe = getglobal("LPM_TeamFrame")
-		--rollframe:SetScale(value/100)
-		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(this:GetValue()/100)))
+		local value = this:GetValue()
+		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(value/100)))
+		local frame = getglobal("LPM_LootFrame")
+		frame:SetScale(value/100)
+		LPMULTIBOX_UI.LF_SCALE = value/100
 	end)
 
 	frame:Hide()
@@ -359,6 +389,12 @@ local function CreateTeamFrameOptionFrame(hParent)
 	cb_lock:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	--cb_toggle:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
+	if LPMULTIBOX_UI.TF_LOCK then
+		cb_lock:SetChecked(true)
+	else
+		cb_lock:SetChecked(false)
+	end
+
 	cb_lock.tooltipTitle = "TeamFrame"
 	cb_lock.tooltipText = "Check this to lock the TeamFrame"
 	
@@ -366,7 +402,17 @@ local function CreateTeamFrameOptionFrame(hParent)
 	frame.cbfs_lock = cbfs_lock
 
 	frame.cb_lock:SetScript("OnClick", function()
-		--
+		local status = this:GetChecked()
+		local frame = getglobal("LPM_TeamFrame")
+		if status then
+			frame:SetMovable(false)
+			frame:RegisterForDrag()
+			LPMULTIBOX_UI.TF_LOCK = true
+		else
+			frame:SetMovable(true)
+			frame:RegisterForDrag("LeftButton")
+			LPMULTIBOX_UI.TF_LOCK = false
+		end
 	end)
 	frame.cb_lock:SetScript("OnEnter", function()
 		if this.tooltipText then
@@ -398,6 +444,12 @@ local function CreateTeamFrameOptionFrame(hParent)
 	cb_show:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	--cb_toggle:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
+	if LPMULTIBOX_UI.TF_SHOW then
+		cb_show:SetChecked(true)
+	else
+		cb_show:SetChecked(false)
+	end
+	
 	cb_show.tooltipTitle = "TeamFrame"
 	cb_show.tooltipText = "Check this to show the TeamFrame"
 	
@@ -405,7 +457,15 @@ local function CreateTeamFrameOptionFrame(hParent)
 	frame.cbfs_show = cbfs_show
 
 	frame.cb_show:SetScript("OnClick", function()
-		--
+		local status = this:GetChecked()
+		local frame = getglobal("LPM_TeamFrame")
+		if status then
+			frame:Show()
+			LPMULTIBOX_UI.TF_SHOW = true
+		else
+			frame:Hide()
+			LPMULTIBOX_UI.TF_FALSE = true
+		end
 	end)
 	frame.cb_show:SetScript("OnEnter", function()
 		if this.tooltipText then
@@ -442,22 +502,23 @@ local function CreateTeamFrameOptionFrame(hParent)
 	sl_scale:SetHeight(15)
 	sl_scale:SetOrientation("HORIZONTAL")
 	sl_scale.tooltipText = "Set the TeamFrame scale."
-	getglobal(sl_scale:GetName() .. "Low"):SetText("0.25")
-	getglobal(sl_scale:GetName() .. "High"):SetText("1.00")
-	sl_scale:SetMinMaxValues(25, 100) 
+	getglobal(sl_scale:GetName() .. "Low"):SetText("0.50")
+	getglobal(sl_scale:GetName() .. "High"):SetText("1.50")
+	sl_scale:SetMinMaxValues(50, 150) 
 	sl_scale:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_scale:SetValue(100)
+	sl_scale:SetValue(LPMULTIBOX_UI.TF_SCALE * 100)
 	getglobal(sl_scale:GetName() .. "Text"):SetText(string.format("%4.2f", tostring(sl_scale:GetValue()/100)))
 	getglobal(sl_scale:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_scale:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
 
-	sl_scale:SetScript("OnValueChanged", function(self, value)
-		--local rollframe = getglobal("LPM_TeamFrame")
-		--rollframe:SetScale(value/100)
-		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(this:GetValue()/100)))
+	sl_scale:SetScript("OnValueChanged", function()
+		local value = this:GetValue()
+		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(value/100)))
+		local frame = getglobal("LPM_TeamFrame")
+		frame:SetScale(value/100)
+		LPMULTIBOX_UI.TF_SCALE = value/100
 	end)
-	--sl_scale:Enable()
 
 	local fs_padding = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
 	fs_padding:SetPoint("TOPLEFT", fs_scale, "BOTTOMLEFT", 0, -30)
@@ -475,15 +536,15 @@ local function CreateTeamFrameOptionFrame(hParent)
 	sl_padding:SetMinMaxValues(0, 50) 
 	sl_padding:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_padding:SetValue(3)
+	sl_padding:SetValue(LPMULTIBOX_UI.TF_PADDING)
 	getglobal(sl_padding:GetName() .. "Text"):SetText(tostring(sl_padding:GetValue()))
 	getglobal(sl_padding:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_padding:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
 
-	sl_padding:SetScript("OnValueChanged", function(self, value)
-		--local rollframe = getglobal("LPM_TeamFrame")
-		--rollframe:SetScale(value/100)
-		getglobal(this:GetName().."Text"):SetText(tostring(this:GetValue()))
+	sl_padding:SetScript("OnValueChanged", function()
+		local value = this:GetValue()
+		getglobal(this:GetName().."Text"):SetText(tostring(value))
+		LPMULTIBOX_UI.TF_PADDING = value
 	end)
 
 	local fs_backgroundalpha = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
@@ -502,15 +563,18 @@ local function CreateTeamFrameOptionFrame(hParent)
 	sl_backgroundalpha:SetMinMaxValues(0, 100) 
 	sl_backgroundalpha:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_backgroundalpha:SetValue(71)
+	sl_backgroundalpha:SetValue(LPMULTIBOX_UI.TF_BACKGROUNDALPHA * 100)
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetText(string.format("%4.2f", tostring(sl_backgroundalpha:GetValue()/100)))
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
 
 	sl_backgroundalpha:SetScript("OnValueChanged", function(self, value)
-		--local rollframe = getglobal("LPM_TeamFrame")
-		--rollframe:SetScale(value/100)
-		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(this:GetValue()/100)))
+		local value = this:GetValue()
+		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(value/100)))
+		local frame = getglobal("LPM_TeamFrame")
+		frame:SetBackdropColor(.01, .01, .01, value/100)
+		frame.fs_title:SetTextColor(1, 1, 1, value/100)
+		LPMULTIBOX_UI.TF_BACKGROUNDALPHA = value/100
 	end)
 
 	frame:Hide()
@@ -539,9 +603,13 @@ function LPM_CreateOptionsFrame()
 
 	frame:SetMovable(true)
 	frame:EnableMouse(true)
+	frame:SetUserPlaced(true)
+
 	frame:SetClampedToScreen(false)
 	frame:RegisterForDrag("LeftButton")
-	--frame.showthis = false
+	
+	tinsert(UISpecialFrames,"LPM_OptionFrame")
+
 	frame:Hide()
 
 	frame:SetScript("OnMouseDown", function()

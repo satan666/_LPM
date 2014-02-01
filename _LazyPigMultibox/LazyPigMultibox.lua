@@ -303,6 +303,7 @@ function LazyPigMultibox_OnEvent()
 		this:RegisterEvent("CHAT_MSG_SYSTEM");
 		
 		LPM_OptionsFrame = LPM_CreateOptionsFrame()
+		LPM_TeamFrame = LPM_CreateTeamFrame()
 
 		LazyPigMultibox_MenuSet();
 		LazyPigMultibox_ShowMode(true);

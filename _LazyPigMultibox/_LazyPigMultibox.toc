@@ -3,11 +3,14 @@
 ## Version: 2.00
 ## Notes: Multiboxing Tool
 ## Author: Ogrisch and mrmr
-## SavedVariablesPerCharacter: LPMULTIBOX
+## SavedVariablesPerCharacter: LPMULTIBOX, LPMULTIBOX_UI
 ## Dependencies: _LazyPig, Zorlen, QuickHeal, SmartBuff
 
+UI\LPM_OptionFrame.lua
+UI\LPM_TeamFrame.lua
+
 LazyPigMultibox.lua
-LazyPigMultiboxMenu.lua
+
 LazyPigMultiboxRoll.xml
 LazyPigMultibox_Warlock.lua
 LazyPigMultibox_Hunter.lua
