@@ -222,6 +222,9 @@ local function CreateRollFrameOptionsFrame(hParent)
 	frame:SetBackdropColor(.01, .01, .01, .91)
 
 	frame:EnableMouse(true)
+
+	tinsert(UISpecialFrames,"LPM_RollFrame_OptionsFrame")
+
 	--frame:Hide()
 
 	-- MenuTitle Frame
@@ -357,6 +360,9 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	frame:SetBackdropColor(.01, .01, .01, .91)
 
 	frame:EnableMouse(true)
+
+	tinsert(UISpecialFrames,"LPM_TeamFrame_OptionsFrame")
+
 	--frame:Hide()
 
 	-- MenuTitle Frame
