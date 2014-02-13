@@ -1026,6 +1026,11 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 			local r, g, b, a = parent:GetBackdropColor()
 			parent:SetBackdropColor(r, g, b, a + 0.15)
 		end
+
+		GameTooltip:SetOwner(this, "ANCHOR_CURSOR", 0, 35)
+		GameTooltip:SetScale(.71)
+		GameTooltip:SetBackdropColor(.01, .01, .01, .91)
+		GameTooltip:SetUnit(this:GetParent().unit)
 	end)
 
 	frame_info:SetScript("OnLeave", function()
@@ -1050,6 +1055,8 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 			local r, g, b, a = parent:GetBackdropColor()
 			parent:SetBackdropColor(r, g, b, a - 0.15)
 		end
+
+		GameTooltip:Hide()
 	end)
 
 	--[[
