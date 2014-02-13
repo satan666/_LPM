@@ -187,7 +187,7 @@ function LazyPigMultibox_Command(cmd)
 		end
 	else
 		if LPM_OptionsFrame:IsShown() then
-			LPM_xOptionsFrame:Hide();
+			LPM_OptionsFrame:Hide();
 			LazyPigMultibox_Annouce("lpm_hide_menu", "");
 		else
 			LPM_OptionsFrame:Show();
@@ -279,6 +279,7 @@ function LazyPigMultibox_OnEvent()
 		local LPM_AUTHOR = GetAddOnMetadata("_LazyPigMultibox", "Author")
 		DEFAULT_CHAT_FRAME:AddMessage(LPM_TITLE .. " v" .. LPM_VERSION .. " by " .."|cffFF0066".. LPM_AUTHOR .."|cffffffff".. " loaded, type |cff00eeee".." /lpm".."|cffffffff for options")
 		--DEFAULT_CHAT_FRAME:AddMessage("_LazyPig Multibox v" .. LPM_VERSION .. " by Ogrisch loaded - type |cff00eeee".." /lpm".."|cffffffff for options")
+
 	elseif (event == "PLAYER_LOGIN") then
 		--this:UnregisterEvent("PLAYER_ENTERING_WORLD");
 		
@@ -300,7 +301,8 @@ function LazyPigMultibox_OnEvent()
 		this:RegisterEvent("CHAT_MSG_SYSTEM");
 		
 		LPM_OptionsFrame = LPM_CreateOptionsFrame()
-		LPM_TeamFrame = LPM_CreateTeamFrame()
+		LPM_TeamPartyFrame = LPM_CreateTeamPartyFrame2()
+		LPM_SendXPData()
 
 		LazyPigMultibox_MenuSet();
 		LazyPigMultibox_ShowMode(true);
@@ -317,7 +319,6 @@ function LazyPigMultibox_OnEvent()
 		
 		if LPMULTIBOX.FIRSTUSE then
 			LazyPigMultiboxOptionsFrame:Show();
-			--LazyPigMultiboxOptions:Show();
 			LPMULTIBOX.FIRSTUSE = false
 			LPCONFIG.SINV = true
 		end
@@ -448,17 +449,19 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 	local player_name = GetUnitName("player")
 	local sender_name = sender or "Player"
 	local self_annouce = sender_name == "Player"
-	
-	--DEFAULT_CHAT_FRAME:AddMessage(mode..message..sender_name)
-	
+
 	if LPMULTIBOX.STATUS then
 		if self_annouce then
 			SendAddonMessage(mode, message, "RAID")
 			return
 		
 		elseif leader_id and sender_name == GetUnitName(leader_id) and sender_name ~= player_name then
-			LPM_DEBUG("LazyPigMultibox_Annouce(Slave) - "..mode.." - "..message);
-			
+			if sender == GetUnitName(leader_id) then
+				LPM_DEBUG("Annouce [Master][" .. sender .. "] - "..mode.." - "..message);
+			else
+				LPM_DEBUG("Annouce [From " .. sender .. "] - "..mode.." - "..message);
+			end
+
 			if(mode == "lpm_masterattack") then
 				LPM_TIMER.MASTERATTACK = time + 1.5
 			
@@ -556,6 +559,7 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 			end
 		
 		elseif leader_id and player_name == GetUnitName(leader_id) and sender_name ~= player_name then
+			LPM_DEBUG("Annouce [From " .. sender .. "] - "..mode.." - "..message);
 			if(mode == "lpm_slaveannouce" and message) then
 				LazyPigMultibox_Message(message, sender)
 			
@@ -581,10 +585,10 @@ function LazyPigMultibox_Annouce(mode, message, sender)
 		end
 
 		if(mode == "lpm_show_menu") then
-			LazyPigMultiboxOptionsFrame:Show();
+			LPM_OptionsFrame:Show();
 		
 		elseif(mode == "lpm_hide_menu" and (message == "" or message == "slave_only" and LazyPigMultibox_SlaveCheck())) then
-			LazyPigMultiboxOptionsFrame:Hide();	
+			LPM_OptionsFrame:Hide();	
 		
 		elseif(mode == "lpm_tradeaccept") then
 			if LPMULTIBOX.FA_TRADE then

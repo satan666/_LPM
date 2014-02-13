@@ -1,15 +1,4 @@
 
-LPMULTIBOX_UI = {
-	TF_LOCK = false,
-	TF_SHOW = true,
-	TF_SCALE = 1.00,
-	TF_PADDING = 3,
-	TF_BACKGROUNDALPHA = 0.37,
-	LF_LOCK = true,
-	LF_SCALE = 1.00,
-}
-
-
 local CheckButtonTables = {
 	["Follow Master"] = {
 		[0] = "LPM_CheckButtonGroupMasterFollow",
@@ -71,7 +60,7 @@ local ButtonTables = {
 		[0]	= "LPM_ButtonGroupLoot",
 		[1] = { "LPM_LootFFA", "FFA Loot", function() SetLootMethod("freeforall") end},
 		[2] = { "LPM_LootGroup", "Group Loot", function() SetLootMethod("group") end },
-		[3] = { "LPM_LootMaster", "Master Loot", function() SetLootMethod("master", GetUnitName("player")) end },
+		[3] = { "LPM_LootMaster", "Master Loot", function() SetLootMethod("master", GetUnitName('player')) end },
 	},
 
 	["Group Action Manager"] = {
@@ -204,13 +193,13 @@ end
 
 local function CreateRollFrameOptionsFrame(hParent)
 	-- RollFrame Options Frame
-	local frame = CreateFrame("Frame", "LPM_RollFrame_OptionsFrame")
+	local frame = CreateFrame("Frame", "LPM_RollFrame_OptionsFrame", hParent)
 	frame:SetScale(.81)
 
-	frame:SetWidth(200)
+	frame:SetWidth(230)
 	frame:SetHeight(100)
 	
-	frame:SetPoint("TOPLEFT", hParent, "TOPRIGHT", 10, 0)
+	frame:SetPoint("TOPLEFT", hParent, "TOPRIGHT", -3, -2)
 	frame:SetBackdrop( {
 			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
 			edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border", 
@@ -224,8 +213,6 @@ local function CreateRollFrameOptionsFrame(hParent)
 	frame:EnableMouse(true)
 
 	tinsert(UISpecialFrames,"LPM_RollFrame_OptionsFrame")
-
-	--frame:Hide()
 
 	-- MenuTitle Frame
 	local texture_title = frame:CreateTexture("LPM_RollFrame_OptionsFrame_Title")
@@ -298,14 +285,6 @@ local function CreateRollFrameOptionsFrame(hParent)
 		GameTooltip:Hide();
 	end)
 
-	--[[
-	local btn_lock = CreateFrame("Button", "LPM_RollFrame_OptionsFrame_LockButton", frame, "UIPanelButtonTemplate")
-	btn_lock:SetPoint("TOP", 0, -30)
-	btn_lock:SetWidth(150)
-	btn_lock:SetHeight(25)
-	btn_lock:SetText("Lock RollFrame")
-	]]
-	
 	local fs_scale = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
 	fs_scale:SetPoint("TOPLEFT", 30, -50)
 	fs_scale:SetTextColor(1, 1, 1)
@@ -335,20 +314,39 @@ local function CreateRollFrameOptionsFrame(hParent)
 		LPMULTIBOX_UI.LF_SCALE = value/100
 	end)
 
+	frame:SetScript("OnMouseDown", function()
+		if arg1 == "LeftButton" and not this:GetParent().isMoving then
+			this:GetParent():StartMoving();
+			this:GetParent().isMoving = true;
+		end
+	end)
+	frame:SetScript("OnMouseUp", function()
+		if arg1 == "LeftButton" and this:GetParent().isMoving then
+			this:GetParent():StopMovingOrSizing();
+			this:GetParent().isMoving = false;
+		end
+	end)
+	frame:SetScript("OnHide", function()
+		if this:GetParent().isMoving then
+			this:GetParent():StopMovingOrSizing();
+			this:GetParent().isMoving = false;
+		end
+	end)
+
 	frame:Hide()
 
 	return frame
 end
 
 local function CreateTeamFrameOptionsFrame(hParent)
-	-- RollFrame Options Frame
-	local frame = CreateFrame("Frame", "LPM_TeamFrame_OptionsFrame")
+	-- TeamFrame Options Frame
+	local frame = CreateFrame("Frame", "LPM_TeamFrame_OptionsFrame", hParent)
 	frame:SetScale(.81)
 
-	frame:SetWidth(200)
-	frame:SetHeight(200)
+	frame:SetWidth(230)
+	frame:SetHeight(260)
 	
-	frame:SetPoint("TOPLEFT", hParent.rollframeoption, "BOTTOMLEFT", 0, -10)
+	frame:SetPoint("BOTTOMLEFT", hParent, "BOTTOMRIGHT", -3, 2)
 	frame:SetBackdrop( {
 			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
 			edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border", 
@@ -362,8 +360,6 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	frame:EnableMouse(true)
 
 	tinsert(UISpecialFrames,"LPM_TeamFrame_OptionsFrame")
-
-	--frame:Hide()
 
 	-- MenuTitle Frame
 	local texture_title = frame:CreateTexture("LPM_TeamFrame_OptionsFrame_Title")
@@ -393,9 +389,8 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	cb_lock:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down")
 	cb_lock:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight")
 	cb_lock:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
-	--cb_toggle:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
-	if LPMULTIBOX_UI.TF_LOCK then
+	if LPMULTIBOX_UI.TPF_LOCK then
 		cb_lock:SetChecked(true)
 	else
 		cb_lock:SetChecked(false)
@@ -409,15 +404,15 @@ local function CreateTeamFrameOptionsFrame(hParent)
 
 	frame.cb_lock:SetScript("OnClick", function()
 		local status = this:GetChecked()
-		local frame = getglobal("LPM_TeamFrame")
+		local frame = getglobal("LPM_TeamPartyFrame")
 		if status then
 			frame:SetMovable(false)
 			frame:RegisterForDrag()
-			LPMULTIBOX_UI.TF_LOCK = true
+			LPMULTIBOX_UI.TPF_LOCK = true
 		else
 			frame:SetMovable(true)
 			frame:RegisterForDrag("LeftButton")
-			LPMULTIBOX_UI.TF_LOCK = false
+			LPMULTIBOX_UI.TPF_LOCK = false
 		end
 	end)
 	frame.cb_lock:SetScript("OnEnter", function()
@@ -450,7 +445,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	cb_show:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	--cb_toggle:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
-	if LPMULTIBOX_UI.TF_SHOW then
+	if LPMULTIBOX_UI.TPF_SHOW then
 		cb_show:SetChecked(true)
 	else
 		cb_show:SetChecked(false)
@@ -464,13 +459,13 @@ local function CreateTeamFrameOptionsFrame(hParent)
 
 	frame.cb_show:SetScript("OnClick", function()
 		local status = this:GetChecked()
-		local frame = getglobal("LPM_TeamFrame")
+		local frame = getglobal("LPM_TeamPartyFrame")
 		if status then
 			frame:Show()
-			LPMULTIBOX_UI.TF_SHOW = true
+			LPMULTIBOX_UI.TPF_SHOW = true
 		else
 			frame:Hide()
-			LPMULTIBOX_UI.TF_FALSE = true
+			LPMULTIBOX_UI.TPF_SHOW = false
 		end
 	end)
 	frame.cb_show:SetScript("OnEnter", function()
@@ -489,16 +484,177 @@ local function CreateTeamFrameOptionsFrame(hParent)
 		GameTooltip:Hide();
 	end)
 
-	--[[
-	local btn_lock = CreateFrame("Button", "LPM_TeamFrameOptionsFrameLockButton", frame, "UIPanelButtonTemplate")
-	btn_lock:SetPoint("TOP", 0, -30)
-	btn_lock:SetWidth(150)
-	btn_lock:SetHeight(25)
-	btn_lock:SetText("Lock TeamFrame")
-	]]
+	-- MiniMode CheckButton
+	local cb_mini = CreateFrame("CheckButton", "LPM_TeamFrame_OptionsFrame_MiniCheckButton", frame)
+	cb_mini:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, -65)
+	local cbfs_mini = cb_mini:CreateFontString("LPM_TeamFrame_OptionsFrame_MiniCheckButtonText", "ARTWORK", "GameFontNormalSmall")
+	cbfs_mini:SetPoint("LEFT", cb_mini, "RIGHT", 7, 0)
+	cbfs_mini:SetText("Mini Mode")
+	cb_mini:SetWidth(20)
+	cb_mini:SetHeight(20)
+	cb_mini:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up")
+	cb_mini:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down")
+	cb_mini:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight")
+	cb_mini:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
+	--cb_mini:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
+	
+	cb_mini:Disable()
+	cbfs_mini:SetTextColor(.51, .51, .51, 1)
+	
+	if LPMULTIBOX_UI.TPF_MINI then
+		cb_mini:SetChecked(true)
+	else
+		cb_mini:SetChecked(false)
+	end
+	
+	cb_mini.tooltipTitle = "TeamFrame"
+	cb_mini.tooltipText = "Check this to turn on TeamFrame Mini Mode. Only the Experience Bars will be shown."
+	
+	frame.cb_mini = cb_mini
+	frame.cbfs_mini = cbfs_mini
 
+	frame.cb_mini:SetScript("OnClick", function()
+		local status = this:GetChecked()
+		local frame = getglobal("LPM_TeamPartyFrame")
+		if status then
+			frame:Show()
+			LPMULTIBOX_UI.TPF_MINI = true
+		else
+			frame:Hide()
+			LPMULTIBOX_UI.TPF_MINI = false
+		end
+	end)
+	frame.cb_mini:SetScript("OnEnter", function()
+		if this.tooltipText then
+			GameTooltip:SetOwner(this, "ANCHOR_TOPRIGHT")
+			GameTooltip:SetScale(.71)
+			GameTooltip:SetBackdropColor(.01, .01, .01, .91)
+			GameTooltip:SetText(this.tooltipTitle)
+			if this.tooltipText then
+				GameTooltip:AddLine(this.tooltipText, 1, 1, 1)
+				GameTooltip:Show()
+			end
+		end
+	end)
+	frame.cb_mini:SetScript("OnLeave", function()
+		GameTooltip:Hide();
+	end)
+
+	-- Blizzard Player Frame Toggle
+	local cb_blizzplayer = CreateFrame("CheckButton", "LPM_TeamFrame_OptionsFrame_BlizzPlayerCheckButton", frame)
+	cb_blizzplayer:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, -85)
+	local cbfs_blizzplayer = cb_blizzplayer:CreateFontString("LPM_TeamFrame_OptionsFrame_BlizzPlayerButtonText", "ARTWORK", "GameFontNormalSmall")
+	cbfs_blizzplayer:SetPoint("LEFT", cb_blizzplayer, "RIGHT", 7, 0)
+	cbfs_blizzplayer:SetText("Hide Blizzard's Player Frame")
+	cb_blizzplayer:SetWidth(20)
+	cb_blizzplayer:SetHeight(20)
+	cb_blizzplayer:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up")
+	cb_blizzplayer:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down")
+	cb_blizzplayer:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight")
+	cb_blizzplayer:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
+	--cb_mini:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
+	
+	if LPMULTIBOX_UI.TPF_BLIZZPLAYER then
+		cb_blizzplayer:SetChecked(true)
+		LPM_HideBlizzardPlayerFrames(true)
+	else
+		cb_blizzplayer:SetChecked(false)
+		LPM_HideBlizzardPlayerFrames(false)
+	end
+	
+	cb_blizzplayer.tooltipTitle = "TeamFrame"
+	cb_blizzplayer.tooltipText = "Check this to hide the Blizzard's Player Frame."
+	
+	frame.cb_blizzplayer = cb_blizzplayer
+	frame.cbfs_blizzplayer = cbfs_blizzplayer
+
+	frame.cb_blizzplayer:SetScript("OnClick", function()
+		local status = this:GetChecked()
+		if status then
+			LPMULTIBOX_UI.TPF_BLIZZPLAYER = true
+			LPM_DEBUG(" $*$ Blizzard Player Frame - Hidden")
+			LPM_HideBlizzardPlayerFrames(true)
+		else
+			LPMULTIBOX_UI.TPF_BLIZZPLAYER = false
+			LPM_DEBUG(" $*$ Blizzard Player Frame - Shown")
+			LPM_HideBlizzardPlayerFrames(false)
+		end
+	end)
+	frame.cb_blizzplayer:SetScript("OnEnter", function()
+		if this.tooltipText then
+			GameTooltip:SetOwner(this, "ANCHOR_TOPRIGHT")
+			GameTooltip:SetScale(.71)
+			GameTooltip:SetBackdropColor(.01, .01, .01, .91)
+			GameTooltip:SetText(this.tooltipTitle)
+			if this.tooltipText then
+				GameTooltip:AddLine(this.tooltipText, 1, 1, 1)
+				GameTooltip:Show()
+			end
+		end
+	end)
+	frame.cb_blizzplayer:SetScript("OnLeave", function()
+		GameTooltip:Hide();
+	end)
+
+	-- Blizzard Party Frame Toggle
+	local cb_blizzparty = CreateFrame("CheckButton", "LPM_TeamFrame_OptionsFrame_BlizzPlayerCheckButton", frame)
+	cb_blizzparty:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, -105)
+	local cbfs_blizzparty = cb_blizzparty:CreateFontString("LPM_TeamFrame_OptionsFrame_BlizzPlayerButtonText", "ARTWORK", "GameFontNormalSmall")
+	cbfs_blizzparty:SetPoint("LEFT", cb_blizzparty, "RIGHT", 7, 0)
+	cbfs_blizzparty:SetText("Hide Blizzard's Party Frames")
+	cb_blizzparty:SetWidth(20)
+	cb_blizzparty:SetHeight(20)
+	cb_blizzparty:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up")
+	cb_blizzparty:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down")
+	cb_blizzparty:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight")
+	cb_blizzparty:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
+	--cb_mini:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
+	
+	if LPMULTIBOX_UI.TPF_BLIZZPARTY then
+		cb_blizzparty:SetChecked(true)
+		LPM_HideBlizzardPartyFrames(true)
+	else
+		cb_blizzparty:SetChecked(false)
+		LPM_HideBlizzardPartyFrames(false)
+	end
+	
+	cb_blizzparty.tooltipTitle = "TeamFrame"
+	cb_blizzparty.tooltipText = "Check this to hide the Blizzard's Party Frames."
+	
+	frame.cb_blizzparty = cb_blizzparty
+	frame.cbfs_blizzparty = cbfs_blizzparty
+
+	frame.cb_blizzparty:SetScript("OnClick", function()
+		local status = this:GetChecked()
+		if status then
+			LPMULTIBOX_UI.TPF_BLIZZPARTY = true
+			LPM_DEBUG(" $*$ Blizzard Party Frames should be now hidden!")
+			LPM_HideBlizzardPartyFrames(true)
+		else
+			LPMULTIBOX_UI.TPF_BLIZZPARTY = false
+			LPM_DEBUG(" $*$ Blizzard Party Frames - Shown")
+			LPM_HideBlizzardPartyFrames(false)
+		end
+	end)
+	frame.cb_blizzparty:SetScript("OnEnter", function()
+		if this.tooltipText then
+			GameTooltip:SetOwner(this, "ANCHOR_TOPRIGHT")
+			GameTooltip:SetScale(.71)
+			GameTooltip:SetBackdropColor(.01, .01, .01, .91)
+			GameTooltip:SetText(this.tooltipTitle)
+			if this.tooltipText then
+				GameTooltip:AddLine(this.tooltipText, 1, 1, 1)
+				GameTooltip:Show()
+			end
+		end
+	end)
+	frame.cb_blizzparty:SetScript("OnLeave", function()
+		GameTooltip:Hide();
+	end)	
+
+	-- SCALE SLIDER
 	local fs_scale = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-	fs_scale:SetPoint("TOPLEFT", 30, -70)
+	fs_scale:SetPoint("TOPLEFT", 30, -130)
 	fs_scale:SetTextColor(1, 1, 1)
 	fs_scale:SetText("Scale")
 	
@@ -513,7 +669,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_scale:SetMinMaxValues(50, 150) 
 	sl_scale:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_scale:SetValue(LPMULTIBOX_UI.TF_SCALE * 100)
+	sl_scale:SetValue(LPMULTIBOX_UI.TPF_SCALE * 100)
 	getglobal(sl_scale:GetName() .. "Text"):SetText(string.format("%4.2f", tostring(sl_scale:GetValue()/100)))
 	getglobal(sl_scale:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_scale:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
@@ -521,11 +677,12 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_scale:SetScript("OnValueChanged", function()
 		local value = this:GetValue()
 		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(value/100)))
-		local frame = getglobal("LPM_TeamFrame")
+		local frame = getglobal("LPM_TeamPartyFrame")
 		frame:SetScale(value/100)
-		LPMULTIBOX_UI.TF_SCALE = value/100
+		LPMULTIBOX_UI.TPF_SCALE = value/100
 	end)
 
+	-- PADDING SLIDER
 	local fs_padding = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
 	fs_padding:SetPoint("TOPLEFT", fs_scale, "BOTTOMLEFT", 0, -30)
 	fs_padding:SetTextColor(1, 1, 1)
@@ -538,11 +695,11 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_padding:SetOrientation("HORIZONTAL")
 	sl_padding.tooltipText = "Set the TeamFrame padding value."
 	getglobal(sl_padding:GetName() .. "Low"):SetText("0")
-	getglobal(sl_padding:GetName() .. "High"):SetText("50")
-	sl_padding:SetMinMaxValues(0, 50) 
+	getglobal(sl_padding:GetName() .. "High"):SetText("100")
+	sl_padding:SetMinMaxValues(0, 100) 
 	sl_padding:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_padding:SetValue(LPMULTIBOX_UI.TF_PADDING)
+	sl_padding:SetValue(LPMULTIBOX_UI.TPF_PADDING)
 	getglobal(sl_padding:GetName() .. "Text"):SetText(tostring(sl_padding:GetValue()))
 	getglobal(sl_padding:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_padding:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
@@ -550,9 +707,31 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_padding:SetScript("OnValueChanged", function()
 		local value = this:GetValue()
 		getglobal(this:GetName().."Text"):SetText(tostring(value))
-		LPMULTIBOX_UI.TF_PADDING = value
+		LPMULTIBOX_UI.TPF_PADDING = value
+
+		-- Should I move this to LPM_TeamFrame.lua?
+		for i = 1, 4 do
+			local frame = getglobal("LPM_TeamPartyUnitFrame_party" .. i)
+			if i == 1 then
+				frame:SetPoint("TOPLEFT", frame:GetParent().partyunitframe['player'], "BOTTOMLEFT", 0, -value)
+			else
+				frame:SetPoint("TOPLEFT", frame:GetParent().partyunitframe['party' .. i-1], "BOTTOMLEFT", 0, -value)
+			end
+		end
+
+		local partymembers = GetNumPartyMembers()
+		local theight
+		if partymembers > 0 then
+			--local teamframe_partymembers_offsetH = (value + LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT) * partymembers
+			local teamframe_partymembers_offsetH = (value + 42) * partymembers
+			--theight = LPM_UI_CONSTANT.TPF_FRAME_HEADER + LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT + LPM_UI_CONSTANT.TPF_FRAME_FOOTER + teamframe_partymembers_offsetH)
+			theight = 12 + 42 + 4 + teamframe_partymembers_offsetH
+		end
+		local tframe = getglobal("LPM_TeamPartyFrame")
+		tframe:SetHeight(theight)
 	end)
 
+	-- BACKGROUND ALPHA SLIDER
 	local fs_backgroundalpha = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
 	fs_backgroundalpha:SetPoint("TOPLEFT", fs_padding, "BOTTOMLEFT", 0, -30)
 	fs_backgroundalpha:SetTextColor(1, 1, 1)
@@ -569,7 +748,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_backgroundalpha:SetMinMaxValues(0, 100) 
 	sl_backgroundalpha:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_backgroundalpha:SetValue(LPMULTIBOX_UI.TF_BACKGROUNDALPHA * 100)
+	sl_backgroundalpha:SetValue(LPMULTIBOX_UI.TPF_BGALPHA * 100)
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetText(string.format("%4.2f", tostring(sl_backgroundalpha:GetValue()/100)))
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
@@ -577,10 +756,29 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_backgroundalpha:SetScript("OnValueChanged", function(self, value)
 		local value = this:GetValue()
 		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(value/100)))
-		local frame = getglobal("LPM_TeamFrame")
+		local frame = getglobal("LPM_TeamPartyFrame")
 		frame:SetBackdropColor(.01, .01, .01, value/100)
 		frame.fs_title:SetTextColor(1, 1, 1, value/100)
-		LPMULTIBOX_UI.TF_BACKGROUNDALPHA = value/100
+		LPMULTIBOX_UI.TPF_BGALPHA = value/100
+	end)
+
+	frame:SetScript("OnMouseDown", function()
+		if arg1 == "LeftButton" and not this:GetParent().isMoving then
+			this:GetParent():StartMoving();
+			this:GetParent().isMoving = true;
+		end
+	end)
+	frame:SetScript("OnMouseUp", function()
+		if arg1 == "LeftButton" and this:GetParent().isMoving then
+			this:GetParent():StopMovingOrSizing();
+			this:GetParent().isMoving = false;
+		end
+	end)
+	frame:SetScript("OnHide", function()
+		if this:GetParent().isMoving then
+			this:GetParent():StopMovingOrSizing();
+			this:GetParent().isMoving = false;
+		end
 	end)
 
 	frame:Hide()
@@ -618,6 +816,16 @@ function LPM_CreateOptionsFrame()
 
 	frame:Hide()
 
+	frame:SetScript("OnShow", function()
+		if this.btn_team:GetButtonState() == 'PUSHED' then
+			local frame = getglobal("LPM_TeamFrame_OptionsFrame")
+			frame:Show()
+		end
+		if this.btn_roll:GetButtonState() == 'PUSHED' then
+			local frame = getglobal("LPM_RollFrame_OptionsFrame")
+			frame:Show()
+		end
+	end)
 	frame:SetScript("OnMouseDown", function()
 		if arg1 == "LeftButton" and not this.isMoving then
 			this:StartMoving();
@@ -652,7 +860,6 @@ function LPM_CreateOptionsFrame()
 	fs_title:SetText("_LazyPig Multibox")
 
 	frame.fs_title = fs_title
-	--
 
 	-- Enable Multiboxing CheckButton
 	local cb_toggle = CreateFrame("CheckButton", "LPM_OptionsFrame_EnableCheckButton", frame)
@@ -761,7 +968,6 @@ function LPM_CreateOptionsFrame()
 		SMARTBUFF_OptionsFrame_Toggle();
 	end)
 
-
 	-- Close Setting Window Button
 	local btn_close = CreateFrame("Button", "LPM_OptionsFrame_Close", frame, "UIPanelCloseButton")
 	btn_close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, -12)
@@ -779,44 +985,55 @@ function LPM_CreateOptionsFrame()
 		LazyPigMultibox_Annouce("lpm_hide_menu", "")
 	end)
 
-
+	-- RollFrame Option Button
 	local btn_roll = CreateFrame("Button", "LPM_OptionsFrame_RollFrame_Button", frame, "UIPanelButtonTemplate")
 	btn_roll:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -115, -20)
 	btn_roll:SetWidth(72)
 	btn_roll:SetHeight(16)
 	btn_roll:SetFont("Fonts\\FRIZQT__.TTF", 8)
 	btn_roll:SetText("RollFrame")
+	btn_roll:SetButtonState("NORMAL")
 
 	frame.btn_roll = btn_roll
 
-	frame.btn_roll:SetScript("OnClick", function()
-		local frame = getglobal("LPM_RollFrame_OptionsFrame")
-		if frame:IsVisible() then
-			frame:Hide()
-		else
-			frame:Show()
+	frame.btn_roll:SetScript("OnMouseDown", function()
+		if arg1 == 'LeftButton' then
+			local status = this:GetButtonState()
+			local frame = getglobal("LPM_RollFrame_OptionsFrame")
+			if status == 'NORMAL' then
+				this:SetButtonState("PUSHED", 1)
+				frame:Show()
+			elseif status == 'PUSHED' then
+				this:SetButtonState("NORMAL", 0)
+				frame:Hide()
+			end
 		end
 	end)
 
-	
+	-- TeamFrame Option Button
 	local btn_team = CreateFrame("Button", "LPM_OptionsFrame_TeamFrame_Button", frame, "UIPanelButtonTemplate")
 	btn_team:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -42, -20)
 	btn_team:SetWidth(72)
 	btn_team:SetHeight(16)
 	btn_team:SetFont("Fonts\\FRIZQT__.TTF", 8)
 	btn_team:SetText("TeamFrame")
+	btn_team:SetButtonState("NORMAL")
 
 	frame.btn_team = btn_team
 
-	frame.btn_team:SetScript("OnClick", function()
-		local frame = getglobal("LPM_TeamFrame_OptionsFrame")
-		if frame:IsVisible() then
-			frame:Hide()
-		else
-			frame:Show()
+	frame.btn_team:SetScript("OnMouseDown", function()
+		if arg1 == 'LeftButton' then
+			local status = this:GetButtonState()
+			local frame = getglobal("LPM_TeamFrame_OptionsFrame")
+			if status == 'NORMAL' then
+				this:SetButtonState("PUSHED", 1)
+				frame:Show()
+			elseif status == 'PUSHED' then
+				this:SetButtonState("NORMAL", 0)
+				frame:Hide()
+			end
 		end
 	end)
-	
 
 	-- CheckButton Groups
 	local str = "Follow Master"
@@ -837,7 +1054,6 @@ function LPM_CreateOptionsFrame()
 	local str = "Use Predefined Class' Script"
 	frame.cbgroup_scripts = CheckButtonGroup(frame, 210, -255, str, CheckButtonTables[str])
 
-
 	-- Button Groups
 	local str = "Group Loot Management"
 	--ButtonGroup(frame, 20, -100, str, ButtonTables[str], false)
@@ -855,5 +1071,4 @@ function LPM_CreateOptionsFrame()
 	frame.teamframeoption = CreateTeamFrameOptionsFrame(frame)
 
 	return frame
-
 end
