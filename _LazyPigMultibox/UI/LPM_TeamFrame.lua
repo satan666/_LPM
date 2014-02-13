@@ -938,7 +938,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	-- PartyUnitFrame Handlers
 	---------------------------
 	btn:SetScript("OnClick", function()
-		--[[ Click Handlers go here ]]
+		--[[ frame_info, being on top of this, will handle clicks :( )]]
 	end)
 
 	btn.tick1 = 0
@@ -1057,6 +1057,39 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 		end
 
 		GameTooltip:Hide()
+	end)
+
+	-- Click events will be handled here, cause this frame in the topmost of all.
+	-- I know, not a good/clean solution, but live with it!
+	frame_info:SetScript("OnMouseDown", function()
+		local unit = this:GetParent().unit
+		if SpellIsTargeting() and arg1 == "RightButton" then
+    		SpellStopTargeting()
+    		return
+  		end
+		if arg1 == "LeftButton" then
+			LPM_DEBUG("leftclick!")
+			if SpellIsTargeting() then
+				SpellTargetUnit(unit)
+			elseif CursorHasItem() then
+				if unit == 'player' then
+					AutoEquipCursorItem()
+				else
+					DropItemOnUnit(unit)
+				end
+			else
+				TargetUnit(unit)
+			end
+		else
+			-- We need to toggle the "party" dropdownmenu here!
+			--[[
+			if unit == 'player' then
+				ToggleDropDownMenu(1, nil, PlayerFrameDropDown, "PlayerFrame", 106, 27);
+			else
+				ToggleDropDownMenu(1, nil, getglobal("PartyMemberFrame"..partyFrame:GetID().."DropDown"), partyFrame:GetName(), 47, 15);
+			end
+			]]
+  		end
 	end)
 
 	--[[
