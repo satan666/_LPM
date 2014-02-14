@@ -413,6 +413,31 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 
 	btn.unit = sUnit
 
+	-----------------
+	-- DropdDownMenu
+	-----------------
+	local dropdown = CreateFrame("Frame", "LPM_PartyDropDown_" .. sUnit, btn, "UIDropDownMenuTemplate")
+	dropdown.unit = sUnit
+	
+	local function DropDown_Init()
+		local unit = dropdown.unit
+		
+		if unit == 'player' then
+			UnitPopup_ShowMenu(dropdown, "SELF" , unit)
+		else
+			if dropdown then
+				UnitPopup_ShowMenu(dropdown, "PARTY", unit)
+			elseif UIDROPDOWNMENU_OPEN_MENU then
+				UnitPopup_ShowMenu(getglobal(UIDROPDOWNMENU_OPEN_MENU), "PARTY", getglobal(UIDROPDOWNMENU_OPEN_MENU):GetParent().unit)
+			end
+		end
+		
+	end
+	
+	UIDropDownMenu_Initialize(dropdown, DropDown_Init, "MENU")
+
+	btn.dropdown = dropdown
+	
 	-------------------------------------------------------
 	-- Button Background (Not used. Backdrop does the job)
 	-------------------------------------------------------
@@ -1080,15 +1105,12 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 			else
 				TargetUnit(unit)
 			end
-		else
-			-- We need to toggle the "party" dropdownmenu here!
-			--[[
-			if unit == 'player' then
-				ToggleDropDownMenu(1, nil, PlayerFrameDropDown, "PlayerFrame", 106, 27);
-			else
-				ToggleDropDownMenu(1, nil, getglobal("PartyMemberFrame"..partyFrame:GetID().."DropDown"), partyFrame:GetName(), 47, 15);
+		elseif not (IsAltKeyDown() or IsControlKeyDown() or IsShiftKeyDown()) then
+			ToggleDropDownMenu(1, nil, this:GetParent().dropdown, "cursor", 0, 0)
+			if unit == 'player' and UnitIsPartyLeader("player") then
+				local info = {text = "Reset Instances", func = ResetInstances, notCheckable = 1}
+				UIDropDownMenu_AddButton(info, 1)
 			end
-			]]
   		end
 	end)
 
