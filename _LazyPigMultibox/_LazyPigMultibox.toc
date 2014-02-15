@@ -6,6 +6,7 @@
 ## SavedVariablesPerCharacter: LPMULTIBOX, LPMULTIBOX_UI
 ## Dependencies: _LazyPig, Zorlen, QuickHeal, SmartBuff
 
+UI\LPM_Utils.lua
 UI\LPM_OptionFrame.lua
 UI\LPM_TeamFrame.lua
 

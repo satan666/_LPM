@@ -8,7 +8,7 @@ local LPM_UI_CONSTANT = {
 	TPF_FRAME_BGFILE = "Interface\\ChatFrame\\ChatFrameBackground",
 	TPF_UNITFRAME_BGFILE = "Interface\\ChatFrame\\ChatFrameBackground",
 	TPF_UNITFRAME_SBFILE = "Interface\\AddOns\\_LazyPigMultibox\\Textures\\StatusBar",
-
+	
 	TPF_UNITFRAME_FONT = "Fonts\\ARIALN.TTF",
 
 	TPF_UNITFRAME_WIDTH = 100,
@@ -42,7 +42,6 @@ local PowerColor = {
 			[2] = { { 1.00, 0.70, 0.0  }, "Focus"  	},
 			[3] = { { 1.00, 1.00, 0.13 }, "Energy" 	},
 }
-
 
 local function PrintPartyUnitNames()
 	local n = GetNumPartyMembers()
@@ -902,7 +901,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 		elseif event == "PARTY_MEMBER_ENABLE" then
 			local unit = 'party' .. GetPartyMember(arg1)
 			if this.unit == unit then
-				frame.fs_health:SetText(math.floor(UnitHealth(this.unit) * 100 / UnitHealthMax(this.unit)) .. "%")
+				this.fs_health:SetText(math.floor(UnitHealth(this.unit) * 100 / UnitHealthMax(this.unit)) .. "%")
 				this.frame_offline:Hide()
 			end
 
@@ -1189,7 +1188,7 @@ function LPM_CreateTeamPartyFrame2()
 	LPM_UI_CONSTANT.TPF_FRAME_SCALE = LPMULTIBOX_UI.TPF_SCALE
 	LPM_UI_CONSTANT.TPF_FRAME_BGALPHA = LPMULTIBOX_UI.TPF_BGALPHA
 
-	-- Option Frame
+	-- PartyFrame
 	local frame = CreateFrame("Frame", "LPM_TeamPartyFrame")
 	
 	frame:SetScale(LPM_UI_CONSTANT.TPF_FRAME_SCALE)

@@ -318,7 +318,7 @@ function LazyPigMultibox_OnEvent()
 		end
 		
 		if LPMULTIBOX.FIRSTUSE then
-			LazyPigMultiboxOptionsFrame:Show();
+			LPM_OptionsFrame:Show();
 			LPMULTIBOX.FIRSTUSE = false
 			LPCONFIG.SINV = true
 		end
