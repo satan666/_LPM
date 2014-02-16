@@ -1,4 +1,4 @@
-LPCONFIG = {DISMOUNT = true, CAM = false, GINV = true, FINV = true, SINV = nil, SUMM = true, EBG = true, LBG = true, QBG = false, SBG = false, LOOT = true, EPLATE = false, FPLATE = false, HPLATE = false, RIGHT = true, ZG = 1, DUEL = false, NOSAVE = false, GREEN = 2, SPECIALKEY = true, WORLDDUNGEON = false, WORLDRAID = false, WORLDBG = false, WORLDUNCHECK = nil, SPAM = true, SHIFTSPLIT = true, REZ = true, GOSSIP = true, SALVA = false}
+LPCONFIG = {DISMOUNT = true, CAM = false, GINV = true, FINV = true, SINV = nil, DINV = true, SUMM = true, EBG = true, LBG = true, QBG = false, RBG = true, SBG = false, LOOT = true, EPLATE = false, FPLATE = false, HPLATE = false, RIGHT = true, ZG = 1, DUEL = false, NOSAVE = false, GREEN = 2, SPECIALKEY = true, WORLDDUNGEON = false, WORLDRAID = false, WORLDBG = false, WORLDUNCHECK = nil, SPAM = true, SHIFTSPLIT = true, REZ = true, GOSSIP = true, SALVA = false}
 
 LP_VERSION = "5.00" --UPDATE THIS MANUALLY! This is NOT used, but hey, it's at top
 
@@ -95,12 +95,14 @@ local LazyPigMenuStrings = {
 		[30]= "GuildMates",
 		[31]= "Friends",
 		[32]= "Strangers",
+		[33]= "Idle while in BG or Queue",
 		[40]= "Show Friends",
 		[41]= "Show Enemies",
 		[42]= "Hide if Unchecked",
-		[50]= "Enter BattleGround",
-		[51]= "Leave BattleGround",
-		[52]= "Queue BattleGround",
+		[50]= "Enter BG",
+		[51]= "Leave BG",
+		[52]= "Queue BG",
+		[53]= "Auto Release",
 		[60]= "Always",
 		[61]= "Warrior Shield/Druid Bear",
 		[90]= "Summon Auto Accept",
@@ -345,7 +347,7 @@ function LazyPig_OnEvent(event)
 		local LP_VERSION = GetAddOnMetadata("_LazyPig", "Version")
 		local LP_AUTHOR = GetAddOnMetadata("_LazyPig", "Author")
 		
-		DEFAULT_CHAT_FRAME:AddMessage(LP_TITLE .. " v" .. LP_VERSION .. " by " .."|cff6969FF".. LP_AUTHOR .."|cffffffff".. " loaded, type".."|cff00ff00".." /lp".."|cffffffff for options")
+		DEFAULT_CHAT_FRAME:AddMessage(LP_TITLE .. " v" .. LP_VERSION .. " by " .."|cffFF0066".. LP_AUTHOR .."|cffffffff".. " loaded, type".."|cff00eeee".." /lp".."|cffffffff for options")
 	elseif (event == "PLAYER_LOGIN") then
 	--if (event == "PLAYER_ENTERING_WORLD") then
 	--	this:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -379,6 +381,7 @@ function LazyPig_OnEvent(event)
 		this:RegisterEvent("BANKFRAME_CLOSED")
 		this:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 		this:RegisterEvent("PLAYER_UNGHOST")
+		this:RegisterEvent("PLAYER_DEAD")
 		this:RegisterEvent("PLAYER_AURAS_CHANGED")
 		this:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
 		this:RegisterEvent("UNIT_INVENTORY_CHANGED")
@@ -415,6 +418,11 @@ function LazyPig_OnEvent(event)
 			duel_active = nil
 			CancelDuel()
 			UIErrorsFrame:AddMessage(arg1.." - Duel Cancelled")
+		end	
+	
+	elseif(event == "PLAYER_DEAD") then
+		if LPCONFIG.RBG and LazyPig_BG() then
+			RepopMe();
 		end	
 	
 	elseif(event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_UNGHOST") then
@@ -600,13 +608,15 @@ function LazyPig_OnEvent(event)
 		LazyPig_AutoSummon();
 			
 	elseif(event == "PARTY_INVITE_REQUEST") then
-		if LPCONFIG.GINV and IsGuildMate(arg1) or LPCONFIG.FINV and IsFriend(arg1) or not IsGuildMate(arg1) and not IsFriend(arg1) and LPCONFIG.SINV then
+		local check1 = not LPCONFIG.DINV or LPCONFIG.DINV and not LazyPig_BG() and not LazyPig_Queue()
+		local check2 = LPCONFIG.GINV and IsGuildMate(arg1) or LPCONFIG.FINV and IsFriend(arg1) or not IsGuildMate(arg1) and not IsFriend(arg1) and LPCONFIG.SINV
+		if check1 and check2 then
 			AcceptGroupInvite();
 		end
 	elseif(event == "RESURRECT_REQUEST" and LPCONFIG.REZ) then
 		UIErrorsFrame:AddMessage(arg1.." - Resurrection")
 		TargetByName(arg1, true)
-		if GetCorpseRecoveryDelay() == 0 and (LazyPig_Raid() or LazyPig_Dungeon()) and UnitIsPlayer("target") and UnitIsVisible("target") and not UnitAffectingCombat("target") then
+		if GetCorpseRecoveryDelay() == 0 and (LazyPig_Raid() or LazyPig_Dungeon() or LazyPig_BG()) and UnitIsPlayer("target") and UnitIsVisible("target") and not UnitAffectingCombat("target") then
 			AcceptResurrect()
 			StaticPopup_Hide("RESURRECT_NO_TIMER"); 
 			StaticPopup_Hide("RESURRECT_NO_SICKNESS");
@@ -1169,6 +1179,16 @@ function LazyPig_BG()
 	return false
 end
 
+function LazyPig_Queue()
+	for i=1, MAX_BATTLEFIELD_QUEUES do
+		local status, mapName, instanceID = GetBattlefieldStatus(i);	
+		if(status == "confirm" or status == "active") then
+			return true
+		end
+	end
+	return nil
+end
+
 function LazyPig_EndSplit()
 	timer_split = nil
 	tmp_splitval = 1
@@ -1544,12 +1564,14 @@ function LazyPig_GetOption(num)
 	or num == 30 and LPCONFIG.GINV
 	or num == 31 and LPCONFIG.FINV
 	or num == 32 and LPCONFIG.SINV
+	or num == 33 and LPCONFIG.DINV
 	or num == 40 and LPCONFIG.FPLATE
 	or num == 41 and LPCONFIG.EPLATE
 	or num == 42 and LPCONFIG.HPLATE 
 	or num == 50 and LPCONFIG.EBG
 	or num == 51 and LPCONFIG.LBG
 	or num == 52 and LPCONFIG.QBG
+	or num == 53 and LPCONFIG.RBG
 	or num == 60 and LPCONFIG.SALVA == 1
 	or num == 61 and LPCONFIG.SALVA == 2
 	or num == 90 and LPCONFIG.SUMM
@@ -1651,6 +1673,9 @@ function LazyPig_SetOption(num)
 	elseif num == 32 then 
 		LPCONFIG.SINV = true
 		if not checked then LPCONFIG.SINV = nil end
+	elseif num == 33 then 
+		LPCONFIG.DINV = true
+		if not checked then LPCONFIG.DINV = nil end	
 	elseif num == 40 then 								--fixed
 		LPCONFIG.FPLATE = true
 		if not checked then LPCONFIG.FPLATE = nil end
@@ -1685,7 +1710,10 @@ function LazyPig_SetOption(num)
 		if not checked then LPCONFIG.LBG = nil end
 	elseif num == 52 then 
 		LPCONFIG.QBG = true
-		if not checked then LPCONFIG.QBG = nil end	
+		if not checked then LPCONFIG.QBG = nil end
+	elseif num == 53 then 
+		LPCONFIG.RBG = true
+		if not checked then LPCONFIG.RBG = nil end		
 	elseif num == 60 then
 		LPCONFIG.SALVA = 1
 		if not checked then LPCONFIG.SALVA = nil end
@@ -1906,20 +1934,25 @@ function LazyPig_ShowBindings(bind, fs, desc)
 end
 
 function LazyPig_ChatFrame_OnEvent(event)
-	if LPCONFIG.SPAM and arg2 and arg2 ~= GetUnitName("player") and (event == "CHAT_MSG_SAY" or event == "CHAT_MSG_CHANNEL" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_EMOTE" and not (IsGuildMate(arg2) or IsFriend(arg2))) then
-		
-		local time = GetTime()
-		local index = ChatMessage["INDEX"]
-		
-		for blockindex,blockmatch in pairs(ChatMessage[index]) do
-			local findmatch1 = (blockmatch + 70) > time --70s delay
-			local findmatch2 = blockindex == arg1 
-			if findmatch1 and findmatch2 then 
-				return
+	if LPCONFIG.SPAM then
+		if event == "CHAT_MSG_LOOT" and (string.find(arg1 ,"selected") and (string.find(arg1 ,"Bijou") or string.find(arg1 ,"Coin") or string.find(arg1 ,"Scarab") or string.find(arg1 ,"Idol"))) then 
+			return
+			
+		elseif arg2 and arg2 ~= GetUnitName("player") and (event == "CHAT_MSG_SAY" or event == "CHAT_MSG_CHANNEL" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_EMOTE" and not (IsGuildMate(arg2) or IsFriend(arg2))) then
+			
+			local time = GetTime()
+			local index = ChatMessage["INDEX"]
+			
+			for blockindex,blockmatch in pairs(ChatMessage[index]) do
+				local findmatch1 = (blockmatch + 70) > time --70s delay
+				local findmatch2 = blockindex == arg1 
+				if findmatch1 and findmatch2 then 
+					return
+				end
 			end
+			ChatMessage[index][arg1] = time		
 		end
-		ChatMessage[index][arg1] = time		
-	end	
+	end
 	
 	Original_ChatFrame_OnEvent(event);
 end
@@ -1999,4 +2032,11 @@ function LazyPig_Duel_EFC()
 			StartDuel(GetUnitName("target")) 
 		end
 	end	
+end
+
+
+function aaa()
+PlayerFrame:Hide()
+
+
 end

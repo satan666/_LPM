@@ -1,5 +1,5 @@
 local CheckBoxTables = {
-	["Green Roll [Ctrl-Alt]"] = {
+	["Green Items Roll [Ctrl-Alt]"] = {
 		[0] = "LazyPigCheckboxGroupGreedRoll",
 		[1] = { "LazyPigCheckbox00", "Need" },
 		[2] = { "LazyPigCheckbox01", "Greed" },
@@ -25,10 +25,11 @@ local CheckBoxTables = {
 		[0] = "LazyPigCheckboxGroupBGAutomation",
 		[1] = { "LazyPigCheckbox50", "Enter Battleground", "Enter the Battleground as soon as the queue popup" },
 		[2] = { "LazyPigCheckbox51", "Leave Battleground", "Leave the Battleground as soon as it finish"},
-		[3] = { "LazyPigCheckbox52", "Queue Battleground", "Join the queue as soon as the BattleMaster is right-clicked" }
+		[3] = { "LazyPigCheckbox52", "Queue Battleground", "Join the queue as soon as the BattleMaster is right-clicked" },
+		[4] = { "LazyPigCheckbox53", "Auto Release", "Auto Accept Release in BG" }
 	},
 	
-	["Intelligent Salvation Remover"] = {
+	["Smart Salvation Remover"] = {
 		[0] = "LazyPigCheckboxGroupSalvationRemover",
 		[1] = { "LazyPigCheckbox60", "Always" },
 		[2] = { "LazyPigCheckbox61", "Warrior Shield/Druid Bear" },
@@ -45,7 +46,8 @@ local CheckBoxTables = {
 		[0] = "LazyPigCheckboxGroupGroupInvite",
 		[1] = { "LazyPigCheckbox30", "GuildMates" },
 		[2] = { "LazyPigCheckbox31", "Friends" },
-		[3] = { "LazyPigCheckbox32", "Strangers" }
+		[3] = { "LazyPigCheckbox32", "Strangers" },
+		[4] = { "LazyPigCheckbox33", "No Auto Accept Invites while in BattleGround or Queue" }
 	},
 
 	["Single Choice Rules"] = {
@@ -128,7 +130,7 @@ function LazyPig_CreateOptionsFrame()
 	frame:SetScale(.81)
 
 	frame:SetWidth(480)
-	frame:SetHeight(380)
+	frame:SetHeight(389)
 	
 	frame:SetPoint("TOPLEFT", nil, "TOPLEFT", 250, -50)
 	frame:SetBackdrop( {
@@ -214,7 +216,7 @@ function LazyPig_CreateOptionsFrame()
 		end
 	end)
 
-	local str = "Green Roll [Ctrl-Alt]"
+	local str = "Green Items Roll [Ctrl-Alt]"
 	frame.cbgroup_greedroll = CheckBoxGroup(frame, 20, -45, str, CheckBoxTables[str])
 	
 	local str = "Zul'Gurub Roll Automation"
@@ -227,16 +229,16 @@ function LazyPig_CreateOptionsFrame()
 	frame.cbgroup_bgautomation = CheckBoxGroup(frame, 20, -240, str, CheckBoxTables[str])
 	
 	local str = "Nameplates Display Rules"
-	frame.cbgroup_nameplates = CheckBoxGroup(frame, 20, -300, str, CheckBoxTables[str])
+	frame.cbgroup_nameplates = CheckBoxGroup(frame, 20, -313, str, CheckBoxTables[str])
 	
-	local str = "Intelligent Salvation Remover"
+	local str = "Smart Salvation Remover"
 	frame.cbgroup_salvationremover = CheckBoxGroup(frame, 250, -45, str, CheckBoxTables[str])
 
 	local str = "Group Invite Accept Rules"
 	frame.cbgroup_groupinvite = CheckBoxGroup(frame, 250, -90, str, CheckBoxTables[str])
 
 	local str = "Single Choice Rules"
-	frame.cbgroup_singlechoise = CheckBoxGroup(frame, 250, -150, str, CheckBoxTables[str])
+	frame.cbgroup_singlechoise = CheckBoxGroup(frame, 250, -165, str, CheckBoxTables[str])
 
 	return frame
 
