@@ -1,13 +1,23 @@
 
 LPMULTIBOX_UI = {
-    TPF_LOCK = false,
-    TPF_SHOW = true,
-    TPF_MINI = false,
-    TPF_BLIZZPLAYER = false,
-    TPF_BLIZZPARTY = false,
-    TPF_SCALE = 1.00,
-    TPF_PADDING = 3,
-    TPF_BGALPHA = 0.37,
+    TUI_SOLOPARTY_SHOW = true,
+    TUI_MINIFRAME_SHOW = false,
+    TUI_PARTYFRAME_SHOW = true,
+    TUI_RAIDFRAME_SHOW = false,
+    TUI_PARTYINRAID = false,
+    TUI_PARTYPETFRAME_SHOW = false,
+
+    TUI_BLIZZARDPLAYER_HIDE = false,
+    TUI_BLIZZARDPARTY_HIDE = false,
+
+    TUI_PARTYFRAME_LOCK = false,
+    TUI_PARTYPETFRAME_LOCK = true,
+    TUI_RAIDFRAME_LOCK = false,
+
+    TUI_PADDING = 3,
+    TUI_SCALE = 1.00,
+    TUI_BGALPHA = 0.37,
+
     LF_LOCK = true,
     LF_SCALE = 1.00,
 }
@@ -152,3 +162,111 @@ function LPM_DataStringDecode(str)
     return count, unpack(vars)
 end
 
+local Original_PlayerFrame_Update = PlayerFrame_Update
+local Original_PlayerFrame_OnEvent = PlayerFrame_OnEvent
+local Original_PlayerFrame_OnUpdate = PlayerFrame_OnUpdate
+
+function LPM_HideBlizzardPlayerFrames(hide)
+    local frame = getglobal("PlayerFrame")
+    if hide then
+        PlayerFrame_Update = function() end
+        PlayerFrame_OnEvent = function() end
+        PlayerFrame_OnUpdate = function() end
+        frame:Hide()
+        frame:RegisterEvent("UNIT_LEVEL");
+        frame:RegisterEvent("UNIT_COMBAT");
+        frame:RegisterEvent("UNIT_FACTION");
+        frame:RegisterEvent("UNIT_MAXMANA");
+        frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+        frame:RegisterEvent("PLAYER_ENTER_COMBAT");
+        frame:RegisterEvent("PLAYER_LEAVE_COMBAT");
+        frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+        frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+        frame:RegisterEvent("PLAYER_UPDATE_RESTING");
+        frame:RegisterEvent("PARTY_MEMBERS_CHANGED");
+        frame:RegisterEvent("PARTY_LEADER_CHANGED");
+        frame:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
+        frame:RegisterEvent("RAID_ROSTER_UPDATE");
+    else
+        PlayerFrame_Update = Original_PlayerFrame_Update
+        PlayerFrame_OnEvent = Original_PlayerFrame_OnEvent
+        PlayerFrame_OnUpdate = Original_PlayerFrame_OnUpdate
+        frame:Show()
+        frame:RegisterEvent("UNIT_LEVEL");
+        frame:RegisterEvent("UNIT_COMBAT");
+        frame:RegisterEvent("UNIT_FACTION");
+        frame:RegisterEvent("UNIT_MAXMANA");
+        frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+        frame:RegisterEvent("PLAYER_ENTER_COMBAT");
+        frame:RegisterEvent("PLAYER_LEAVE_COMBAT");
+        frame:RegisterEvent("PLAYER_REGEN_DISABLED");
+        frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+        frame:RegisterEvent("PLAYER_UPDATE_RESTING");
+        frame:RegisterEvent("PARTY_MEMBERS_CHANGED");
+        frame:RegisterEvent("PARTY_LEADER_CHANGED");
+        frame:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
+        frame:RegisterEvent("RAID_ROSTER_UPDATE");
+    end
+    --  Proper "hiding" should include these line as well
+    --frame:UnregisterAllEvents()
+    --getglobal("PartyMemberFrame" .. num .. "HealthBar"):UnregisterAllEvents()
+    --getglobal("PartyMemberFrame" .. num .. "ManaBar"):UnregisterAllEvents()
+    --frame:ClearAllPoints()
+    --frame:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 50)
+end
+
+local Original_ShowPartyFrame = ShowPartyFrame
+local Original_HidePartyFrame = HidePartyFrame
+local Original_PartyMemberFrame_OnEvent = PartyMemberFrame_OnEvent
+local Original_PartyMemberFrame_OnUpdate = PartyMemberFrame_OnUpdate
+
+function LPM_HideBlizzardPartyFrames(hide)
+    if hide then
+        ShowPartyFrame = function() end  -- Hide Blizz stuff
+        HidePartyFrame = function() end
+        PartyMemberFrame_OnEvent = function() end
+        PartyMemberFrame_OnUpdate = function() end
+        for num = 1, 4 do
+            if UnitInParty("party" .. num) then
+                local frame = getglobal("PartyMemberFrame"..num)
+                
+                frame:UnregisterEvent("PARTY_MEMBERS_CHANGED");
+                frame:UnregisterEvent("PARTY_LEADER_CHANGED");
+                frame:UnregisterEvent("PARTY_MEMBER_ENABLE");
+                frame:UnregisterEvent("PARTY_MEMBER_DISABLE");
+                frame:UnregisterEvent("PARTY_LOOT_METHOD_CHANGED");
+                frame:UnregisterEvent("UNIT_FACTION");
+                frame:UnregisterEvent("UNIT_AURA");
+                frame:UnregisterEvent("UNIT_PET");
+                frame:UnregisterEvent("VARIABLES_LOADED");
+                frame:Hide()
+            end
+        end
+    else
+        ShowPartyFrame = Original_ShowPartyFrame
+        HidePartyFrame = Original_HidePartyFrame
+        PartyMemberFrame_OnEvent = Original_PartyMemberFrame_OnEvent
+        PartyMemberFrame_OnUpdate = PartyMemberFrame_OnUpdate
+        for num = 1, 4 do
+            if UnitInParty("party" .. num) then
+                local frame = getglobal("PartyMemberFrame"..num)
+                frame:RegisterEvent("PARTY_MEMBERS_CHANGED");
+                frame:RegisterEvent("PARTY_LEADER_CHANGED");
+                frame:RegisterEvent("PARTY_MEMBER_ENABLE");
+                frame:RegisterEvent("PARTY_MEMBER_DISABLE");
+                frame:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
+                frame:RegisterEvent("UNIT_FACTION");
+                frame:RegisterEvent("UNIT_AURA");
+                frame:RegisterEvent("UNIT_PET");
+                frame:RegisterEvent("VARIABLES_LOADED");
+                frame:Show()
+            end
+        end
+    end
+        --  Proper "hiding" should include these line as well
+        --frame:UnregisterAllEvents()
+        --getglobal("PlayerFrameHealthBar"):UnregisterAllEvents()
+        --getglobal("PlayerFrameManaBar"):UnregisterAllEvents()
+        --frame:ClearAllPoints()
+        --frame:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 50)
+end

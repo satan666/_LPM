@@ -1,24 +1,20 @@
 
-local LPM_UI_CONSTANT = {
-	-- Team Party Frame --> TPF
-	TPF_UNITFRAME_PADDING = 3,
-	TPF_FRAME_SCALE = 1.0,
-	TPF_FRAME_BGALPHA = 0.37,
+LPM_UI_SETTINGS = {
+	BG_TEXTURE_FILE = "Interface\\ChatFrame\\ChatFrameBackground",
+	STATUSBAR_TEXTURE_FILE = "Interface\\AddOns\\_LazyPigMultibox\\Textures\\StatusBar",
+	FONT_FILE = "Fonts\\ARIALN.TTF",
+}
 
-	TPF_FRAME_BGFILE = "Interface\\ChatFrame\\ChatFrameBackground",
-	TPF_UNITFRAME_BGFILE = "Interface\\ChatFrame\\ChatFrameBackground",
-	TPF_UNITFRAME_SBFILE = "Interface\\AddOns\\_LazyPigMultibox\\Textures\\StatusBar",
-	
-	TPF_UNITFRAME_FONT = "Fonts\\ARIALN.TTF",
+LPM_UI_SETTINGS.PARTYFRAME = {
+	HEADER = 12,
+	FOOTER = 4,
+	WIDTH = 108,
+	HEIGHT = 235,
+}
 
-	TPF_UNITFRAME_WIDTH = 100,
-	TPF_UNITFRAME_HEIGHT = 42,
-
-	TPF_FRAME_HEADER = 12,
-	TPF_FRAME_FOOTER = 4,
-	TPF_FRAME_WIDTH = 108,
-	--TPF_FRAME_HEIGHT = ( LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT + LPM_UI_CONSTANT.TPF_UNITFRAME_PADDING ) * 5 + LPM_UI_CONSTANT.TPF_FRAME_HEADER + LPM_UI_CONSTANT.TPF_FRAME_FOOTER, --249!
-	TPF_FRAME_HEIGHT = 235
+LPM_UI_SETTINGS.UNITFRAME = {
+	WIDTH = 100,
+	HEIGHT = 42,
 }
 
 local ClassColor = {
@@ -116,51 +112,8 @@ local function SlaveRestIcon(rest, frame)
 	end
 end
 
-local function HideBlizzardPlayerFrames(hide)
-	local frame = getglobal("PlayerFrame")
-	if hide then
-		frame:Hide()
-	else
-		frame:Show()
-	end
-	--  Proper "hiding" should include these line as well
-	--frame:UnregisterAllEvents()
-	--getglobal("PartyMemberFrame" .. num .. "HealthBar"):UnregisterAllEvents()
-	--getglobal("PartyMemberFrame" .. num .. "ManaBar"):UnregisterAllEvents()
-	--frame:ClearAllPoints()
-	--frame:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 50)
-end
-LPM_HideBlizzardPlayerFrames = HideBlizzardPlayerFrames
-
-local function HideBlizzardPartyFrames(hide)
-	--ShowPartyFrame = function() end  -- Hide Blizz stuff
-	--HidePartyFrame = ShowPartyFrame
-	if hide then
-		for num = 1, 4 do
-			if UnitInParty("party" .. num) then
-				local frame = getglobal("PartyMemberFrame"..num)
-				frame:Hide()
-			end
-		end
-	else
-		for num = 1, 4 do
-			if UnitInParty("party" .. num) then
-				local frame = getglobal("PartyMemberFrame"..num)
-				frame:Show()
-			end
-		end
-	end
-		--  Proper "hiding" should include these line as well
-		--frame:UnregisterAllEvents()
-		--getglobal("PlayerFrameHealthBar"):UnregisterAllEvents()
-		--getglobal("PlayerFrameManaBar"):UnregisterAllEvents()
-		--frame:ClearAllPoints()
-		--frame:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 50)
-end
-LPM_HideBlizzardPartyFrames = HideBlizzardPartyFrames
-
 local function GetPartyUnitFrame(name)
-	local frame = getglobal("LPM_TeamPartyFrame")
+	local frame = getglobal("LPM_PartyFrame")
 	local unitframe = nil
 	for k,v in pairs(frame.partyunitframe) do
 		if UnitName(k) == name then
@@ -382,31 +335,32 @@ local function HandleUIAddonMessage(sender, msg)
 end
 
 local function TileTeamPartyUnitFrame2(hParent, sUnit)
-	local n, x, y
+	-- offset calculation for every party member
+	local n, offset_x, offset_y
 	_, _, n = string.find(sUnit, "(%d+)")
-	x = math.floor((LPM_UI_CONSTANT.TPF_FRAME_WIDTH - LPM_UI_CONSTANT.TPF_UNITFRAME_WIDTH) / 2)
+	offset_x = math.floor((LPM_UI_SETTINGS.PARTYFRAME.WIDTH - LPM_UI_SETTINGS.UNITFRAME.WIDTH) / 2)
 	if n then
-		y = -(LPM_UI_CONSTANT.TPF_FRAME_HEADER + (LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT + LPM_UI_CONSTANT.TPF_UNITFRAME_PADDING) * n)
+		offset_y = -(LPMULTIBOX_UI.TUI_PADDING)
 	else
-		y = -(LPM_UI_CONSTANT.TPF_FRAME_HEADER)
+		offset_y = -(LPM_UI_SETTINGS.PARTYFRAME.HEADER)
 	end
 
-	local btn = CreateFrame("Button", "LPM_TeamPartyUnitFrame_" .. sUnit, hParent)
+	local btn = CreateFrame("Button", "LPM_PartyUnitFrame_" .. sUnit, hParent)
 
 	if sUnit == 'player' then
-		btn:SetPoint("TOPLEFT", hParent, "TOPLEFT", x, -(LPM_UI_CONSTANT.TPF_FRAME_HEADER))
+		btn:SetPoint("TOPLEFT", hParent, "TOPLEFT", offset_x, offset_y)
 	elseif sUnit == 'party1' then
-		btn:SetPoint("TOPLEFT", hParent.partyunitframe['player'], "BOTTOMLEFT", 0, -(LPMULTIBOX_UI.TPF_PADDING))
+		btn:SetPoint("TOPLEFT", hParent.partyunitframe['player'], "BOTTOMLEFT", 0, offset_y)
 	else
-		btn:SetPoint("TOPLEFT", hParent.partyunitframe['party' .. n-1], "BOTTOMLEFT", 0, -(LPMULTIBOX_UI.TPF_PADDING))
+		btn:SetPoint("TOPLEFT", hParent.partyunitframe['party' .. n-1], "BOTTOMLEFT", 0, offset_y)
 	end
 
-	btn:SetWidth(LPM_UI_CONSTANT.TPF_UNITFRAME_WIDTH)
-	btn:SetHeight(LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT)
+	btn:SetWidth(LPM_UI_SETTINGS.UNITFRAME.WIDTH)
+	btn:SetHeight(LPM_UI_SETTINGS.UNITFRAME.HEIGHT)
 	btn:EnableMouse(true)
 	btn:RegisterForClicks("LeftButtonUp")
 	btn:SetBackdrop({ 
-		bgFile = LPM_UI_CONSTANT.TPF_UNITFRAME_BGFILE,
+		bgFile = LPM_UI_SETTINGS.BG_TEXTURE_FILE,
 	})
 	btn:SetBackdropColor(.1, .1, .1, .35)
 
@@ -473,7 +427,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_offline:SetShadowColor(0, 0, 0)
 	fs_offline:SetShadowOffset(0.8, -0.8)
 	fs_offline:SetTextColor(.91, .91, .91)
-	fs_offline:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 20)
+	fs_offline:SetFont(LPM_UI_SETTINGS.FONT_FILE, 20)
 	fs_offline:SetText("OFFLINE")
 	
 	btn.fs_offline = fs_offline
@@ -500,7 +454,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_follow:SetAllPoints()
 	fs_follow:SetShadowColor(0, 0, 0)
 	fs_follow:SetShadowOffset(0.8, -0.8)
-	fs_follow:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 12)
+	fs_follow:SetFont(LPM_UI_SETTINGS.FONT_FILE, 12)
 	fs_follow:SetText("NOT FOLLOWING")
 	
 	btn.fs_follow = fs_follow
@@ -527,7 +481,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_lost:SetAllPoints()
 	fs_lost:SetShadowColor(0, 0, 0)
 	fs_lost:SetShadowOffset(0.8, -0.8)
-	fs_lost:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 20)
+	fs_lost:SetFont(LPM_UI_SETTINGS.FONT_FILE, 20)
 	fs_lost:SetText("LOST!")
 	
 	btn.fs_lost = fs_lost
@@ -633,7 +587,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	btn.box_healthbar = box_healthbar
 
 	local sb_healthbar = CreateFrame("StatusBar", nil, btn)
-	sb_healthbar:SetStatusBarTexture(LPM_UI_CONSTANT.TPF_UNITFRAME_SBFILE)
+	sb_healthbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_healthbar:SetStatusBarColor(.1, .1, .1, 1)
 	sb_healthbar:SetPoint("TOPLEFT", box_healthbar, "TOPLEFT", 2, -2)
 	sb_healthbar:SetPoint("BOTTOMRIGHT", box_healthbar, "BOTTOMRIGHT", -2, 1)
@@ -646,7 +600,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_name:SetShadowColor(0, 0, 0)
 	fs_name:SetShadowOffset(0.8, -0.8)
 	fs_name:SetTextColor(.91, .91, .91)
-	fs_name:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 11)
+	fs_name:SetFont(LPM_UI_SETTINGS.FONT_FILE, 11)
 	fs_name:SetText("")
 
 	btn.fs_name = fs_name
@@ -657,7 +611,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_health:SetShadowColor(0, 0, 0)
 	fs_health:SetShadowOffset(0.8, -0.8)
 	fs_health:SetTextColor(.91, .91, .91)
-	fs_health:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 9)
+	fs_health:SetFont(LPM_UI_SETTINGS.FONT_FILE, 9)
 	
 	btn.fs_health = fs_health
 
@@ -674,7 +628,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	btn.box_powerbar = box_powerbar
 
 	local sb_powerbar = CreateFrame("StatusBar", nil, btn)
-	sb_powerbar:SetStatusBarTexture(LPM_UI_CONSTANT.TPF_UNITFRAME_SBFILE)
+	sb_powerbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_powerbar:SetStatusBarColor(.1, .1, .1, 1)
 	sb_powerbar:SetPoint("TOPLEFT", box_powerbar, "TOPLEFT", 2, -1)
 	sb_powerbar:SetPoint("BOTTOMRIGHT", box_powerbar, "BOTTOMRIGHT", -2, 1)
@@ -687,7 +641,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_power:SetShadowColor(0, 0, 0)
 	fs_power:SetShadowOffset(0.8, -0.8)
 	fs_power:SetTextColor(.91, .91, .91)
-	fs_power:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 6)
+	fs_power:SetFont(LPM_UI_SETTINGS.FONT_FILE, 6)
 	
 	btn.fs_power = fs_power
 
@@ -704,7 +658,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	btn.box_expbar = box_expbar
 
 	local sb_expbar = CreateFrame("StatusBar", nil, btn)
-	sb_expbar:SetStatusBarTexture(LPM_UI_CONSTANT.TPF_UNITFRAME_SBFILE)
+	sb_expbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_expbar:SetStatusBarColor(0.0, 0.63, 0.13, 1.0)
 	sb_expbar:SetPoint("TOPLEFT", box_expbar, "TOPLEFT", 2, -2)
 	sb_expbar:SetPoint("BOTTOMRIGHT", box_expbar, "BOTTOMRIGHT", -2, 3)
@@ -713,7 +667,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	btn.sb_expbar = sb_expbar
 
 	local sb_restbar = CreateFrame("StatusBar", nil, btn)
-	sb_restbar:SetStatusBarTexture(LPM_UI_CONSTANT.TPF_UNITFRAME_SBFILE)
+	sb_restbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_restbar:SetStatusBarColor(0.37, 0.37, 0.77, 1.0)
 	sb_restbar:SetPoint("TOPLEFT", box_expbar, "TOPLEFT", 2, -3)
 	sb_restbar:SetPoint("BOTTOMRIGHT", box_expbar, "BOTTOMRIGHT", -2, 4)
@@ -736,7 +690,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_level:SetShadowColor(0, 0, 0)
 	fs_level:SetShadowOffset(0.8, -0.8)
 	fs_level:SetTextColor(.91, .91, .91)
-	fs_level:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 7)
+	fs_level:SetFont(LPM_UI_SETTINGS.FONT_FILE, 7)
 	fs_level:Hide()
 
 	btn.fs_level = fs_level
@@ -746,7 +700,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_exp:SetShadowColor(0, 0, 0)
 	fs_exp:SetShadowOffset(0.6, -0.6)
 	fs_exp:SetTextColor(.91, .91, .91)
-	fs_exp:SetFont(LPM_UI_CONSTANT.TPF_UNITFRAME_FONT, 6)
+	fs_exp:SetFont(LPM_UI_SETTINGS.FONT_FILE, 6)
 
 	btn.fs_exp = fs_exp
 
@@ -1129,7 +1083,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 end
 
 local function UpdateTeamPartyFrame2()
-	local frame = getglobal("LPM_TeamPartyFrame")
+	local frame = getglobal("LPM_PartyFrame")
 
 	local partymembers = GetNumPartyMembers()
 
@@ -1137,8 +1091,11 @@ local function UpdateTeamPartyFrame2()
 		frame:Hide()
 		return frame
 	else
-		local teamframe_partymembers_offsetH = (LPM_UI_CONSTANT.TPF_UNITFRAME_PADDING + LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT) * partymembers
-		frame:SetHeight(LPM_UI_CONSTANT.TPF_FRAME_HEADER + LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT + LPM_UI_CONSTANT.TPF_FRAME_FOOTER + teamframe_partymembers_offsetH)
+		local player_offsetH = LPM_UI_SETTINGS.UNITFRAME.HEIGHT
+		local partyframe_decorationH = LPM_UI_SETTINGS.PARTYFRAME.HEADER + LPM_UI_SETTINGS.PARTYFRAME.FOOTER
+		local partymembers_offsetH = (LPMULTIBOX_UI.TUI_PADDING + LPM_UI_SETTINGS.UNITFRAME.HEIGHT) * partymembers
+	
+		frame:SetHeight(player_offsetH + partyframe_decorationH + partymembers_offsetH)
 	end
 
 	-- Let's fill the LPM_TeamTable table with infos!
@@ -1184,23 +1141,19 @@ local function UpdateTeamPartyFrame2()
 end
 
 function LPM_CreateTeamPartyFrame2()
-	LPM_UI_CONSTANT.TPF_UNITFRAME_PADDING = LPMULTIBOX_UI.TPF_PADDING
-	LPM_UI_CONSTANT.TPF_FRAME_SCALE = LPMULTIBOX_UI.TPF_SCALE
-	LPM_UI_CONSTANT.TPF_FRAME_BGALPHA = LPMULTIBOX_UI.TPF_BGALPHA
-
 	-- PartyFrame
-	local frame = CreateFrame("Frame", "LPM_TeamPartyFrame")
+	local frame = CreateFrame("Frame", "LPM_PartyFrame")
 	
-	frame:SetScale(LPM_UI_CONSTANT.TPF_FRAME_SCALE)
+	frame:SetScale(LPMULTIBOX_UI.TUI_SCALE)
 		
-	frame:SetWidth(LPM_UI_CONSTANT.TPF_FRAME_WIDTH)
-	frame:SetHeight(LPM_UI_CONSTANT.TPF_FRAME_HEIGHT)
+	frame:SetWidth(LPM_UI_SETTINGS.PARTYFRAME.WIDTH)
+	frame:SetHeight(LPM_UI_SETTINGS.PARTYFRAME.HEIGHT)
 	
 	frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 110)
 	frame:SetBackdrop( {
-		bgFile = LPM_UI_CONSTANT.TPF_FRAME_BGFILE,
+		bgFile = LPM_UI_SETTINGS.BG_TEXTURE_FILE,
 	});
-	frame:SetBackdropColor(.01, .01, .01, LPM_UI_CONSTANT.TPF_FRAME_BGALPHA)
+	frame:SetBackdropColor(.01, .01, .01, LPMULTIBOX_UI.TUI_BGALPHA)
 
 	frame:SetMovable(true)
 	frame:EnableMouse(true)
@@ -1209,7 +1162,7 @@ function LPM_CreateTeamPartyFrame2()
 	frame:SetClampedToScreen(true)
 	frame:RegisterForDrag("LeftButton")
 	
-	if LPMULTIBOX_UI.TPF_LOCK then
+	if LPMULTIBOX_UI.TUI_PARTYFRAME_LOCK then
 		frame:SetMovable(false)
 		frame:RegisterForDrag()
 	else
@@ -1217,7 +1170,7 @@ function LPM_CreateTeamPartyFrame2()
 		frame:RegisterForDrag("LeftButton")
 	end
 
-	if LPMULTIBOX_UI.TPF_SHOW then
+	if LPMULTIBOX_UI.TUI_PARTYFRAME_SHOW then
 		frame:Show()
 	else
 		frame:Hide()
@@ -1279,8 +1232,8 @@ function LPM_CreateTeamPartyFrame2()
 				this:SetFrameStrata("FULLSCREEN_DIALOG")
 				--this:SetFrameStrata("FULLSCREEN")
 				--this:SetFrameStrata("DIALOG")
-				this:SetBackdropColor(.31, .31, .31, LPMULTIBOX_UI.TPF_BGALPHA)
-				this.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TPF_BGALPHA)
+				this:SetBackdropColor(.31, .31, .31, LPMULTIBOX_UI.TUI_BGALPHA)
+				this.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
 				this:StartMoving();
 				this.isMoving = true;
 			end
@@ -1290,8 +1243,8 @@ function LPM_CreateTeamPartyFrame2()
 		if arg1 == "LeftButton" and this.isMoving then
 			this:StopMovingOrSizing();
 			this:SetFrameStrata("MEDIUM")
-			this:SetBackdropColor(.1, .1, .1, LPMULTIBOX_UI.TPF_BGALPHA)
-			this.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TPF_BGALPHA)
+			this:SetBackdropColor(.1, .1, .1, LPMULTIBOX_UI.TUI_BGALPHA)
+			this.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
 			this.isMoving = false;
 		end
 	end)

@@ -390,7 +390,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	cb_lock:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight")
 	cb_lock:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	
-	if LPMULTIBOX_UI.TPF_LOCK then
+	if LPMULTIBOX_UI.TUI_PARTYFRAME_LOCK then
 		cb_lock:SetChecked(true)
 	else
 		cb_lock:SetChecked(false)
@@ -404,15 +404,15 @@ local function CreateTeamFrameOptionsFrame(hParent)
 
 	frame.cb_lock:SetScript("OnClick", function()
 		local status = this:GetChecked()
-		local frame = getglobal("LPM_TeamPartyFrame")
+		local frame = getglobal("LPM_PartyFrame")
 		if status then
 			frame:SetMovable(false)
 			frame:RegisterForDrag()
-			LPMULTIBOX_UI.TPF_LOCK = true
+			LPMULTIBOX_UI.TUI_PARTYFRAME_LOCK = true
 		else
 			frame:SetMovable(true)
 			frame:RegisterForDrag("LeftButton")
-			LPMULTIBOX_UI.TPF_LOCK = false
+			LPMULTIBOX_UI.TUI_PARTYFRAME_LOCK = false
 		end
 	end)
 	frame.cb_lock:SetScript("OnEnter", function()
@@ -445,7 +445,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	cb_show:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	--cb_toggle:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
-	if LPMULTIBOX_UI.TPF_SHOW then
+	if LPMULTIBOX_UI.TUI_PARTYFRAME_SHOW then
 		cb_show:SetChecked(true)
 	else
 		cb_show:SetChecked(false)
@@ -459,13 +459,13 @@ local function CreateTeamFrameOptionsFrame(hParent)
 
 	frame.cb_show:SetScript("OnClick", function()
 		local status = this:GetChecked()
-		local frame = getglobal("LPM_TeamPartyFrame")
+		local frame = getglobal("LPM_PartyFrame")
 		if status then
 			frame:Show()
-			LPMULTIBOX_UI.TPF_SHOW = true
+			LPMULTIBOX_UI.TUI_PARTYFRAME_SHOW = true
 		else
 			frame:Hide()
-			LPMULTIBOX_UI.TPF_SHOW = false
+			LPMULTIBOX_UI.TUI_PARTYFRAME_SHOW = false
 		end
 	end)
 	frame.cb_show:SetScript("OnEnter", function()
@@ -501,7 +501,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	cb_mini:Disable()
 	cbfs_mini:SetTextColor(.51, .51, .51, 1)
 	
-	if LPMULTIBOX_UI.TPF_MINI then
+	if LPMULTIBOX_UI.TUI_MINIFRAME_SHOW then
 		cb_mini:SetChecked(true)
 	else
 		cb_mini:SetChecked(false)
@@ -515,13 +515,13 @@ local function CreateTeamFrameOptionsFrame(hParent)
 
 	frame.cb_mini:SetScript("OnClick", function()
 		local status = this:GetChecked()
-		local frame = getglobal("LPM_TeamPartyFrame")
+		local frame = getglobal("LPM_MiniPartyFrame")
 		if status then
 			frame:Show()
-			LPMULTIBOX_UI.TPF_MINI = true
+			LPMULTIBOX_UI.TUI_MINIFRAME_SHOW = true
 		else
 			frame:Hide()
-			LPMULTIBOX_UI.TPF_MINI = false
+			LPMULTIBOX_UI.TUI_MINIFRAME_SHOW = false
 		end
 	end)
 	frame.cb_mini:SetScript("OnEnter", function()
@@ -554,7 +554,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	cb_blizzplayer:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	--cb_mini:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
-	if LPMULTIBOX_UI.TPF_BLIZZPLAYER then
+	if LPMULTIBOX_UI.TUI_BLIZZARDPLAYER_HIDE then
 		cb_blizzplayer:SetChecked(true)
 		LPM_HideBlizzardPlayerFrames(true)
 	else
@@ -571,11 +571,11 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	frame.cb_blizzplayer:SetScript("OnClick", function()
 		local status = this:GetChecked()
 		if status then
-			LPMULTIBOX_UI.TPF_BLIZZPLAYER = true
+			LPMULTIBOX_UI.TUI_BLIZZARDPLAYER_HIDE = true
 			LPM_DEBUG(" $*$ Blizzard Player Frame - Hidden")
 			LPM_HideBlizzardPlayerFrames(true)
 		else
-			LPMULTIBOX_UI.TPF_BLIZZPLAYER = false
+			LPMULTIBOX_UI.TUI_BLIZZARDPLAYER_HIDE = false
 			LPM_DEBUG(" $*$ Blizzard Player Frame - Shown")
 			LPM_HideBlizzardPlayerFrames(false)
 		end
@@ -610,7 +610,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	cb_blizzparty:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	--cb_mini:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
 	
-	if LPMULTIBOX_UI.TPF_BLIZZPARTY then
+	if LPMULTIBOX_UI.TUI_BLIZZARDPARTY_HIDE then
 		cb_blizzparty:SetChecked(true)
 		LPM_HideBlizzardPartyFrames(true)
 	else
@@ -627,11 +627,11 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	frame.cb_blizzparty:SetScript("OnClick", function()
 		local status = this:GetChecked()
 		if status then
-			LPMULTIBOX_UI.TPF_BLIZZPARTY = true
+			LPMULTIBOX_UI.TUI_BLIZZARDPARTY_HIDE = true
 			LPM_DEBUG(" $*$ Blizzard Party Frames should be now hidden!")
 			LPM_HideBlizzardPartyFrames(true)
 		else
-			LPMULTIBOX_UI.TPF_BLIZZPARTY = false
+			LPMULTIBOX_UI.TUI_BLIZZARDPARTY_HIDE = false
 			LPM_DEBUG(" $*$ Blizzard Party Frames - Shown")
 			LPM_HideBlizzardPartyFrames(false)
 		end
@@ -669,7 +669,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_scale:SetMinMaxValues(50, 150) 
 	sl_scale:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_scale:SetValue(LPMULTIBOX_UI.TPF_SCALE * 100)
+	sl_scale:SetValue(LPMULTIBOX_UI.TUI_SCALE * 100)
 	getglobal(sl_scale:GetName() .. "Text"):SetText(string.format("%4.2f", tostring(sl_scale:GetValue()/100)))
 	getglobal(sl_scale:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_scale:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
@@ -677,9 +677,9 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_scale:SetScript("OnValueChanged", function()
 		local value = this:GetValue()
 		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(value/100)))
-		local frame = getglobal("LPM_TeamPartyFrame")
+		local frame = getglobal("LPM_PartyFrame")
 		frame:SetScale(value/100)
-		LPMULTIBOX_UI.TPF_SCALE = value/100
+		LPMULTIBOX_UI.TUI_SCALE = value/100
 	end)
 
 	-- PADDING SLIDER
@@ -699,7 +699,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_padding:SetMinMaxValues(0, 100) 
 	sl_padding:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_padding:SetValue(LPMULTIBOX_UI.TPF_PADDING)
+	sl_padding:SetValue(LPMULTIBOX_UI.TUI_PADDING)
 	getglobal(sl_padding:GetName() .. "Text"):SetText(tostring(sl_padding:GetValue()))
 	getglobal(sl_padding:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_padding:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
@@ -707,11 +707,11 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_padding:SetScript("OnValueChanged", function()
 		local value = this:GetValue()
 		getglobal(this:GetName().."Text"):SetText(tostring(value))
-		LPMULTIBOX_UI.TPF_PADDING = value
+		LPMULTIBOX_UI.TUI_PADDING = value
 
 		-- Should I move this to LPM_TeamFrame.lua?
 		for i = 1, 4 do
-			local frame = getglobal("LPM_TeamPartyUnitFrame_party" .. i)
+			local frame = getglobal("LPM_PartyUnitFrame_party" .. i)
 			if i == 1 then
 				frame:SetPoint("TOPLEFT", frame:GetParent().partyunitframe['player'], "BOTTOMLEFT", 0, -value)
 			else
@@ -722,12 +722,12 @@ local function CreateTeamFrameOptionsFrame(hParent)
 		local partymembers = GetNumPartyMembers()
 		local theight
 		if partymembers > 0 then
-			--local teamframe_partymembers_offsetH = (value + LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT) * partymembers
-			local teamframe_partymembers_offsetH = (value + 42) * partymembers
-			--theight = LPM_UI_CONSTANT.TPF_FRAME_HEADER + LPM_UI_CONSTANT.TPF_UNITFRAME_HEIGHT + LPM_UI_CONSTANT.TPF_FRAME_FOOTER + teamframe_partymembers_offsetH)
-			theight = 12 + 42 + 4 + teamframe_partymembers_offsetH
+			local player_offsetH = LPM_UI_SETTINGS.UNITFRAME.HEIGHT
+			local partyframe_decorationH = LPM_UI_SETTINGS.PARTYFRAME.HEADER + LPM_UI_SETTINGS.PARTYFRAME.FOOTER
+			local partymembers_offsetH = (value + LPM_UI_SETTINGS.UNITFRAME.HEIGHT) * partymembers
+			theight = player_offsetH + partyframe_decorationH + partymembers_offsetH
 		end
-		local tframe = getglobal("LPM_TeamPartyFrame")
+		local tframe = getglobal("LPM_PartyFrame")
 		tframe:SetHeight(theight)
 	end)
 
@@ -748,7 +748,7 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_backgroundalpha:SetMinMaxValues(0, 100) 
 	sl_backgroundalpha:SetValueStep(1)
 	-- ADD A DEFAULT SOMEWHERE!
-	sl_backgroundalpha:SetValue(LPMULTIBOX_UI.TPF_BGALPHA * 100)
+	sl_backgroundalpha:SetValue(LPMULTIBOX_UI.TUI_BGALPHA * 100)
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetText(string.format("%4.2f", tostring(sl_backgroundalpha:GetValue()/100)))
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetJustifyH("RIGHT")
 	getglobal(sl_backgroundalpha:GetName() .. "Text"):SetPoint("RIGHT", -5, 0)
@@ -756,10 +756,10 @@ local function CreateTeamFrameOptionsFrame(hParent)
 	sl_backgroundalpha:SetScript("OnValueChanged", function(self, value)
 		local value = this:GetValue()
 		getglobal(this:GetName().."Text"):SetText(string.format("%4.2f", tostring(value/100)))
-		local frame = getglobal("LPM_TeamPartyFrame")
+		local frame = getglobal("LPM_PartyFrame")
 		frame:SetBackdropColor(.01, .01, .01, value/100)
 		frame.fs_title:SetTextColor(1, 1, 1, value/100)
-		LPMULTIBOX_UI.TPF_BGALPHA = value/100
+		LPMULTIBOX_UI.TUI_BGALPHA = value/100
 	end)
 
 	frame:SetScript("OnMouseDown", function()
