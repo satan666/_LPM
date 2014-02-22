@@ -8,7 +8,9 @@
 
 UI\LPM_Utils.lua
 UI\LPM_OptionFrame.lua
-UI\LPM_TeamFrame.lua
+UI\LPM_TeamUI.lua
+UI\LPM_PartyFrame.lua
+UI\LPM_PartyPetFrame.lua
 
 LazyPigMultibox.lua
 

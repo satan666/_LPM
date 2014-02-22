@@ -1,18 +1,28 @@
 
 LPMULTIBOX_UI = {
-    TUI_SOLOPARTY_SHOW = true,
-    TUI_MINIFRAME_SHOW = false,
     TUI_PARTYFRAME_SHOW = true,
+    TUI_PARTYSOLO_SHOW = true,
+    TUI_PARTYFRAME_LOCK = false,
+    TUI_PARTYFRAME_POINT = {
+        LEFT = 550,
+        BOTTOM = 70,
+    },
+
+    TUI_MINIFRAME_SHOW = false,
+    
+    TUI_PARTYPETFRAME_SHOW = true,
+    TUI_PARTYPETFRAME_LOCK = true,
+    TUI_PARTYPETFRAME_POINT = {
+        LEFT = 550,
+        BOTTOM = 70,
+    },
+
     TUI_RAIDFRAME_SHOW = false,
+    TUI_RAIDFRAME_LOCK = false,
     TUI_PARTYINRAID = false,
-    TUI_PARTYPETFRAME_SHOW = false,
 
     TUI_BLIZZARDPLAYER_HIDE = false,
     TUI_BLIZZARDPARTY_HIDE = false,
-
-    TUI_PARTYFRAME_LOCK = false,
-    TUI_PARTYPETFRAME_LOCK = true,
-    TUI_RAIDFRAME_LOCK = false,
 
     TUI_PADDING = 3,
     TUI_SCALE = 1.00,
@@ -20,6 +30,11 @@ LPMULTIBOX_UI = {
 
     LF_LOCK = true,
     LF_SCALE = 1.00,
+
+    OF_POINT = {
+        LEFT = 50,
+        BOTTOM = 300,
+    }
 }
 
 LPM_TeamTable = {

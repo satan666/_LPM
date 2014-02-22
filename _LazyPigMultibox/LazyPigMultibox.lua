@@ -301,7 +301,8 @@ function LazyPigMultibox_OnEvent()
 		this:RegisterEvent("CHAT_MSG_SYSTEM");
 		
 		LPM_OptionsFrame = LPM_CreateOptionsFrame()
-		LPM_TeamPartyFrame = LPM_CreateTeamPartyFrame2()
+		--LPM_TeamPartyFrame = LPM_CreateTeamPartyFrame2()
+		LPM_TeamUI_Init()
 		LPM_SendXPData()
 
 		LazyPigMultibox_MenuSet();

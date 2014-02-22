@@ -1,22 +1,4 @@
 
-LPM_UI_SETTINGS = {
-	BG_TEXTURE_FILE = "Interface\\ChatFrame\\ChatFrameBackground",
-	STATUSBAR_TEXTURE_FILE = "Interface\\AddOns\\_LazyPigMultibox\\Textures\\StatusBar",
-	FONT_FILE = "Fonts\\ARIALN.TTF",
-}
-
-LPM_UI_SETTINGS.PARTYFRAME = {
-	HEADER = 12,
-	FOOTER = 4,
-	WIDTH = 108,
-	HEIGHT = 235,
-}
-
-LPM_UI_SETTINGS.UNITFRAME = {
-	WIDTH = 100,
-	HEIGHT = 42,
-}
-
 local ClassColor = {
 	["UNKNOWN"]	= { { 0.51, 0.51, 0.51 }, "UNKNOWN" },
 	["DRUID"]	= { { 1.00, 0.49, 0.04 }, "Druid"   },
@@ -39,48 +21,7 @@ local PowerColor = {
 			[3] = { { 1.00, 1.00, 0.13 }, "Energy" 	},
 }
 
-local function PrintPartyUnitNames()
-	local n = GetNumPartyMembers()
-	local leader = GetPartyLeaderIndex()
-	LPM_DEBUG(" -- Party Leader Index: " .. leader)
-	for i = 1, 4 do
-		if GetPartyMember(i) then
-			if leader == i then
-				LPM_DEBUG(" Leader [party" .. i .. "]: " .. UnitName('party' ..i))
-			else
-				LPM_DEBUG(" Member [party" .. i .. "]: " .. UnitName('party' ..i))
-			end
-		else
-			LPM_DEBUG(" Null   [party" .. i .. "]")
-		end
-	end
-end
-
-local function PrintPartyUnitExp()
-	local n = GetNumPartyMembers()
-	local unit
-	for i = 0, 4 do
-		if i == 0 then
-			unit = 'player'
-		else
-			unit = GetPartyMember(i)
-			if unit then unit = 'party' .. unit end
-		end
-		if unit then
-			if LPM_TeamTable[unit] and LPM_TeamTable[unit].curr_xp and LPM_TeamTable[unit].rested_xp then
-				LPM_DEBUG("  '" .. unit .. "' - " .. LPM_TeamTable[unit].name .. " Exp: " .. LPM_TeamTable[unit].curr_xp .. " - Rested: " .. LPM_TeamTable[unit].rested_xp)
-			elseif LPM_TeamTable[unit] and LPM_TeamTable[unit].curr_xp then
-				LPM_DEBUG("  '" .. unit .. "' - " .. LPM_TeamTable[unit].name .. " Exp: " .. LPM_TeamTable[unit].curr_xp)
-			else
-				LPM_DEBUG("  '" .. unit .. "' - No Exp in LPM_TeamTable")
-			end
-		else
-			LPM_DEBUG("  'party" .. i .. "' not present")
-		end
-	end
-end
-
-local function SlaveFollowFrame(follow, frame)
+local function Member_FollowFrame(follow, frame)
 	if follow then
 		frame.frame_follow:Hide()
 	else
@@ -88,7 +29,7 @@ local function SlaveFollowFrame(follow, frame)
 	end
 end
 
-local function SlaveLostFrame(lost, frame)
+local function Member_LostFrame(lost, frame)
 	if lost then
 		frame.frame_lost:Hide()
 	else
@@ -96,7 +37,7 @@ local function SlaveLostFrame(lost, frame)
 	end
 end
 
-local function SlaveCombatIcon(combat, frame)
+local function Member_CombatIcon(combat, frame)
 	if combat then
 		frame.icon_combat:Show()
 	else
@@ -104,7 +45,7 @@ local function SlaveCombatIcon(combat, frame)
 	end
 end
 
-local function SlaveRestIcon(rest, frame)
+local function Member_RestIcon(rest, frame)
 	if rest then
 		frame.icon_rest:Show()
 	else
@@ -112,20 +53,7 @@ local function SlaveRestIcon(rest, frame)
 	end
 end
 
-local function GetPartyUnitFrame(name)
-	local frame = getglobal("LPM_PartyFrame")
-	local unitframe = nil
-	for k,v in pairs(frame.partyunitframe) do
-		if UnitName(k) == name then
-			unitframe = v
-			break
-		end
-	end
-
-	return unitframe or nil
-end
-
-local function UpdatePartyXPBar2(frame)
+local function Member_UpdateXPBar(frame)
 	if not frame or not frame.unit then return end
 
 	local unit_curr_xp, unit_max_xp, unit_rested_xp = 0, 0, 0
@@ -173,7 +101,7 @@ local function UpdatePartyXPBar2(frame)
 	end
 end
 
-local function UpdatePartyUnitFrame2(unit, frame)
+local function Member_UpdateUnitFrame(unit, frame)
 	if not LPM_TeamTable[unit].party then return end
 	if not UnitExists(unit) then return end
 
@@ -298,43 +226,103 @@ local function UpdatePartyUnitFrame2(unit, frame)
 	end
 end
 
+local function PartyFrame_GetUnitFrame(name)
+	local frame = getglobal("LPM_PartyFrame")
+	local unitframe = nil
+	for k,v in pairs(frame.unitframe) do
+		if UnitName(k) == name then
+			unitframe = v
+			break
+		end
+	end
+
+	return unitframe or nil
+end
+
 local function HandleUIAddonMessage(sender, msg)
 	local n, command, v1, v2, v3, v4, v5, v6, v7, v8 = LPM_DataStringDecode(msg)
 		if n < 1 then
 			LPM_STATUS(" Addon Message - Not enough parameters received. Report the bug to the developers, please.")
 			return
 		end
-		local frame = GetPartyUnitFrame(sender)
+		local frame = PartyFrame_GetUnitFrame(sender)
 		if command == "lpm_slavefollow" then
 			if v1 == "follow_start" then
-				SlaveFollowFrame(true, frame)
+				Member_FollowFrame(true, frame)
 			elseif v1 == "follow_end" then
-				SlaveFollowFrame(false, frame)
+				Member_FollowFrame(false, frame)
 			end
 		elseif command == "lpm_ui_status" then
 			if v1 == "combat_start" then
-				SlaveCombatIcon(true, frame)
+				Member_CombatIcon(true, frame)
 			elseif v1 == "combat_end" then
-				SlaveCombatIcon(false, frame)
+				Member_CombatIcon(false, frame)
 			elseif v1 == "rest_start" then
-				SlaveRestIcon(true, frame)
+				Member_RestIcon(true, frame)
 			elseif v1 == "rest_end" then
-				SlaveRestIcon(false, frame)
+				Member_RestIcon(false, frame)
 			end
 		elseif command == "lpm_dataexp_normal_reply" then
 			if sender ~= UnitName('player') then
 				LPM_UpdateExp_Normal(sender, v1, v2)
 			end
-			UpdatePartyXPBar2(frame)
+			Member_UpdateXPBar(frame)
 		elseif command == "lpm_dataexp_rested_reply" then
 			if sender ~= UnitName('player') then
 				LPM_UpdateExp_Rested(sender, v1)
 			end
-			UpdatePartyXPBar2(frame)
+			Member_UpdateXPBar(frame)
 		end
 end
 
-local function TileTeamPartyUnitFrame2(hParent, sUnit)
+local function PartyFrame_Update(frame)
+	local partymembers = GetNumPartyMembers()
+
+	local player_offsetH = LPM_UI_SETTINGS.UNITFRAME.HEIGHT
+	local partyframe_decorationH = LPM_UI_SETTINGS.PARTYFRAME.HEADER + LPM_UI_SETTINGS.PARTYFRAME.FOOTER
+	local partymembers_offsetH = (LPMULTIBOX_UI.TUI_PADDING + LPM_UI_SETTINGS.UNITFRAME.HEIGHT) * partymembers
+	
+	frame:SetHeight(player_offsetH + partyframe_decorationH + partymembers_offsetH)
+
+	-- Let's fill the LPM_TeamTable table with infos!
+	for i = 0, 4 do
+	local unit
+		if i == 0 then
+			unit = 'player'
+		else
+			unit = 'party' .. i
+		end
+
+		if not LPM_TeamTable[unit] then LPM_TeamTable[unit] = {} end
+
+		local name, english_class = nil, nil
+
+		if UnitExists(unit) then
+			LPM_TeamTable[unit].party = true
+			name = UnitName(unit)
+			if name and type(name) == "string" then
+				LPM_TeamTable[unit].name = name
+			else
+				LPM_TeamTable[unit].name = "Unknown"
+			end
+		else
+			LPM_TeamTable[unit].party = false
+		end
+	end
+
+	-- Let's tile our Party TeamFrame
+	for k,v in pairs(LPM_TeamTable) do
+		if v.party then
+			Member_UpdateUnitFrame(k, frame.unitframe[k])
+			Member_UpdateXPBar(frame.unitframe[k])
+			frame.unitframe[k]:Show()
+		else
+			frame.unitframe[k]:Hide()
+		end
+	end
+end
+
+local function PartyFrame_UnitFrame(hParent, sUnit)
 	-- offset calculation for every party member
 	local n, offset_x, offset_y
 	_, _, n = string.find(sUnit, "(%d+)")
@@ -345,35 +333,34 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 		offset_y = -(LPM_UI_SETTINGS.PARTYFRAME.HEADER)
 	end
 
-	local btn = CreateFrame("Button", "LPM_PartyUnitFrame_" .. sUnit, hParent)
+	local frame = CreateFrame("Button", "LPM_PartyUnitFrame_" .. sUnit, hParent)
+	frame.unit = sUnit
+	frame.parent = hParent -- frame:GetParent()
 
-	if sUnit == 'player' then
-		btn:SetPoint("TOPLEFT", hParent, "TOPLEFT", offset_x, offset_y)
-	elseif sUnit == 'party1' then
-		btn:SetPoint("TOPLEFT", hParent.partyunitframe['player'], "BOTTOMLEFT", 0, offset_y)
+	if frame.unit == 'player' then
+		frame:SetPoint("TOPLEFT", frame.parent, "TOPLEFT", offset_x, offset_y)
+	elseif frame.unit == 'party1' then
+		frame:SetPoint("TOPLEFT", frame.parent.unitframe['player'], "BOTTOMLEFT", 0, offset_y)
 	else
-		btn:SetPoint("TOPLEFT", hParent.partyunitframe['party' .. n-1], "BOTTOMLEFT", 0, offset_y)
+		frame:SetPoint("TOPLEFT", frame.parent.unitframe['party' .. n-1], "BOTTOMLEFT", 0, offset_y)
 	end
 
-	btn:SetWidth(LPM_UI_SETTINGS.UNITFRAME.WIDTH)
-	btn:SetHeight(LPM_UI_SETTINGS.UNITFRAME.HEIGHT)
-	btn:EnableMouse(true)
-	btn:RegisterForClicks("LeftButtonUp")
-	btn:SetBackdrop({ 
+	frame:SetWidth(LPM_UI_SETTINGS.UNITFRAME.WIDTH)
+	frame:SetHeight(LPM_UI_SETTINGS.UNITFRAME.HEIGHT)
+	frame:EnableMouse(true)
+	frame:RegisterForClicks("LeftButtonUp")
+	frame:SetBackdrop({ 
 		bgFile = LPM_UI_SETTINGS.BG_TEXTURE_FILE,
 	})
-	btn:SetBackdropColor(.1, .1, .1, .35)
-
-	btn.unit = sUnit
+	frame:SetBackdropColor(.1, .1, .1, .37)
 
 	-----------------
 	-- DropdDownMenu
 	-----------------
-	local dropdown = CreateFrame("Frame", "LPM_PartyDropDown_" .. sUnit, btn, "UIDropDownMenuTemplate")
-	dropdown.unit = sUnit
+	local dropdown = CreateFrame("Frame", "LPM_PartyDropDown_" .. frame.unit, frame, "UIDropDownMenuTemplate")
 	
 	local function DropDown_Init()
-		local unit = dropdown.unit
+		local unit = frame.unit
 		
 		if unit == 'player' then
 			UnitPopup_ShowMenu(dropdown, "SELF" , unit)
@@ -389,38 +376,25 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	
 	UIDropDownMenu_Initialize(dropdown, DropDown_Init, "MENU")
 
-	btn.dropdown = dropdown
-	
-	-------------------------------------------------------
-	-- Button Background (Not used. Backdrop does the job)
-	-------------------------------------------------------
-	--[[
-	local box_bg = btn:CreateTexture(nil, "BACKGROUND")
-	box_bg:SetTexture(1, 1, 1, 1)
-	--box_bg:SetBlendMode("BLEND")
-	box_bg:SetBlendMode("ADD")
-	box_bg:SetAllPoints()
-		
-	btn.box_bg = box_bg
-	]]
-	
+	frame.dropdown = dropdown
+
 	-------------------
 	-- Offline Overlay
 	-------------------
-	local frame_offline = CreateFrame("Frame", nil, btn)
+	local frame_offline = CreateFrame("Frame", nil, frame)
 	frame_offline:SetFrameLevel(7)
-	frame_offline:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-	frame_offline:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
+	frame_offline:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+	frame_offline:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
 	frame_offline:Hide()
 
-	btn.frame_offline = frame_offline
+	frame.frame_offline = frame_offline
 
 	local box_offline = frame_offline:CreateTexture(nil, "BACKGROUND")
 	box_offline:SetTexture(.1, .1, .1, .71)
 	box_offline:SetBlendMode("BLEND")
 	box_offline:SetAllPoints()
 		
-	btn.box_offline = box_offline
+	frame.box_offline = box_offline
 
 	local fs_offline = frame_offline:CreateFontString(nil, "ARTWORK")
 	fs_offline:SetAllPoints()
@@ -430,25 +404,25 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_offline:SetFont(LPM_UI_SETTINGS.FONT_FILE, 20)
 	fs_offline:SetText("OFFLINE")
 	
-	btn.fs_offline = fs_offline
+	frame.fs_offline = fs_offline
 
 	------------------
 	-- Follow Overlay
 	------------------
-	local frame_follow = CreateFrame("Frame", nil, btn)
+	local frame_follow = CreateFrame("Frame", nil, frame)
 	frame_follow:SetFrameLevel(5)
-	frame_follow:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -3)
-	frame_follow:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, (btn:GetHeight()/2) + 3)
+	frame_follow:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -3)
+	frame_follow:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, (frame:GetHeight()/2) + 3)
 	frame_follow:Hide()
 
-	btn.frame_follow = frame_follow
+	frame.frame_follow = frame_follow
 
 	local box_follow = frame_follow:CreateTexture(nil, "OVERLAY")
 	box_follow:SetTexture(0.21, 0.17, 0.1, .81)
 	box_follow:SetBlendMode("BLEND")
 	box_follow:SetAllPoints()
 		
-	btn.box_follow = box_follow
+	frame.box_follow = box_follow
 
 	local fs_follow = frame_follow:CreateFontString(nil, "OVERLAY")
 	fs_follow:SetAllPoints()
@@ -457,25 +431,25 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_follow:SetFont(LPM_UI_SETTINGS.FONT_FILE, 12)
 	fs_follow:SetText("NOT FOLLOWING")
 	
-	btn.fs_follow = fs_follow
+	frame.fs_follow = fs_follow
 
 	----------------
 	-- Lost Overlay
 	----------------
-	local frame_lost = CreateFrame("Frame", nil, btn)
+	local frame_lost = CreateFrame("Frame", nil, frame)
 	frame_lost:SetFrameLevel(5)
-	frame_lost:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -(btn:GetHeight()/2) + 3)
-	frame_lost:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
+	frame_lost:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -(frame:GetHeight()/2) + 3)
+	frame_lost:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
 	frame_lost:Hide()
 
-	btn.frame_lost = frame_lost
+	frame.frame_lost = frame_lost
 
 	local box_lost = frame_lost:CreateTexture(nil, "OVERLAY")
 	box_lost:SetTexture(.21, .1, .1, .81)
 	box_lost:SetBlendMode("BLEND")
 	box_lost:SetAllPoints()
 		
-	btn.box_lost = box_lost
+	frame.box_lost = box_lost
 
 	local fs_lost = frame_lost:CreateFontString(nil, "OVERLAY")
 	fs_lost:SetAllPoints()
@@ -484,16 +458,16 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_lost:SetFont(LPM_UI_SETTINGS.FONT_FILE, 20)
 	fs_lost:SetText("LOST!")
 	
-	btn.fs_lost = fs_lost
+	frame.fs_lost = fs_lost
 
 	---------
 	-- ICONS
 	---------
-	local frame_icon = CreateFrame("Frame", nil, btn)
+	local frame_icon = CreateFrame("Frame", nil, frame)
 	frame_icon:SetFrameLevel(3)
-	frame_icon:SetAllPoints(btn)
+	frame_icon:SetAllPoints(frame)
 
-	btn.frame_icon = frame_icon
+	frame.frame_icon = frame_icon
 
 	local icon_raid = frame_icon:CreateTexture(nil, "ARTWORK")
 	icon_raid:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
@@ -502,7 +476,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	icon_raid:SetWidth(15)
 	icon_raid:Hide()
 
-	btn.icon_raid = icon_raid
+	frame.icon_raid = icon_raid
 
 	local icon_leader = frame_icon:CreateTexture(nil, "ARTWORK")
 	icon_leader:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
@@ -511,7 +485,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	icon_leader:SetWidth(14)
 	icon_leader:Hide()
 
-	btn.icon_leader = icon_leader
+	frame.icon_leader = icon_leader
 
 	local icon_loot = frame_icon:CreateTexture(nil, "ARTWORK")
 	icon_loot:SetTexture("Interface\\GroupFrame\\UI-Group-MasterLooter")
@@ -520,7 +494,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	icon_loot:SetWidth(10)
 	icon_loot:Hide()
 
-	btn.icon_loot = icon_loot
+	frame.icon_loot = icon_loot
 
 	local icon_PVP = frame_icon:CreateTexture(nil, "ARTWORK")
 	icon_PVP:SetPoint("CENTER", frame_icon, "RIGHT", 1, -1)
@@ -528,7 +502,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
     icon_PVP:SetWidth(32)
     icon_PVP:Hide()
 
-    btn.icon_PVP = icon_PVP
+    frame.icon_PVP = icon_PVP
 
 	local icon_combat = frame_icon:CreateTexture(nil, "ARTWORK")
 	icon_combat:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
@@ -538,7 +512,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	icon_combat:SetWidth(16)
 	icon_combat:Hide()
 
-	btn.icon_combat = icon_combat
+	frame.icon_combat = icon_combat
 
 	local icon_rest = frame_icon:CreateTexture(nil, "ARTWORK")
 	icon_rest:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
@@ -548,54 +522,30 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	icon_rest:SetWidth(16)
 	icon_rest:Hide()
 	
-	btn.icon_rest = icon_rest
-
-	------------
-	-- Portrait
-	------------
-	--[[
-	local box_portrait = btn:CreateTexture(nil, "BACKGROUND")
-	box_portrait:SetTexture(.1, .1, .1, .75)
-	box_portrait:SetBlendMode("BLEND")
-	box_portrait:SetPoint("TOPLEFT", 3, -3)
-	box_portrait:SetWidth(38)
-	box_portrait:SetHeight(36)
-
-	btn.box_portrait = box_portrait
-
-	local portrait = CreateFrame("PlayerModel", nil, btn)
-	portrait:SetPoint("TOPLEFT", 5, -5)
-	portrait:SetWidth(36)
-	portrait:SetHeight(34)
-	portrait.type = "3D"
-	portrait.unit = unit
-	portrait:SetUnit(unit)
-	
-	btn.portrait = portrait
-	]]
+	frame.icon_rest = icon_rest
 
 	-------------
 	-- HealthBar
 	-------------
-	local box_healthbar = btn:CreateTexture(nil, "BACKGROUND")
+	local box_healthbar = frame:CreateTexture(nil, "BACKGROUND")
 	box_healthbar:SetTexture(.1, .1, .1, .75)
 	box_healthbar:SetBlendMode("BLEND")
-	box_healthbar:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-	box_healthbar:SetPoint("TOPRIGHT", btn, "TOPRIGHT", -2, -2)
+	box_healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+	box_healthbar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
 	box_healthbar:SetHeight(16)
 
-	btn.box_healthbar = box_healthbar
+	frame.box_healthbar = box_healthbar
 
-	local sb_healthbar = CreateFrame("StatusBar", nil, btn)
+	local sb_healthbar = CreateFrame("StatusBar", nil, frame)
 	sb_healthbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_healthbar:SetStatusBarColor(.1, .1, .1, 1)
 	sb_healthbar:SetPoint("TOPLEFT", box_healthbar, "TOPLEFT", 2, -2)
 	sb_healthbar:SetPoint("BOTTOMRIGHT", box_healthbar, "BOTTOMRIGHT", -2, 1)
 
-	btn.sb_healthbar = sb_healthbar
+	frame.sb_healthbar = sb_healthbar
 
 	local fs_name = sb_healthbar:CreateFontString(nil, "ARTWORK")
-	fs_name:SetPoint("LEFT", btn.sb_healthbar, "LEFT", 3, 0)
+	fs_name:SetPoint("LEFT", frame.sb_healthbar, "LEFT", 3, 0)
 	fs_name:SetJustifyH("LEFT")
 	fs_name:SetShadowColor(0, 0, 0)
 	fs_name:SetShadowOffset(0.8, -0.8)
@@ -603,140 +553,140 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	fs_name:SetFont(LPM_UI_SETTINGS.FONT_FILE, 11)
 	fs_name:SetText("")
 
-	btn.fs_name = fs_name
+	frame.fs_name = fs_name
 
 	local fs_health = sb_healthbar:CreateFontString(nil, "ARTWORK")
-	fs_health:SetPoint("RIGHT", btn.sb_healthbar, "RIGHT", -3, 0)
+	fs_health:SetPoint("RIGHT", frame.sb_healthbar, "RIGHT", -3, 0)
 	fs_health:SetJustifyH("RIGHT")
 	fs_health:SetShadowColor(0, 0, 0)
 	fs_health:SetShadowOffset(0.8, -0.8)
 	fs_health:SetTextColor(.91, .91, .91)
 	fs_health:SetFont(LPM_UI_SETTINGS.FONT_FILE, 9)
 	
-	btn.fs_health = fs_health
+	frame.fs_health = fs_health
 
 	------------
 	-- Powerbar
 	------------
-	local box_powerbar = btn:CreateTexture(nil, "BACKGROUND")
+	local box_powerbar = frame:CreateTexture(nil, "BACKGROUND")
 	box_powerbar:SetTexture(.1, .1, .1, .75)
 	box_powerbar:SetBlendMode("BLEND")
-	box_powerbar:SetPoint("TOPLEFT", btn.box_healthbar, "BOTTOMLEFT", 0, 0)
-	box_powerbar:SetPoint("TOPRIGHT", btn.box_healthbar, "BOTTOMRIGHT", 0, 0)
+	box_powerbar:SetPoint("TOPLEFT", frame.box_healthbar, "BOTTOMLEFT", 0, 0)
+	box_powerbar:SetPoint("TOPRIGHT", frame.box_healthbar, "BOTTOMRIGHT", 0, 0)
 	box_powerbar:SetHeight(11)
 
-	btn.box_powerbar = box_powerbar
+	frame.box_powerbar = box_powerbar
 
-	local sb_powerbar = CreateFrame("StatusBar", nil, btn)
+	local sb_powerbar = CreateFrame("StatusBar", nil, frame)
 	sb_powerbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_powerbar:SetStatusBarColor(.1, .1, .1, 1)
 	sb_powerbar:SetPoint("TOPLEFT", box_powerbar, "TOPLEFT", 2, -1)
 	sb_powerbar:SetPoint("BOTTOMRIGHT", box_powerbar, "BOTTOMRIGHT", -2, 1)
 
-	btn.sb_powerbar = sb_powerbar
+	frame.sb_powerbar = sb_powerbar
 
 	local fs_power = sb_powerbar:CreateFontString(nil, "ARTWORK")
-	fs_power:SetPoint("RIGHT", btn.sb_powerbar, "RIGHT", -3, 1)
+	fs_power:SetPoint("RIGHT", frame.sb_powerbar, "RIGHT", -3, 1)
 	fs_power:SetJustifyH("RIGHT")
 	fs_power:SetShadowColor(0, 0, 0)
 	fs_power:SetShadowOffset(0.8, -0.8)
 	fs_power:SetTextColor(.91, .91, .91)
 	fs_power:SetFont(LPM_UI_SETTINGS.FONT_FILE, 6)
 	
-	btn.fs_power = fs_power
+	frame.fs_power = fs_power
 
 	-----------------
 	-- ExperienceBar
 	-----------------
-	local box_expbar = btn:CreateTexture(nil, "BACKGROUND")
+	local box_expbar = frame:CreateTexture(nil, "BACKGROUND")
 	box_expbar:SetTexture(.1, .1, .1, .75)
 	box_expbar:SetBlendMode("BLEND")
-	box_expbar:SetPoint("TOPLEFT", btn.box_powerbar, "BOTTOMLEFT", 0, 0)
-	box_expbar:SetPoint("TOPRIGHT", btn.box_powerbar, "BOTTOMRIGHT", 0, 0)
+	box_expbar:SetPoint("TOPLEFT", frame.box_powerbar, "BOTTOMLEFT", 0, 0)
+	box_expbar:SetPoint("TOPRIGHT", frame.box_powerbar, "BOTTOMRIGHT", 0, 0)
 	box_expbar:SetHeight(11)
 
-	btn.box_expbar = box_expbar
+	frame.box_expbar = box_expbar
 
-	local sb_expbar = CreateFrame("StatusBar", nil, btn)
+	local sb_expbar = CreateFrame("StatusBar", nil, frame)
 	sb_expbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_expbar:SetStatusBarColor(0.0, 0.63, 0.13, 1.0)
 	sb_expbar:SetPoint("TOPLEFT", box_expbar, "TOPLEFT", 2, -2)
 	sb_expbar:SetPoint("BOTTOMRIGHT", box_expbar, "BOTTOMRIGHT", -2, 3)
 	sb_expbar:SetFrameLevel(4)
 
-	btn.sb_expbar = sb_expbar
+	frame.sb_expbar = sb_expbar
 
-	local sb_restbar = CreateFrame("StatusBar", nil, btn)
+	local sb_restbar = CreateFrame("StatusBar", nil, frame)
 	sb_restbar:SetStatusBarTexture(LPM_UI_SETTINGS.STATUSBAR_TEXTURE_FILE)
 	sb_restbar:SetStatusBarColor(0.37, 0.37, 0.77, 1.0)
 	sb_restbar:SetPoint("TOPLEFT", box_expbar, "TOPLEFT", 2, -3)
 	sb_restbar:SetPoint("BOTTOMRIGHT", box_expbar, "BOTTOMRIGHT", -2, 4)
 	sb_expbar:SetFrameLevel(3)
 
-	btn.sb_restbar = sb_restbar
+	frame.sb_restbar = sb_restbar
 
 	---------------------------------------
 	-- Info Frame. More infos on MouseOver
 	---------------------------------------
-	local frame_info = CreateFrame("Frame", nil, btn)
+	local frame_info = CreateFrame("Frame", nil, frame)
 	frame_info:SetFrameLevel(3)
-	frame_info:SetAllPoints(btn)
+	frame_info:SetAllPoints(frame)
 	frame_info:EnableMouse(true)
 	
-	btn.frame_info = frame_info
+	frame.frame_info = frame_info
 
 	local fs_level = frame_info:CreateFontString(nil, "ARTWORK")
-	fs_level:SetPoint("LEFT", btn.sb_powerbar, "LEFT", 3, 1)
+	fs_level:SetPoint("LEFT", frame.sb_powerbar, "LEFT", 3, 1)
 	fs_level:SetShadowColor(0, 0, 0)
 	fs_level:SetShadowOffset(0.8, -0.8)
 	fs_level:SetTextColor(.91, .91, .91)
 	fs_level:SetFont(LPM_UI_SETTINGS.FONT_FILE, 7)
 	fs_level:Hide()
 
-	btn.fs_level = fs_level
+	frame.fs_level = fs_level
 
 	local fs_exp = frame_info:CreateFontString(nil, "ARTWORK")
-	fs_exp:SetPoint("CENTER", btn.sb_expbar, "CENTER", -3, 1)
+	fs_exp:SetPoint("CENTER", frame.sb_expbar, "CENTER", -3, 1)
 	fs_exp:SetShadowColor(0, 0, 0)
 	fs_exp:SetShadowOffset(0.6, -0.6)
 	fs_exp:SetTextColor(.91, .91, .91)
 	fs_exp:SetFont(LPM_UI_SETTINGS.FONT_FILE, 6)
 
-	btn.fs_exp = fs_exp
+	frame.fs_exp = fs_exp
 
 	----------
 	-- Events
 	----------
-	btn:RegisterEvent("AUTOFOLLOW_BEGIN") -- arg1   following_unit
-	btn:RegisterEvent("AUTOFOLLOW_END")
+	frame:RegisterEvent("AUTOFOLLOW_BEGIN") -- arg1   following_unit
+	frame:RegisterEvent("AUTOFOLLOW_END")
 
-	btn:RegisterEvent("PLAYER_REGEN_DISABLED") -- Entering Combat
-	btn:RegisterEvent("PLAYER_REGEN_ENABLED")  -- Exiting Combat
-	btn:RegisterEvent("PLAYER_XP_UPDATE")
-	btn:RegisterEvent("PLAYER_UPDATE_RESTING")
+	frame:RegisterEvent("PLAYER_REGEN_DISABLED") -- Entering Combat
+	frame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- Exiting Combat
+	frame:RegisterEvent("PLAYER_XP_UPDATE")
+	frame:RegisterEvent("PLAYER_UPDATE_RESTING")
 
-	btn:RegisterEvent("PARTY_MEMBER_DISABLE")
-	btn:RegisterEvent("PARTY_MEMBER_ENABLE")
+	frame:RegisterEvent("PARTY_MEMBER_DISABLE")
+	frame:RegisterEvent("PARTY_MEMBER_ENABLE")
 
-	btn:RegisterEvent("UNIT_PORTRAIT_UPDATE")
-	btn:RegisterEvent("UNIT_MODEL_CHANGED")
-	btn:RegisterEvent("UNIT_LEVEL")
-	btn:RegisterEvent("UNIT_HEALTH")
-	btn:RegisterEvent("UNIT_MAXHEALTH")
-	btn:RegisterEvent("UNIT_MANA")
-	btn:RegisterEvent("UNIT_MAXMANA")
-	btn:RegisterEvent("UNIT_RAGE")
-	btn:RegisterEvent("UNIT_MAXRAGE")
-	btn:RegisterEvent("UNIT_ENERGY")
-	btn:RegisterEvent("UNIT_MAXENERGY")
-	btn:RegisterEvent("UNIT_DISPLAYPOWER")
-	btn:RegisterEvent("UNIT_FACTION")
+	frame:RegisterEvent("UNIT_PORTRAIT_UPDATE")
+	frame:RegisterEvent("UNIT_MODEL_CHANGED")
+	frame:RegisterEvent("UNIT_LEVEL")
+	frame:RegisterEvent("UNIT_HEALTH")
+	frame:RegisterEvent("UNIT_MAXHEALTH")
+	frame:RegisterEvent("UNIT_MANA")
+	frame:RegisterEvent("UNIT_MAXMANA")
+	frame:RegisterEvent("UNIT_RAGE")
+	frame:RegisterEvent("UNIT_MAXRAGE")
+	frame:RegisterEvent("UNIT_ENERGY")
+	frame:RegisterEvent("UNIT_MAXENERGY")
+	frame:RegisterEvent("UNIT_DISPLAYPOWER")
+	frame:RegisterEvent("UNIT_FACTION")
 
-	btn:RegisterEvent("RAID_TARGET_UPDATE")
+	frame:RegisterEvent("RAID_TARGET_UPDATE")
 
-	btn:RegisterEvent("PARTY_LOOT_METHOD_CHANGED")
+	frame:RegisterEvent("PARTY_LOOT_METHOD_CHANGED")
 
-	btn:SetScript("OnEvent", function()
+	frame:SetScript("OnEvent", function()
 		if event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" then
 			if this.unit == arg1 then
 				-- This prevents negative health
@@ -784,25 +734,9 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 				else
 					this.sb_powerbar:SetMinMaxValues(0, UnitManaMax(this.unit))
 					this.sb_powerbar:SetValue(UnitMana(this.unit))
-					LPM_DEBUG(" -- UNIT_DISPLAYPOWER: " .. UnitMana(this.unit) .. "/" .. UnitManaMax(this.unit))
-					local str = UnitMana(this.unit) .. "/" .. UnitManaMax(this.unit)
-					this.fs_power:SetText(str)
+					this.fs_power:SetText(UnitMana(this.unit) .. "/" .. UnitManaMax(this.unit))
 				end
 			end
-
-		--[[
-		elseif event == "UNIT_PORTRAIT_UPDATE" or event == "UNIT_MODEL_CHANGED" then
-			if arg1 == this.unit then
-				if not UnitExists(arg1) or not UnitIsConnected(arg1) or not UnitIsVisible(arg1) then
-					this.portrait:SetModelScale(4.25)
-					this.portrait:SetPosition(0, 0, -1)
-					this.portrait:SetModel"Interface\\Buttons\\talktomequestionmark.mdx"
-				else
-					this.portrait:SetUnit(arg1)
-					this.portrait:SetCamera(0)
-				end
-			end
-		]]
 
 		elseif event == "AUTOFOLLOW_BEGIN" then
 			if this.unit == 'player' then
@@ -823,7 +757,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 		elseif event == "PLAYER_REGEN_DISABLED" then
 			if this.unit == 'player' then
 				if UnitAffectingCombat(this.unit) then
-					SlaveCombatIcon(true, this)
+					Member_CombatIcon(true, this)
 					local msg = LPM_DataStringEncode("lpm_ui_status", "combat_start")
 					SendAddonMessage("LPM_UI", msg, "Raid", name)
 				end
@@ -832,7 +766,7 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 		elseif event == "PLAYER_REGEN_ENABLED" then
 			if this.unit == 'player' then
 				if not UnitAffectingCombat(this.unit) then
-					SlaveCombatIcon(false, this)
+					Member_CombatIcon(false, this)
 					local msg = LPM_DataStringEncode("lpm_ui_status", "combat_end")
 					SendAddonMessage("LPM_UI", msg, "Raid", name)
 				end
@@ -847,7 +781,9 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 			local unit = 'party' .. GetPartyMember(arg1)
 			if this.unit == unit then
 				this.fs_health:SetText("0%")
+				--Member_FollowFrame(false, this)
 				this.frame_follow:Hide()
+				--Member_LostFrame(false, this)
 				this.frame_lost:Hide()
 				this.frame_offline:Show()
 			end
@@ -886,11 +822,15 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 		elseif event == "PLAYER_UPDATE_RESTING" then
 			if this.unit == 'player' then
 				if IsResting() then
+					--Member_RestIcon(true, this)
+					--Member_CombatIcon(false, this)
 					this.icon_rest:Show()
 					this.icon_combat:Hide()
 					local msg = LPM_DataStringEncode("lpm_ui_status", "rest_start")
 					SendAddonMessage("LPM_UI", msg, "Raid", name)
 				else
+					--Member_RestIcon(false, this)
+					--Member_CombatIcon(false, this)
 					this.icon_rest:Hide()
 					this.icon_combat:Hide()
 					local msg = LPM_DataStringEncode("lpm_ui_status", "rest_end")
@@ -915,12 +855,38 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 	---------------------------
 	-- PartyUnitFrame Handlers
 	---------------------------
-	btn:SetScript("OnClick", function()
-		--[[ frame_info, being on top of this, will handle clicks :( )]]
+	frame:SetScript("OnClick", function()
+		--[[ frame_info, being on top of this, will fire a Click() function on this frame]]
+
+		local unit = this.unit
+		if SpellIsTargeting() and arg1 == "RightButton" then
+			SpellStopTargeting()
+			return
+		end
+		if arg1 == "LeftButton" then
+			if SpellIsTargeting() then
+				SpellTargetUnit(unit)
+			elseif CursorHasItem() then
+				if unit == 'player' then
+					AutoEquipCursorItem()
+				else
+					DropItemOnUnit(unit)
+				end
+			else
+				TargetUnit(unit)
+			end
+		elseif not (IsAltKeyDown() or IsControlKeyDown() or IsShiftKeyDown()) then
+			ToggleDropDownMenu(1, nil, this.dropdown, "cursor", 0, 0)
+			if unit == 'player' and UnitIsPartyLeader("player") then
+				local info = {text = "Reset Instances", func = ResetInstances, notCheckable = 1}
+				UIDropDownMenu_AddButton(info, 1)
+			end
+		end
+
 	end)
 
-	btn.tick1 = 0
-	btn:SetScript("OnUpdate", function()
+	frame.tick1 = 0
+	frame:SetScript("OnUpdate", function()
 		local time = GetTime()
 		local leader = GetPartyLeaderIndex()
 		if leader == 0 then
@@ -933,16 +899,21 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 			if leader == 'player' then
 				if not UnitIsPartyLeader(this.unit) then
 					if not CheckInteractDistance(this.unit, 4) and UnitIsConnected(this.unit) then
+						--Member_LostFrame(true, this)
 						this.frame_lost:Show()
+
 					else
+						--Member_LostFrame(false, this)
 						this.frame_lost:Hide()
 					end
 				end
 			else
 				if this.unit == 'player' then
 					if not CheckInteractDistance(leader, 4) and UnitIsConnected(leader) then
+						--Member_LostFrame(true, this)
 						this.frame_lost:Show()
 					else
+						--Member_LostFrame(false, this)
 						this.frame_lost:Hide()
 					end
 				end
@@ -1041,127 +1012,34 @@ local function TileTeamPartyUnitFrame2(hParent, sUnit)
 		]]
 	end)
 
-	-- Click events will be handled here, cause this frame in the topmost of all.
-	-- I know, not a good/clean solution, but live with it!
 	frame_info:SetScript("OnMouseDown", function()
-		local unit = this:GetParent().unit
-		if SpellIsTargeting() and arg1 == "RightButton" then
-    		SpellStopTargeting()
-    		return
-  		end
-		if arg1 == "LeftButton" then
-			LPM_DEBUG("leftclick!")
-			if SpellIsTargeting() then
-				SpellTargetUnit(unit)
-			elseif CursorHasItem() then
-				if unit == 'player' then
-					AutoEquipCursorItem()
-				else
-					DropItemOnUnit(unit)
-				end
-			else
-				TargetUnit(unit)
-			end
-		elseif not (IsAltKeyDown() or IsControlKeyDown() or IsShiftKeyDown()) then
-			ToggleDropDownMenu(1, nil, this:GetParent().dropdown, "cursor", 0, 0)
-			if unit == 'player' and UnitIsPartyLeader("player") then
-				local info = {text = "Reset Instances", func = ResetInstances, notCheckable = 1}
-				UIDropDownMenu_AddButton(info, 1)
-			end
-  		end
+		-- let's transfer the click to the UnitFrame
+		-- (standing lower than this frame, this should be the only way to click the UnitFrame)
+		this:GetParent():Click(arg1)
 	end)
 
-	--[[
-	btn.portrait:SetScript("OnShow", function()
-		this:SetCamera(0)
-	end)
-	]]
-
-	btn:Hide()
-
-	return btn
-end
-
-local function UpdateTeamPartyFrame2()
-	local frame = getglobal("LPM_PartyFrame")
-
-	local partymembers = GetNumPartyMembers()
-
-	if partymembers == 0 then
-		frame:Hide()
-		return frame
-	else
-		local player_offsetH = LPM_UI_SETTINGS.UNITFRAME.HEIGHT
-		local partyframe_decorationH = LPM_UI_SETTINGS.PARTYFRAME.HEADER + LPM_UI_SETTINGS.PARTYFRAME.FOOTER
-		local partymembers_offsetH = (LPMULTIBOX_UI.TUI_PADDING + LPM_UI_SETTINGS.UNITFRAME.HEIGHT) * partymembers
-	
-		frame:SetHeight(player_offsetH + partyframe_decorationH + partymembers_offsetH)
-	end
-
-	-- Let's fill the LPM_TeamTable table with infos!
-	for i = 0, 4 do
-	local unit
-		if i == 0 then
-			unit = 'player'
-		else
-			unit = 'party' .. i
-		end
-
-		if not LPM_TeamTable[unit] then LPM_TeamTable[unit] = {} end
-
-		local name, english_class = nil, nil
-
-		if UnitExists(unit) then
-			LPM_TeamTable[unit].party = true
-			name = UnitName(unit)
-			if name and type(name) == "string" then
-				LPM_TeamTable[unit].name = name
-			else
-				LPM_TeamTable[unit].name = "Unknown"
-			end
-		else
-			LPM_TeamTable[unit].party = false
-		end
-	end
-
-	-- Let's tile our Party TeamFrame
-	for k,v in pairs(LPM_TeamTable) do
-		if v.party then
-			UpdatePartyUnitFrame2(k, frame.partyunitframe[k])
-			UpdatePartyXPBar2(frame.partyunitframe[k])
-			frame.partyunitframe[k]:Show()
-		else
-			frame.partyunitframe[k]:Hide()
-		end
-	end
-
-	frame:Show()
+	frame:Hide()
 
 	return frame
 end
 
-function LPM_CreateTeamPartyFrame2()
-	-- PartyFrame
+local function PartyFrame_Header()
+	-- PartyFrame Header
 	local frame = CreateFrame("Frame", "LPM_PartyFrame")
-	
+
 	frame:SetScale(LPMULTIBOX_UI.TUI_SCALE)
-		
+	
 	frame:SetWidth(LPM_UI_SETTINGS.PARTYFRAME.WIDTH)
 	frame:SetHeight(LPM_UI_SETTINGS.PARTYFRAME.HEIGHT)
 	
-	frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 110)
+	--frame:SetPoint("BOTTOMLEFT", 100, -110)
+	frame:SetPoint("BOTTOMLEFT", LPMULTIBOX_UI.TUI_PARTYFRAME_POINT.LEFT, LPMULTIBOX_UI.TUI_PARTYFRAME_POINT.BOTTOM)
+
 	frame:SetBackdrop( {
-		bgFile = LPM_UI_SETTINGS.BG_TEXTURE_FILE,
+		bgFile = LPM_UI_SETTINGS.BG_TEXTURE_FILE
 	});
 	frame:SetBackdropColor(.01, .01, .01, LPMULTIBOX_UI.TUI_BGALPHA)
 
-	frame:SetMovable(true)
-	frame:EnableMouse(true)
-	frame:SetUserPlaced(true)
-
-	frame:SetClampedToScreen(true)
-	frame:RegisterForDrag("LeftButton")
-	
 	if LPMULTIBOX_UI.TUI_PARTYFRAME_LOCK then
 		frame:SetMovable(false)
 		frame:RegisterForDrag()
@@ -1169,19 +1047,21 @@ function LPM_CreateTeamPartyFrame2()
 		frame:SetMovable(true)
 		frame:RegisterForDrag("LeftButton")
 	end
+	--frame:SetMovable(true)
+	--frame:RegisterForDrag("LeftButton")
 
-	if LPMULTIBOX_UI.TUI_PARTYFRAME_SHOW then
-		frame:Show()
-	else
-		frame:Hide()
-	end
+	frame:EnableMouse(true)
+	frame:SetClampedToScreen(true)
+	--frame:SetUserPlaced(true)
 
-	-- MenuTitle FontString
+
+
+	-- PartyFrame FontString
 	local fs_title = frame:CreateFontString(nil, "ARTWORK")
 	fs_title:SetPoint("CENTER", frame, "TOP", 0, -5)
-	fs_title:SetFont("Fonts\\ARIALN.TTF", 10)
-	fs_title:SetTextColor(1, 1, 1, .37)
-	fs_title:SetText("SomeWeird Team")
+	fs_title:SetFont(LPM_UI_SETTINGS.FONT_FILE, 7)
+	fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
+	fs_title:SetText("Wierd Party Frame")
 
 	frame.fs_title = fs_title
 
@@ -1200,11 +1080,7 @@ function LPM_CreateTeamPartyFrame2()
 	frame:RegisterEvent("RAID_ROSTER_UPDATE")
 	frame:RegisterEvent("RAID_TARGET_UPDATE")
 	frame:RegisterEvent("CHAT_MSG_ADDON")
-
-	--frame:RegisterEvent("PARTY_LOOT_METHOD_CHANGED")
-	--frame:RegisterEvent("PARTY_MEMBER_DISABLE")
-	--frame:RegisterEvent("PARTY_MEMBER_ENABLE")
-
+	
 	frame:SetScript("OnEvent", function()
 		if event == "CHAT_MSG_ADDON" then
 			local prefix, msg, channel, sender = arg1, arg2, arg3, arg4
@@ -1218,7 +1094,7 @@ function LPM_CreateTeamPartyFrame2()
 			LPM_DEBUG(" -- " .. event)
 		elseif event == "RAID_TARGET_UPDATE" then
 			LPM_DEBUG(" -- " .. event)
-			UpdateTeamPartyFrame2()
+			PartyFrame_Update(this)
 		
 		elseif event == "RAID_ROSTER_UPDATE" then
 			LPM_DEBUG(" -- " .. event .. " - arg1: " .. tostring(arg1) .. " - arg2: " .. tostring(arg2))
@@ -1232,43 +1108,101 @@ function LPM_CreateTeamPartyFrame2()
 				this:SetFrameStrata("FULLSCREEN_DIALOG")
 				--this:SetFrameStrata("FULLSCREEN")
 				--this:SetFrameStrata("DIALOG")
-				this:SetBackdropColor(.31, .31, .31, LPMULTIBOX_UI.TUI_BGALPHA)
-				this.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
-				this:StartMoving();
-				this.isMoving = true;
+				if UnitFactionGroup('player') == "Horde" then
+					this:SetBackdropColor(.17, .1, .1, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+					this.fs_title:SetTextColor(1, .71, .71, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+					if LPMULTIBOX_UI.TUI_PARTYPETFRAME_SHOW and LPMULTIBOX_UI.TUI_PARTYPETFRAME_ATTACH then
+						local partypetframe = getglobal("LPM_PartyPetFrame")
+						partypetframe:SetFrameStrata("FULLSCREEN_DIALOG")
+						partypetframe:SetBackdropColor(.17, .1, .1, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+						partypetframe.fs_title:SetTextColor(1, .71, .71, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+					end
+				else
+					this:SetBackdropColor(.17, .17, .37, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+					this.fs_title:SetTextColor(.71, .71, 1, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+					if LPMULTIBOX_UI.TUI_PARTYPETFRAME_SHOW and LPMULTIBOX_UI.TUI_PARTYPETFRAME_ATTACH then
+						local partypetframe = getglobal("LPM_PartyPetFrame")
+						partypetframe:SetFrameStrata("FULLSCREEN_DIALOG")
+						partypetframe:SetBackdropColor(.17, .17, .37, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+						partypetframe.fs_title:SetTextColor(.71, .71, 1, LPMULTIBOX_UI.TUI_BGALPHA + 0.17)
+					end
+				end
+				this:StartMoving()
+				this.isMoving = true
 			end
 		end
 	end)
 	frame:SetScript("OnMouseUp", function()
 		if arg1 == "LeftButton" and this.isMoving then
-			this:StopMovingOrSizing();
+			this:StopMovingOrSizing()
 			this:SetFrameStrata("MEDIUM")
 			this:SetBackdropColor(.1, .1, .1, LPMULTIBOX_UI.TUI_BGALPHA)
 			this.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
-			this.isMoving = false;
+			this.isMoving = false
+			local left = this:GetLeft()
+			local bottom = this:GetBottom()
+			LPMULTIBOX_UI.TUI_PARTYFRAME_POINT.LEFT = floor(left + 0.5)
+			LPMULTIBOX_UI.TUI_PARTYFRAME_POINT.BOTTOM = floor(bottom + 0.5)
+			if LPMULTIBOX_UI.TUI_PARTYPETFRAME_SHOW and LPMULTIBOX_UI.TUI_PARTYPETFRAME_ATTACH then
+				local partypetframe = getglobal("LPM_PartyPetFrame")
+				partypetframe:SetFrameStrata("MEDIUM")
+				partypetframe:SetBackdropColor(.1, .1, .1, LPMULTIBOX_UI.TUI_BGALPHA)
+				partypetframe.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
+				local left = partypetframe:GetLeft()
+				local bottom = partypetframe:GetBottom()
+				LPMULTIBOX_UI.TUI_PARTYPETFRAME_POINT.LEFT = floor(left + 0.5)
+				LPMULTIBOX_UI.TUI_PARTYPETFRAME_POINT.BOTTOM = floor(bottom + 0.5)
+			end
+
 		end
 	end)
 	frame:SetScript("OnHide", function()
 		if this.isMoving then
-			this:StopMovingOrSizing();
+			this:StopMovingOrSizing()
 			this:SetFrameStrata("MEDIUM")
-			this.isMoving = false;
+			this:SetBackdropColor(.1, .1, .1, LPMULTIBOX_UI.TUI_BGALPHA)
+			this.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
+			this.isMoving = false
+			local left = this:GetLeft()
+			local bottom = this:GetBottom()
+			LPMULTIBOX_UI.TUI_PARTYFRAME_POINT.LEFT = floor(left + 0.5)
+			LPMULTIBOX_UI.TUI_PARTYFRAME_POINT.BOTTOM = floor(bottom + 0.5)
+			if LPMULTIBOX_UI.TUI_PARTYPETFRAME_SHOW and LPMULTIBOX_UI.TUI_PARTYPETFRAME_ATTACH then
+				local partypetframe = getglobal("LPM_PartyPetFrame")
+				partypetframe:SetFrameStrata("MEDIUM")
+				partypetframe:SetBackdropColor(.1, .1, .1, LPMULTIBOX_UI.TUI_BGALPHA)
+				partypetframe.fs_title:SetTextColor(1, 1, 1, LPMULTIBOX_UI.TUI_BGALPHA)
+				local left = partypetframe:GetLeft()
+				local bottom = partypetframe:GetBottom()
+				LPMULTIBOX_UI.TUI_PARTYPETFRAME_POINT.LEFT = floor(left + 0.5)
+				LPMULTIBOX_UI.TUI_PARTYPETFRAME_POINT.BOTTOM = floor(bottom + 0.5)
+			end
+
 		end
 	end)
 
-	frame.partyunitframe = {}
+	return frame
+end
 
-	frame.partyunitframe['player'] = TileTeamPartyUnitFrame2(frame, 'player')
-	frame.partyunitframe['party1'] = TileTeamPartyUnitFrame2(frame, 'party1')
-	frame.partyunitframe['party2'] = TileTeamPartyUnitFrame2(frame, 'party2')
-	frame.partyunitframe['party3'] = TileTeamPartyUnitFrame2(frame, 'party3')
-	frame.partyunitframe['party4'] = TileTeamPartyUnitFrame2(frame, 'party4')
+function LPM_PartyFrame_Init(frame)
 
-	frame:Hide()
-
-	if GetNumPartyMembers() > 0 then
-		UpdateTeamPartyFrame2()
+	if frame then 
+		if frame.GetFrameType then
+			frame:SetParent(nil)
+		end
 	end
+	frame = {}
+
+	frame = PartyFrame_Header()
+
+	frame.unitframe = {}
+	frame.unitframe['player'] = PartyFrame_UnitFrame(frame, 'player')
+	frame.unitframe['party1'] = PartyFrame_UnitFrame(frame, 'party1')
+	frame.unitframe['party2'] = PartyFrame_UnitFrame(frame, 'party2')
+	frame.unitframe['party3'] = PartyFrame_UnitFrame(frame, 'party3')
+	frame.unitframe['party4'] = PartyFrame_UnitFrame(frame, 'party4')
+
+	PartyFrame_Update(frame)
 
 	return frame
 end
