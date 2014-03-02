@@ -45,7 +45,7 @@ function LPM_EXPERT_2() -- my bind is E key
 	LazyPigMultibox_SPA( "Maloves", 3); --pet attack
 	LazyPigMultibox_SFL( "Maloves", "LazyPigMultibox_SmartSS()", 0.5);  --cast ss on rezer if no enemy target and ooc
 	LazyPigMultibox_SCS( "Maloves", "Death Coil", 1, 565, true); --cast coil if modifier is pressed
-	LazyPigMultibox_SFL( "Nighte", "LazyPigMultibox_HammerOnAggro()", 0.5);  --stuns if enemy targeting player - good for pulling with warlock pet
+	LazyPigMultibox_SFL( "Schi", "LazyPigMultibox_HammerOnAggro()", 0.5);  --stuns if enemy targeting player - good for pulling with warlock pet
 end
 
 function LPM_EXPERT_1() -- my bind is Q key
@@ -59,7 +59,7 @@ function LPM_EXPERT_1() -- my bind is Q key
 	LazyPigMultibox_SPA( "Solekj", 2); --pet attack 
 	LazyPigMultibox_SFL( "Solekj", "LazyPigMultibox_SmartSS()", 0.5);  --cast ss on rezer if no enemy target and ooc
 	LazyPigMultibox_SCS( "Solekj", "Death Coil", 1, 565, true); --cast coil if modifier is pressed
-	LazyPigMultibox_SFL( "Nightf", "LazyPigMultibox_HammerOnAggro()", 0.5);  --stuns if enemy targeting player - good for pulling with warlock pet
+	LazyPigMultibox_SFL( "Shadlo", "LazyPigMultibox_HammerOnAggro()", 0.5);  --stuns if enemy targeting player - good for pulling with warlock pet
 end
 
 

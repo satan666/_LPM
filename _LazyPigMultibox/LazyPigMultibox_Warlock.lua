@@ -67,7 +67,7 @@ function LazyPigMultibox_WarlockPet(pet)
 		if check then
 			if Zorlen_castSpellByName("Fel Domination") then 
 				return 
-			elseif Zorlen_castSpellByName("Summon "..pet) then
+			elseif (Zorlen_checkBuffByName("Shadow Trance", "player") or not (Zorlen_isEnemy("target") and UnitExists("targettarget") and UnitIsPlayer("targettarget") and UnitIsFriend("targettarget","player"))) and Zorlen_castSpellByName("Summon "..pet) then
 				return
 			end
 		end	

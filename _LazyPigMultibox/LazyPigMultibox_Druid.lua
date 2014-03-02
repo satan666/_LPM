@@ -4,17 +4,18 @@ function LazyPigMultibox_Druid(dps, dps_pet, heal, rez, buff)
 	local cat_form = isCatForm()
 	local bear_form = isDireBearForm() or isBearForm()
 	local caster_form = isCasterForm()
+	local moonkin_form = isMoonkinForm()
 	
 	if locked then
 		return true
 	end
 	
-	if heal and not cat_form and not bear_form then
+	if heal and not cat_form and not bear_form and not moonkin_form then
 		QuickHeal();
 	end
 	
 	if dps then
-		if caster_form and castWrath() then
+		if (caster_form or moonkin_form) and castWrath() then
 			return true	
 		elseif bear_form and LazyPigMultibox_AttackBear() then
 			castAttack();
