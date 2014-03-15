@@ -1058,10 +1058,11 @@ function LazyPigMultibox_MenuSet()
 	else
 		Buttons1(nil);
 		Buttons2(nil);
-		Buttons3(nil);	
+		--Buttons3(nil);	
 		--getglobal("LazyPigMultiboxEnable"):SetText("Enable Multiboxing");
 		getglobal("LazyPigMultiboxEnableComboBox"):SetChecked(false)
 		getglobal("LazyPigMultiboxEnableComboBoxText"):SetText("Multibox Disabled")
+		getglobal("LazyMultiboxMakeLeader"):Disable();
 	end
 	
 	--getglobal("LazyPigMultiboxText4"):SetText("Use PreDefined Class Script");
