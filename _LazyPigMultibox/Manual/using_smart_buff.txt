@@ -2,4 +2,4 @@
 - set appropriate buffs in SmartBuff menu available from _LPM menu
 - place buffs on actionbar(SmartBuff requirements)
 - by default buffing in the cities is disabled(SmartBuff options)
-- some people reported that SmartBuff doesn't work properly, check Image folder to find how to setup.
+- some people reported that SmartBuff doesn't work properly, check Image folder to find how to setup, also disable AUTO SELF CAST from WOW menu
