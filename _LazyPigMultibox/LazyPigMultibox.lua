@@ -40,6 +40,15 @@ timeout = 0,
 hideOnEscape = 1
 };
 
+StaticPopupDialogs["LPM_AUTO_SELF_CAST"] = {
+	text = "LPM will not work properly with Blizzard's AutoSelfCast.  Please disable it.",
+	button1 = TEXT(OKAY),
+	OnAccept = function()
+	end,
+	timeout = 0,
+	hideOnEscape = 1
+}
+
 local function lpm_print(...)
 	local str = ""
 	local lenght = table.getn(arg)
@@ -205,6 +214,13 @@ function LazyPigMultibox_OnEvent(event)
 		Zorlen_MakeFirstMacros = nil
 		ZorlenConfig[ZORLEN_ZPN][ZORLEN_AUTOMOBIMMUNEOFF] = true
 		setglobal('QUEST_DESCRIPTION_GRADIENT_CPS',600000);
+		
+		
+		if GetCVar("AutoSelfCast") == "1" then
+			StaticPopup_Show("LPM_AUTO_SELF_CAST")
+			return
+		end
+		
 		
 		if SMARTBUFF_Options then
 			LPM_TIMER.SMARTBUFF = GetTime() + 8
@@ -1530,7 +1546,7 @@ function LazyPigMultibox_WhisperRedirect(val1, val2)
 	local master = LazyPigMultibox_ReturnLeaderUnit()
 
 	if check and master and LPMULTIBOX.SM_REDIRECT then
-		LPM_DEBUG("LazyPigMultibox_WhisperRedirect")
+		DEFAULT_CHAT_FRAME:AddMessage("LazyPigMultibox_WhisperRedirect")
 		val2 = val2.." >> "..val1
 		SendChatMessage(val2, "WHISPER", nil, GetUnitName(master));
 	end	

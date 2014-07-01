@@ -21,7 +21,7 @@ function LazyPigMultibox_Priest(dps, dps_pet, heal, rez, buff)
 		LazyPigMultibox_UnitBuff();
 	end
 	
-	if dps and not shadow_form and Zorlen_castSpellByName("Shadowform") then
+	if not heal and not shadow_form and Zorlen_castSpellByName("Shadowform") then
 		return
 		
 	elseif castInnerFire() then

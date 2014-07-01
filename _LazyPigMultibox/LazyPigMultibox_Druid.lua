@@ -33,7 +33,7 @@ end
 
 function LazyPigMultibox_AttackCat()
 	local percent = (UnitHealth("target") / UnitHealthMax("target")) * 100
-	if (isComboPoints(5) or (isComboPoints(4) and (percent<=25) and Zorlen_isEnemyPlayer())) and Zorlen_castSpellByName("Rip") then
+	if (isComboPoints(5) or isComboPoints(4) and percent<=25) and Zorlen_castSpellByName("Rip") then
 		return true	
 	else
 		if not isProwlActive() and castFaerieFire() then
