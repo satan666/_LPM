@@ -135,6 +135,10 @@ function LazyPigMultibox_OnUpdate()
 	
 	if LPM_TIMER.TICK2 < time then
 		LPM_TIMER.TICK2 = time + 4
+		
+		if LPMULTIBOX.FM_ALWAYS and LazyPigMultibox_SlaveCheck() then
+			LazyPigMultibox_FollowMaster();
+		end
 
 	end
 		
